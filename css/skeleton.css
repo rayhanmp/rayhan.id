@@ -435,3 +435,31 @@ there.
 
 /* Larger than Desktop HD */
 @media (min-width: 1200px) {}
+
+@media (max-width: 712px) { /* Adjust the breakpoint as needed */
+  .interest-wrapper {
+    max-width: 173px;
+  }
+  #interest-item {
+    margin-top: -30px;
+  }
+  .socials a {
+    margin-bottom: 1rem;
+  }
+}
+
+@media (min-width: 970px) {
+  .interest-wrapper {
+    font-size: 2.14rem;
+    margin-top: -5px;
+  }
+}
+
+.interest-wrapper {
+  font-size: 3rem;
+  margin-top: -15px;
+}
+
+.interest-title {
+  font-weight: 500;
+}
