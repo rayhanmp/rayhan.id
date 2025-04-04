@@ -26,6 +26,9 @@ jobs:
             set -e
             cd ~/rayhanmp-site
             git pull origin master
+            export NVM_DIR="$HOME/.nvm"
+            source "$NVM_DIR/nvm.sh"
+            nvm use 23
             npm install
             npm run build
             sudo rm -rf /var/www/rayhan.id/html/*
