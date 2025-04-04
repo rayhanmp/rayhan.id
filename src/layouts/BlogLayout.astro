@@ -1,0 +1,46 @@
+---
+export interface Props {
+  title: string;
+  description: string;
+  date: Date;
+  isPublished: boolean;
+}
+
+const { title, description, date, isPublished } = Astro.props;
+const author = "Rayhan M";
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} | Rayhan's Blog</title>
+    <link rel="stylesheet" href="/css/normalize.css" />
+    <link rel="stylesheet" href="/css/skeleton.css" />
+    <link rel="stylesheet" href="/css/custom.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap" rel="stylesheet" />
+    <script src="https://kit.fontawesome.com/8c35c08da0.js" crossorigin="anonymous" defer></script>
+  </head>
+  <body>
+    <div class="container">
+      <header style="margin-top: 2rem; margin-bottom: -5rem;">
+        <a href="/" class="button">← Back to Home</a>
+        <h1 style="margin-bottom: 0.2rem">{title}</h1>
+        <p style="margin: 0; font-style: italic; color: #555;">
+          {author} · {date.toLocaleDateString()}
+        </p>
+        <hr />
+      </header>
+      <main class="blog-post">
+        <slot />
+      </main>
+      <hr />
+      <footer style="text-align: center; padding: 1rem 0; font-size: 0.9rem; color: #666;">
+        &copy; 2024 Rayhan Maheswara Pramanda
+      </footer>
+    </div>
+  </body>
+</html>
