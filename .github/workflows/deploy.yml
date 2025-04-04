@@ -25,8 +25,7 @@ jobs:
           ssh -T -p 2222 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
             set -e
             cd ~/rayhanmp-site
-            git fetch origin
-            git reset --hard origin/main
+            git pull origin master
             npm install
             npm run build
             sudo rm -rf /var/www/rayhan.id/html/*
