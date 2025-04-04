@@ -23,11 +23,16 @@ import HexGame from '@/components/HexGame';
         background-color: #eaeaea;
       }
 </style>
-<div style="padding-top: 100px; padding-bottom: 100px; padding-left:400px; padding-right: 400px;">
-<a style="margin-left: -7px; font-weight: 700; text-decoration: underline;" href="/" class="back-button">Back to Home</a>
+<div class="container">
+  <div class="row">
+    <div class="twelve columns" style="padding-top: 100px; padding-bottom: 100px;">
+      <a style="margin-left: -7px; font-weight: 700; text-decoration: underline;" href="/" class="back-button">Back to Home</a>
 
-<h1 class="blog-title">HEX Guessing Game</h1>
-<p class="post-meta">Guess the 6-digit hex code.</p>
+      <h1 class="blog-title">HEX Guessing Game</h1>
+      <p class="post-meta">Guess the 6-digit hex code.</p>
 
-<HexGame client:only />
+      <HexGame client:only />
+    </div>
+  </div>
 </div>
+
