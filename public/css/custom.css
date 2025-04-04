@@ -35,24 +35,6 @@ img {
     padding: 3em;
 }
     
-h2 {
-    margin: 0;
-    clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
-    font-size: 4rem;    
-    font-weight: 700;
-    text-transform: uppercase;
-    line-height: 1;
-}
-    
-.col:nth-child(2) h2 {
-    font-size: 4rem;
-    text-align: right;
-    color: rgb(255, 255, 255);
-}
-    
-.col:nth-child(2) h2 span {
-    color: gray;
-}
 header {
     margin-top: 30%;
     margin-bottom: 15%;
