@@ -1,3 +1,9 @@
+
+[![Deploy to Production](https://github.com/rayhanmp/personal-site/actions/workflows/deploy.yml/badge.svg)](https://github.com/rayhanmp/personal-site/actions/workflows/deploy.yml)
+[![Last Commit](https://img.shields.io/github/last-commit/rayhanmp/personal-site?style=flat)](https://github.com/rayhanmp/personal-site/commits/main)
+[![Built with Astro](https://img.shields.io/badge/Built%20with-Astro-1a1a1a?logo=astro&logoColor=white)](https://astro.build)
+
+
 The source code for [my personal website](https://rayhan.id) — a digital home for my work, writing, and random experiments. Built with [Astro](https://astro.build), styled with [Skeleton](https://www.skeleton.dev/), and animated using [GSAP](https://greensock.com/gsap), [Anime.js](https://animejs.com/), and [Typed.js](https://github.com/mattboldt/typed.js/).
 
 ---

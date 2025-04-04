@@ -1,4 +1,4 @@
-name: Deploy Astro site to VPS
+name: Deployment
 
 on:
   push:
