@@ -31,7 +31,7 @@ jobs:
             nvm use 23
             npm install
             npm run build
-            sudo rm -rf /var/www/rayhan.id/html/*
-            sudo cp -r dist/* /var/www/rayhan.id/html/
+            sudo rm -rf /var/www/personal-site/*
+            sudo cp -r dist/* /var/www/personal-site/
             sudo systemctl reload nginx
           EOF
