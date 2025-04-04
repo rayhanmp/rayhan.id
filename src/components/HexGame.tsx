@@ -18,7 +18,6 @@ export default function HexGame() {
 
   const [guess, setGuess] = useState("");
   const [history, setHistory] = useState<{ guess: string; feedback: string[] }[]>([]);
-  const [reveal, setReveal] = useState(false);
 
   const maxTries = 10;
   const isCorrect = history.some(h => h.guess === target);
@@ -155,30 +154,6 @@ export default function HexGame() {
           </p>
         )}
       </div>
-
-      {!gameOver && !reveal && (
-        <div style={{ marginTop: "1rem", textAlign: "center" }}>
-          <button
-            onClick={() => setReveal(true)}
-            style={{
-              fontSize: "1.4rem",
-              color: "#3A5D44",
-              textDecoration: "underline",
-              background: "none",
-              border: "none",
-              cursor: "pointer"
-            }}
-          >
-            Reveal Answer
-          </button>
-        </div>
-      )}
-
-      {reveal && !gameOver && (
-        <div style={{ marginTop: "1rem", textAlign: "center" }}>
-          <p style={{ fontWeight: 600 }}>Answer: #{target}</p>
-        </div>
-      )}
 
       {gameOver && (
         <div style={{ marginTop: "2rem", textAlign: "center" }}>
