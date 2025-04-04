@@ -2,7 +2,8 @@
 title: "It's the lorem ipsum"
 description: "This is my very first post using content collections."
 date: 2025-04-03
-is_published: true
+isPublished: true
+tags: ["bio", "ml", "devlog"]
 ---
 
 Welcome to this **dummy article**, created specifically to help you test your Astro-powered markdown blog setup.

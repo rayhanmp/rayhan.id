@@ -6,7 +6,7 @@ import { getReadingTime } from '../../utils/readingTime';
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
   return posts
-    .filter((post) => post.data.is_published)
+    .filter((post) => post.data.isPublished)
     .map((post) => ({
       params: { slug: post.slug },
       props: { post },
@@ -16,12 +16,10 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await post.render();
 
-// Destructure your frontmatter
-const { title, description, date, is_published } = post.data;
+const { title, description, date, isPublished, tags } = post.data;
 
-// Compute reading time from raw markdown body
 const readingTime = getReadingTime(post.body);
 ---
-<BlogLayout {title} {description} {date} {readingTime}>
+<BlogLayout {title} {description} {date} {readingTime} {tags} >
   <Content />
 </BlogLayout>

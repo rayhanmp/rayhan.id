@@ -1,13 +1,13 @@
 import { z, defineCollection } from "astro:content";
-import { getReadingTime } from '../utils/readingTime';
 
 const postCollection = defineCollection({
     schema: z.object({
         title: z.string(),
         description: z.string(),
         date: z.date(),
-        is_published: z.boolean(),
-        readingTime: z.number().optional()
+        isPublished: z.boolean(),
+        readingTime: z.number().optional(),
+        tags: z.array(z.string()).optional(),
     })
 });
 
