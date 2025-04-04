@@ -22,13 +22,14 @@ jobs:
 
       - name: Deploy to VPS
         run: |
-          ssh -p 2222 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
+          ssh -T -p 2222 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
             set -e
             cd ~/rayhanmp-site
-            git pull origin main
+            git fetch origin
+            git reset --hard origin/main
             npm install
             npm run build
-            sudo rm -rf /var/www/personal-site*
-            sudo cp -r dist/* /var/www/personal-site
+            sudo rm -rf /var/www/rayhan.id/html/*
+            sudo cp -r dist/* /var/www/rayhan.id/html/
             sudo systemctl reload nginx
           EOF
