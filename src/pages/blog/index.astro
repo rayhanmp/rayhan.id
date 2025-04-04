@@ -1,17 +1,110 @@
 ---
 import { getCollection } from 'astro:content';
-
-const posts = await getCollection('posts');
+const allPosts = await getCollection('posts');
+const posts = allPosts.filter((post) => post.data.is_published);
 ---
 
-<h1>Blog Posts</h1>
-<ul>
-  {posts.map(({ slug, data }) => (
-    <li>
-      <a href={`/blog/${slug}`}>
-        <strong>{data.title}</strong> - {data.date.toLocaleDateString()}
-      </a>
-    </li>
-  ))}
-</ul>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Blog – Rayhan M</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/css/normalize.css" />
+    <link rel="stylesheet" href="/css/skeleton.css" />
+    <link rel="stylesheet" href="/css/custom.css" />
+    <link rel="icon" type="image/png" href="/images/favicon.png" />
+    <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" defer></script>
+    <style>
+      .blog-post {
+        margin-bottom: 2.5rem;
+        padding: 1.5rem;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        background: #fff;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
 
+      .blog-post:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .blog-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #222;
+        margin-bottom: 0.5rem;
+      }
+
+      .blog-date {
+        font-size: 0.95rem;
+        color: #666;
+        margin-bottom: 0.75rem;
+      }
+
+      .blog-header {
+        text-align: center;
+        margin: 4rem 0 3rem 0;
+      }
+
+      .blog-header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .back-home {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .back-home a {
+        color: #111;
+        font-weight: 600;
+        text-decoration: none;
+        border-bottom: 2px solid #111;
+      }
+
+      .back-home a:hover {
+        opacity: 0.8;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="blog-header">
+        <h1>📚 Blog</h1>
+        <p>Thoughts, notes, and everything in-between.</p>
+      </div>
+
+      <div class="back-home">
+        <a href="/">← Back to home</a>
+      </div>
+
+      <div class="row">
+        {posts.map(({ slug, data }) => (
+          <div class="six columns blog-post">
+            <a href={`/blog/${slug}`} class="blog-title">{data.title}</a>
+            <div class="blog-date">{new Date(data.date).toLocaleDateString()}</div>
+            <p>{data.description ?? "No description provided."}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <script>
+      window.addEventListener('DOMContentLoaded', function () {
+        anime({
+          targets: '.blog-post',
+          opacity: [0, 1],
+          translateY: [20, 0],
+          delay: anime.stagger(100),
+          duration: 700,
+          easing: 'easeOutQuad'
+        });
+      });
+    </script>
+  </body>
+</html>

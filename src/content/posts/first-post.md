@@ -1,15 +1,13 @@
 ---
-title: "Lorem Ipsum"
+title: "It's the lorem ipsum"
 description: "This is my very first post using content collections."
 date: 2025-04-03
 is_published: true
 ---
 
-# Lorem Ipsum Dolor Sit Amet
-
 Welcome to this **dummy article**, created specifically to help you test your Astro-powered markdown blog setup.
 
-## Section 1: What is Lorem Ipsum?
+### Section 1: What is Lorem Ipsum?
 
 > "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
 
@@ -40,7 +38,7 @@ def greet(name):
 
 ## Section 3: Image & Links
 
-Want to learn more? Visit \[astro.build\](https://astro.build) for official documentation.
+Want to learn more? Visit https://astro.build for official documentation.
 
 ## Section 4: List Test
 
@@ -60,18 +58,14 @@ Want to learn more? Visit \[astro.build\](https://astro.build) for official docu
 
 > “Design is not just what it looks like and feels like. Design is how it works.” – Steve Jobs
 
-:::note  
-This is a custom callout or note block. You can use it to highlight key information.  
-:::
-
 ## Section 6: Table Example
 
-\| Feature              \| Supported \|  
-\|----------------------\|-----------\|  
-\| Markdown             \| ✅        \|  
-\| Syntax Highlighting  \| ✅        \|  
-\| Tags                 \| ✅        \|  
-\| Author Metadata      \| ✅        \|  
+| Feature              | Supported |  
+|----------------------|-----------|  
+| Markdown             | ✅        |  
+| Syntax Highlighting  | ✅        |  
+| Tags                 | ✅        |  
+| Author Metadata      | ✅        |  
 
 ---
 

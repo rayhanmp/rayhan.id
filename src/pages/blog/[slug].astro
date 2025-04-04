@@ -1,9 +1,10 @@
 ---
 import { getCollection } from 'astro:content';
 import BlogLayout from '../../layouts/BlogLayout.astro';
+import { getReadingTime } from '../../utils/readingTime';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('posts'); // or 'post', if you renamed it
+  const posts = await getCollection('posts');
   return posts
     .filter((post) => post.data.is_published)
     .map((post) => ({
@@ -14,9 +15,13 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await post.render();
-const { title, description, date, is_published } = post.data;
----
 
-<BlogLayout {title} {description} {date}>
+// Destructure your frontmatter
+const { title, description, date, is_published } = post.data;
+
+// Compute reading time from raw markdown body
+const readingTime = getReadingTime(post.body);
+---
+<BlogLayout {title} {description} {date} {readingTime}>
   <Content />
 </BlogLayout>
