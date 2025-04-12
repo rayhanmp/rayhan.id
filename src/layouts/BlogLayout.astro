@@ -6,9 +6,14 @@ export interface Props {
   isPublished: boolean;
   readingTime?: number;
   tags?: string[];
+  heroImage?: string;
+  heroImageCaption?: string;
 }
 
-const { title, description, date, isPublished, readingTime, tags } = Astro.props;
+import NavBar from '../components/NavBar.astro';
+import '../../public/css/about.css';
+
+const { title, description, date, isPublished, readingTime, tags, heroImage, heroImageCaption } = Astro.props;
 const author = "Rayhan M";
 ---
 
@@ -43,7 +48,7 @@ const author = "Rayhan M";
         margin: 4rem auto;
         padding: 0 1rem;
         line-height: 1.7;
-        font-size: 1.9rem;
+        font-size: 1.85rem;
       }
 
       .blog-title {
@@ -54,7 +59,6 @@ const author = "Rayhan M";
       }
 
       .post-meta {
-        font-style: italic;
         color: #777;
         font-size: 1.7rem;
         margin-bottom: 1.5rem;
@@ -78,6 +82,15 @@ const author = "Rayhan M";
       .blog-post h2, .blog-post h3 {
         margin-top: 2rem;
         font-weight: 600;
+      }
+
+      .blog-post p:first-of-type::first-letter {
+        float: left;
+        font-size: 3rem;
+        line-height: 1;
+        padding-right: 0.3rem;
+        font-weight: bold;
+        font-family: serif;
       }
 
       .blog-post img {
@@ -144,16 +157,32 @@ const author = "Rayhan M";
         background-color: var(--accent, #3A5D44);
         color: white;
       }
-
+    .hero-image {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      max-height: 400px;
+    }
+    .hero-image-container {
+      text-align: center;
+      margin-bottom:4rem;
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: #666;
+    }
+    
     </style>
   </head>
+
   <body>
     <div id="reading-progress"></div>
+    
     <div class="container blog-container">
+    
       <a href="/blog" class="back-button">← Back</a>
       <h1 class="blog-title">{title}</h1>
       <div class="post-meta">
-        By {author} · {date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })} · {readingTime ?? '??'} min read
+        <a href="/about-me"> {author}</a> · {date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })} · {readingTime ?? '??'} min read
       </div>
       {tags && tags.length > 0 && (
         <div class="tag-list">
@@ -163,13 +192,24 @@ const author = "Rayhan M";
         </div>
       )}
       <div class="blog-divider"></div>
-
+      <div class="hero-image-container">
+      {heroImage && (
+  <img src={heroImage} alt={title} class="hero-image"/>
+    )}
+    {heroImageCaption && (heroImageCaption)}
+    </div>
       <main class="blog-post">
         <slot />
       </main>
-      <footer>
-        &copy; 2024 Rayhan Maheswara Pramanda
-      </footer>
+   <footer>
+
+
+    <div style="font-size: 1.4rem; color: #777;">
+      © {new Date().getFullYear()} Rayhan Maheswara Pramanda
+    </div>
+
+</footer>
+
     </div>
      <script is:inline>
       window.addEventListener('scroll', () => {

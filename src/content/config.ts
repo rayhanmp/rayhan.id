@@ -8,6 +8,8 @@ const postCollection = defineCollection({
         isPublished: z.boolean(),
         readingTime: z.number().optional(),
         tags: z.array(z.string()).optional(),
+        heroImage: z.string().optional(),
+        heroImageCaption: z.string().optional(),
     })
 });
 
