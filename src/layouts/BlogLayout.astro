@@ -170,14 +170,19 @@ const author = "Rayhan M";
       font-weight: 500;
       color: #666;
     }
-    iframe[src*="cusdis"] {
-      width: 100% !important;
-      border: none;
-      display: block;
-      transition: height 0.3s ease;
-      min-height: 250px;
-      max-height: 1200px;
-    }
+#cusdis_thread {
+  height: 100%;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+}
+
+#cusdis_thread iframe {
+  height: 100%;
+  min-height: 600px;
+  width: 100%;
+  border: none; 
+}
     </style>
   </head>
 
