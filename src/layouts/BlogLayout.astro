@@ -170,8 +170,12 @@ const author = "Rayhan M";
       font-weight: 500;
       color: #666;
     }
-    iframe[data-cusdis] {
+    iframe[src*="cusdis"] {
+      width: 100% !important;
+      border: none;
+      display: block;
       transition: height 0.3s ease;
+      min-height: 250px;
       max-height: 1200px;
     }
     </style>
@@ -212,7 +216,15 @@ const author = "Rayhan M";
   data-page-title={title}
   data-auto-height="true"
 ></div>
-<script async defer src="https://cusdis.rayhan.id/js/cusdis.es.js"></script>
+<script is:inline>
+  if (typeof window !== 'undefined') {
+    const script = document.createElement("script");
+    script.src = "https://cusdis.rayhan.id/js/embed.js";
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+  }
+</script>
    <footer>
          <div class="blog-divider"></div>
 
