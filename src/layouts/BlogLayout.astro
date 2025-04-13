@@ -170,7 +170,10 @@ const author = "Rayhan M";
       font-weight: 500;
       color: #666;
     }
-    
+    iframe[data-cusdis] {
+      transition: height 0.3s ease;
+      max-height: 1200px;
+    }
     </style>
   </head>
 
@@ -207,6 +210,7 @@ const author = "Rayhan M";
   data-page-id={Astro.url.pathname}
   data-page-url={Astro.url.href}
   data-page-title={title}
+  data-auto-height="true"
 ></div>
 <script async defer src="https://cusdis.rayhan.id/js/cusdis.es.js"></script>
    <footer>
