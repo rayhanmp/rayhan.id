@@ -19,8 +19,18 @@ import profile from '../assets/rayv2.png';
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" defer></script>
     <style>
+      html {
+        overflow-y: scroll; /* Always show scrollbar */
+        scrollbar-gutter: stable; /* Reserve space for scrollbar */
+      }
+
       body.lock-scroll {
-        overflow: hidden;
+        overflow: hidden !important;
+        height: 100vh !important;
+        position: fixed !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
       } 
 
       @keyframes float {
@@ -43,9 +53,37 @@ import profile from '../assets/rayv2.png';
         opacity: 1;
         transform: translateY(0);
       }
+
+      .loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        z-index: 9999;
+        background: #000;
+        will-change: transform, opacity;
+        transform: translateZ(0);
+        backface-visibility: hidden;
+      }
+
+      .img {
+        will-change: transform, clip-path;
+        transform: translateZ(0);
+        backface-visibility: hidden;
+      }
+
+      .overlay {
+        will-change: opacity, clip-path;
+        transform: translateZ(0);
+        backface-visibility: hidden;
+      }
     </style>  
   </head>
 <body>
+<script>
+  document.body.classList.add('lock-scroll');
+</script>
 <div class="loader">
   <div class="img"><img src="images/intro6v2-min.jpg"></div>
   <div class="img"><img src="images/intro2v2-min.jpg"></div>
@@ -354,7 +392,6 @@ import profile from '../assets/rayv2.png';
 </div>
 <button id="jumpToTop" style="padding-bottom:1rem;background-color: #222; position: fixed; z-index: 100; right: 3rem; bottom: 3rem; opacity: 0; transition: opacity 0.3s ease-in-out;"><a href="#"><i class ="fa-solid fa-caret-up fa-2xl" style="color: #fff;"></i></a></button>
 <script>
-  // Initial animation (optional preload style)
   gsap.from("h2 div", {
     yPercent: 100,
     ease: "power4.inOut",
@@ -375,47 +412,37 @@ import profile from '../assets/rayv2.png';
 
   // Trigger main animation when everything including images is loaded
   window.addEventListener("load", function () {
-    gsap.to("h2 div", {
-      yPercent: -100,
-      ease: "power4.inOut",
-      duration: 1.5,
-      stagger: {
-        amount: 0.5,
-      }
-    });
-
-    gsap.to("h2", {
-      clipPath: "polygon(0 85%, 100% 85%, 100% 100%, 0 100%)",
-      ease: "power4.inOut",
-      duration: 1.5,
-      stagger: {
-        amount: 0.5,
-      }
-    });
-
     gsap.to(".overlay", {
       clipPath: "polygon(0 0, 100% 0, 100% 0%, 0 0)",
-      ease: "power4.inOut",
+      ease: "sine.inOut",
       duration: 2,
       stagger: {
         amount: 0.5,
-      }
+      },
+      force3D: true // Enable hardware acceleration
     });
 
     gsap.to(".img", {
       clipPath: "polygon(0 100%, 100% 100%, 100% 0%, 0% 0%)",
-      ease: "power4.inOut",
+      ease: "power2.inOut",
       duration: 2,
       stagger: {
         amount: 1.5,
-      }
+      },
+      force3D: true // Enable hardware acceleration
     });
 
     gsap.to(".loader", {
       clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
-      ease: "power4.inOut",
+      ease: "expo.inOut",
       duration: 2,
       delay: 2,
+      force3D: true,
+      onComplete: () => {
+        document.body.classList.remove('lock-scroll');
+        // Restore scroll position
+        window.scrollTo(0, 0);
+      }
     });
   });
 </script>
