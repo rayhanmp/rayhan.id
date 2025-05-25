@@ -122,7 +122,7 @@ import profile from '../assets/rayv2.png';
   <div class="row">
     <div class="twelve columns">
         <h5><a href="https://github.com/rayhanmp/Spatial-Watermarking">Spatial Watermarking with Correlation Based Detection</a></h5>
-        <p class="project-detail">Enables users to embed and detect spatial watermark in images by using generated white noise with a predetermined seed as its key. The program works by calculating the correlation value between the key and the image and checking whether it’s above the threshold.
+        <p class="project-detail">Enables users to embed and detect spatial watermark in images by using generated white noise with a predetermined seed as its key. The program works by calculating the correlation value between the key and the image and checking whether it's above the threshold.
         </p>
         <div class="certificate-detail"><b>Tech Stack:</b> Python with Numpy and CV2 libraries.</div>
     </div>
@@ -443,6 +443,20 @@ import profile from '../assets/rayv2.png';
       loop: true
     });
   });
+</script>
+
+<script>
+  // Add smooth scroll behavior
+  const jumpToTopButton = document.getElementById('jumpToTop');
+  if (jumpToTopButton) {
+    jumpToTopButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  }
 </script>
 <!-- End Document
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
