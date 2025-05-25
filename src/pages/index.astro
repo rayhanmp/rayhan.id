@@ -48,7 +48,7 @@ import profile from '../assets/rayv2.png';
           <a href="/blog" class="one columns">Blog</a>
           <a href="/guesshex" class="two columns">Hex Guesser</a>
         </div>
-        <button id="jumpToTop" style="padding-bottom:1rem;background-color: #222; position: fixed; z-index: 100; right: 3rem; bottom: 3rem;"><a href="#"><i class ="fa-solid fa-caret-up fa-2xl" style="color: #fff;"></i></a></button>
+        <button id="jumpToTop" style="padding-bottom:1rem;background-color: #222; position: fixed; z-index: 100; right: 3rem; bottom: 3rem; opacity: 0; transition: opacity 0.3s ease-in-out;"><a href="#"><i class ="fa-solid fa-caret-up fa-2xl" style="color: #fff;"></i></a></button>
 
          <h3>Hi there,</h3>
          <h1 class="main-title">I'm Rayhan Maheswara Pramanda</h1>
@@ -446,8 +446,24 @@ import profile from '../assets/rayv2.png';
 </script>
 
 <script>
-  // Add smooth scroll behavior
+  // Add smooth scroll behavior and show/hide functionality
   const jumpToTopButton = document.getElementById('jumpToTop');
+  
+  // Function to handle scroll events
+  function handleScroll() {
+    if (!jumpToTopButton) return;
+    
+    if (window.scrollY > 300) {
+      jumpToTopButton.style.opacity = '1';
+    } else {
+      jumpToTopButton.style.opacity = '0';
+    }
+  }
+
+  // Add scroll event listener
+  window.addEventListener('scroll', handleScroll);
+
+  // Add click handler for smooth scroll
   if (jumpToTopButton) {
     jumpToTopButton.addEventListener('click', function(e) {
       e.preventDefault();
