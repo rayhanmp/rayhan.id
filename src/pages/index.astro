@@ -15,7 +15,6 @@ import profile from '../assets/rayv2.webp';
     <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet" />
     
     <!-- Preload critical assets -->
-    <link rel="preload" href="https://kit.fontawesome.com/8c35c08da0.js" as="script" />
     <link rel="preload" href="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js" as="script" />
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js" as="script" />
     
@@ -391,25 +390,6 @@ import profile from '../assets/rayv2.webp';
 </div>
 <button id="jumpToTop" style="padding-bottom:1rem;background-color: #222; position: fixed; z-index: 100; right: 3rem; bottom: 3rem; opacity: 0; transition: opacity 0.3s ease-in-out;"><a href="#"><i class ="fa-solid fa-caret-up fa-2xl" style="color: #fff;"></i></a></button>
 <script>
-  gsap.from("h2 div", {
-    yPercent: 100,
-    ease: "power4.inOut",
-    duration: 1.5,
-    stagger: {
-      amount: 0.5,
-    }
-  });
-
-  gsap.to("h2", {
-    clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
-    ease: "power4.inOut",
-    duration: 1.5,
-    stagger: {
-      amount: 0.5,
-    }
-  });
-
-  // Trigger main animation when everything including images is loaded
   window.addEventListener("load", function () {
     gsap.to(".overlay", {
       clipPath: "polygon(0 0, 100% 0, 100% 0%, 0 0)",
