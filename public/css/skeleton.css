@@ -308,7 +308,7 @@ label > .label-body {
 /* Lists
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 ul {
-  list-style: circle inside; }
+  list-style: disc; }
 ol {
   list-style: decimal inside; }
 ol, ul {

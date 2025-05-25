@@ -8,20 +8,192 @@ import profile from '../assets/rayv2.png';
     <meta charset="utf-8" />
     <title>Rayhan M</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://kit.fontawesome.com" />
+    
+    <!-- Preload critical assets -->
+    <link rel="preload" href="/css/normalize.css" as="style" />
+    <link rel="preload" href="/css/skeleton.css" as="style" />
+    <link rel="preload" href="/css/custom.css" as="style" />
+    <link rel="preload" href={profile.src} as="image" />
+    
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="/css/normalize.css" />
     <link rel="stylesheet" href="/css/skeleton.css" />
     <link rel="stylesheet" href="/css/custom.css" />
     <link rel="icon" type="image/png" href="/images/favicon.png" />
-    <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet" />
-    <script src="https://kit.fontawesome.com/8c35c08da0.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+    
+    <!-- Defer non-critical scripts -->
+    <script src="https://kit.fontawesome.com/8c35c08da0.js" crossorigin="anonymous" defer></script>
     <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" defer></script>
+    
     <style>
       body.lock-scroll {
         overflow: hidden;
-      } 
+      }
+      
+      /* Modern Navigation Styles */
+      .main-nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        z-index: 1000;
+        padding: 1rem 0;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+      }
+
+      .main-nav.hidden {
+        transform: translateY(-100%);
+      }
+
+      .nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+      }
+
+      .nav-links a {
+        color: #333;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+        position: relative;
+      }
+
+      .nav-links a::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: #333;
+        transition: width 0.3s ease;
+      }
+
+      .nav-links a:hover::after {
+        width: 100%;
+      }
+
+      /* Hero Section Styles */
+      .hero-section {
+        padding: 8rem 0 4rem;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        opacity: 0.5;
+      }
+
+      .main-title {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+        background: linear-gradient(45deg, #2c3e50, #3498db);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .main-desc {
+        font-size: 1.5rem;
+        color: #666;
+        margin-bottom: 2rem;
+      }
+
+      /* Jump to Top Button */
+      #jumpToTop {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        background: #2c3e50;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 3rem;
+        height: 3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        opacity: 0;
+        transform: translateY(20px);
+        z-index: 1000;
+      }
+
+      #jumpToTop.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      #jumpToTop:hover {
+        background: #3498db;
+        transform: translateY(-5px);
+      }
+
+      /* Section Styles */
+      .section {
+        padding: 4rem 0;
+        position: relative;
+      }
+
+      .section::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: linear-gradient(90deg, #2c3e50, #3498db);
+        border-radius: 3px;
+      }
+
+      /* Card Styles */
+      .card {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
     </style>  
   </head>
 <body>
@@ -41,38 +213,51 @@ import profile from '../assets/rayv2.png';
 </div>
 
 <div class="site-wrapper">
-  <div class="container"> 
-    <header id="intro">
-        <div class="row" style="margin-bottom: 4%; font-weight: 700;">
-          <a href="#" class="one columns">Home</a>
-          <a href="/blog" class="one columns">Blog</a>
-          <a href="/guesshex" class="two columns">Hex Guesser</a>
-        </div>
-        <button id="jumpToTop" style="padding-bottom:1rem;background-color: #222; position: fixed; z-index: 100; right: 3rem; bottom: 3rem;"><a href="#"><i class ="fa-solid fa-caret-up fa-2xl" style="color: #fff;"></i></a></button>
+  <!-- Modern Navigation -->
+  <nav class="main-nav">
+    <div class="nav-container">
+      <div class="logo">RM</div>
+      <div class="nav-links">
+        <a href="#intro">Home</a>
+        <a href="/blog">Blog</a>
+        <a href="/guesshex">Hex Guesser</a>
+      </div>
+    </div>
+  </nav>
 
-         <h3>Hi there,</h3>
-         <h1 class="main-title">I'm Rayhan Maheswara Pramanda</h1>
-         <div class="main-desc">Final year information system and technology student at ITB</div>
-         <div class="row" style="align-items: center; margin-top: 10px;">
-         <div class="eight columns">
-            <div class="interest-wrapper">
-              <div><div class="interest-title">Interested in</div>
-                <span id="interest-item" style="white-space: pre; font-weight: 700;"></span>
-              </div>
+  <!-- Jump to Top Button -->
+  <button id="jumpToTop" aria-label="Jump to top">
+    <i class="fa-solid fa-caret-up fa-xl"></i>
+  </button>
+
+  <!-- Hero Section -->
+  <section class="hero-section" id="intro">
+    <div class="container">
+      <h3>Hi there,</h3>
+      <h1 class="main-title">I'm Rayhan Maheswara Pramanda</h1>
+      <div class="main-desc">Final year information system and technology student at ITB</div>
+      <div class="row" style="align-items: center; margin-top: 2rem;">
+        <div class="eight columns">
+          <div class="interest-wrapper">
+            <div>
+              <div class="interest-title">Interested in</div>
+              <span id="interest-item" style="white-space: pre; font-weight: 700;"></span>
             </div>
-            </div>
-            <div class="four columns">
-              <div class="socials">
-                <a href="https://linkedin.com/in/rayhanmp" title="LinkedIn"><i class="fa-brands fa-linkedin fa-2xl"></i></a>
-                <a href="https://github.com/rayhanmp" title="GitHub"><i class="fa-brands fa-github fa-2xl"></i></a>
-                <a href="https://instagram.com/rayhanmhw" title="Instagram"><i class="fa-brands fa-instagram fa-2xl"></i></a>
-                <a href="https://medium.com/@rayhanmpramanda" title="Medium"><i class="fa-brands fa-medium fa-2xl"></i></a>
-              </div>
-           </div>
           </div>
-   </header>
-   <hr>
-   <section class="section" id="certificate"> 
+        </div>
+        <div class="four columns">
+          <div class="socials">
+            <a href="https://linkedin.com/in/rayhanmp" title="LinkedIn"><i class="fa-brands fa-linkedin fa-2xl"></i></a>
+            <a href="https://github.com/rayhanmp" title="GitHub"><i class="fa-brands fa-github fa-2xl"></i></a>
+            <a href="https://instagram.com/rayhanmhw" title="Instagram"><i class="fa-brands fa-instagram fa-2xl"></i></a>
+            <a href="https://medium.com/@rayhanmpramanda" title="Medium"><i class="fa-brands fa-medium fa-2xl"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <hr>
+  <section class="section" id="certificate"> 
     <h3>Certificate & Awards</h3>
     <div class="row">
         <div class="six columns">
@@ -122,7 +307,7 @@ import profile from '../assets/rayv2.png';
   <div class="row">
     <div class="twelve columns">
         <h5><a href="https://github.com/rayhanmp/Spatial-Watermarking">Spatial Watermarking with Correlation Based Detection</a></h5>
-        <p class="project-detail">Enables users to embed and detect spatial watermark in images by using generated white noise with a predetermined seed as its key. The program works by calculating the correlation value between the key and the image and checking whether it’s above the threshold.
+        <p class="project-detail">Enables users to embed and detect spatial watermark in images by using generated white noise with a predetermined seed as its key. The program works by calculating the correlation value between the key and the image and checking whether it's above the threshold.
         </p>
         <div class="certificate-detail"><b>Tech Stack:</b> Python with Numpy and CV2 libraries.</div>
     </div>
@@ -181,132 +366,6 @@ import profile from '../assets/rayv2.png';
         </div>
   </section>
  
-  <hr>
-  <section class="section" id="experience"> 
-    <h3>Organisations</h3>
-    <p>Over the years, I have been participating in various organisations, such as:</p>
-    <div class="row">
-        <div class="three columns">
-          <h6>HMIF ITB</h6>
-          <div class="position-title">Senator</div>
-          <p>May 2024 - Present</p>
-        </div>
-        <div class="three columns">
-          <h6>ASSISTS ITB</h6>
-          <div class="position-title">General Secretary</div>
-          <p>March 2024 - Present</p>
-        </div>
-        <div class="three columns">
-            <h6>8EH Radio ITB</h6>
-            <div class="position-title">Marketing Manager</div>
-            <p>April 2023 - April 2024</p>
-        </div>
-        <div class="three columns">
-        <h6>Kabinet KM ITB</h6>
-        <div class="position-title">Creative Marketing Vice Minister</div>
-        <p>July 2023 - April 2024</p>
-      </div>
-    </div>
-    <h5>Events & Volunteers</h5>
-    <p>I also have been involved in various events and volunteering activities. Here are some of them:</p>
-    <table class="u-full-width" id="myTable">
-      <thead>
-        <tr>
-          <th>No.</th>
-          <th>Position</th>
-          <th>Event Name</th>
-          <th>Period</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-            <td>1</td>
-            <td>Election Coordinator</td>
-            <td>8EH Radio ITB General Election</td>
-            <td>January 2023 - March 2023</td>
-        </tr>
-          <td>2</td>
-          <td>Head of Event Division</td>
-          <td>Kaderisasi Wilayah STEI-K 2023</td>
-          <td>March 2023 - June 2023</td>
-        <tr>
-          <td>3</td>
-          <td>Head of Creative Division</td>
-          <td>IEEE Asia-Pasific Convention ITB SB</td>
-          <td>July 2022 - September 2022</td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td>Vice Head of Creative Field</td>
-          <td>Regenerasi 8EH Radio ITB 2023</td>
-          <td>July 2022 - January 2023</td>
-        </tr>
-        </tr>          
-          <td>5</td>
-          <td>PIC of Aftermovie</td>
-          <td>OSKM ITB 2023</td>
-          <td>July 2023 - September 2023</td>
-        </tr>
-        <tr class="more-rows" style="display: none;">
-          <td>6</td>
-          <td>Vice Head of Graphic Design Division</td>
-          <td>BIST League 6.0</td>
-          <td>July 2023 - January 2024</td>
-        </tr>
-        <tr class="more-rows" style="display: none;">
-          <td>7</td>
-          <td>Laboratory Assistant</td>
-          <td>ITB Basic Chemistry Laboratory</td>
-          <td>January 2023 - May 2023</td>
-        </tr>
-        <tr class="more-rows" style="display: none;">
-          <td>8</td>
-          <td>Trainer</td>
-          <td>Character Development Training ITB 2023</td>
-          <td>July 2023 - February 2024</td>
-        </tr>
-        <tr class="more-rows" style="display: none;">
-          <td>9</td>
-          <td>Staff of Website Division</td>
-          <td>Parade Wisuda Oktober 2021</td>
-          <td>September 2021 - November 2021</td>
-        </tr>
-        <tr class="more-rows" style="display: none;">
-          <td>10</td>
-          <td>Staff of Video Design</td>
-          <td>Mile Zero Project 2021</td>
-          <td>June 2021 - March 2022</td>
-        </tr>
-        <tr class="more-rows" style="display: none;">
-          <td>11</td>
-          <td>Staff of Documentation</td>
-          <td>OSKM ITB 2022</td>
-          <td>July 2022 - August 2022</td>
-        </tr>
-        <tr class="more-rows" style="display: none;">
-          <td>12</td>
-          <td>Staff of Documentation and Animation</td>
-          <td>ARKAVIDIA 2022</td>
-          <td>August 2022 - March 2023</td>
-        </tr>
-        <tr class="more-rows" style="display: none;">
-          <td>13</td>
-          <td>SBMPTN Biology Session Teacher</td>
-          <td>TanyaKating</td>
-          <td>February 2022</td>
-        </tr>
-        <tr class="more-rows" style="display: none;">
-          <td>14</td>
-          <td>Mentor</td>
-          <td>Kaderisasi Wilayah STEI-K 2023</td>
-          <td>April 2023 - May 2023</td>
-        </tr>
-    </table>
-    <button onclick="toggleTableRows()" title="Press to see more information" id="seeMoreButton">See More</button>
-
-    <p>For more details, visit my <a href="https://linkedin.com/rayhamp" title="LinkedIn"><i class="fa-brands fa-linkedin fa-md"></i><b> LinkedIn</b></a> page.</p>
-  </section>
-<hr>
   
    <section class="section" id="about">
          <h3>About Me</h3>
@@ -443,6 +502,94 @@ import profile from '../assets/rayv2.png';
       loop: true
     });
   });
+</script>
+
+<script>
+  // Navigation scroll behavior
+  let lastScroll = 0;
+  const nav = document.querySelector('.main-nav') as HTMLElement;
+  const jumpToTop = document.getElementById('jumpToTop') as HTMLButtonElement;
+
+  if (nav && jumpToTop) {
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.pageYOffset;
+      
+      // Handle navigation visibility
+      if (currentScroll <= 0) {
+        nav.classList.remove('hidden');
+      } else if (currentScroll > lastScroll && currentScroll > 100) {
+        nav.classList.add('hidden');
+      } else {
+        nav.classList.remove('hidden');
+      }
+      
+      // Handle jump to top button
+      if (currentScroll > 300) {
+        jumpToTop.classList.add('visible');
+      } else {
+        jumpToTop.classList.remove('visible');
+      }
+      
+      lastScroll = currentScroll;
+    });
+
+    // Jump to top functionality
+    jumpToTop.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  }
+
+  // Smooth scroll for navigation links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(this: HTMLAnchorElement, e: Event) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href') || '');
+      if (target) {
+        target.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    });
+  });
+
+  // Intersection Observer for fade-in animations
+  const observerOptions = {
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.1
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('fade-in');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  // Observe all sections
+  document.querySelectorAll('.section').forEach(section => {
+    const element = section as HTMLElement;
+    element.style.opacity = '0';
+    element.style.transform = 'translateY(20px)';
+    element.style.transition = 'all 0.6s ease-out';
+    observer.observe(section);
+  });
+
+  // Add fade-in class styles
+  const style = document.createElement('style');
+  style.textContent = `
+    .fade-in {
+      opacity: 1 !important;
+      transform: translateY(0) !important;
+    }
+  `;
+  document.head.appendChild(style);
 </script>
 <!-- End Document
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
