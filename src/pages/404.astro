@@ -1,0 +1,582 @@
+---
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - Lost in Space</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Raleway', sans-serif;
+      overflow: hidden;
+      height: 100vh;
+      background: linear-gradient(45deg, #000000, #1a1a1a, #2d2d2d, #404040);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+      cursor: none;
+    }
+
+    /* Visual Effects */
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 2s infinite alternate;
+    }
+
+    .custom-cursor {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      background: radial-gradient(circle, #fff, transparent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 1000;
+      transition: transform 0.1s ease;
+    }
+
+    .cursor-trail {
+      position: fixed;
+      width: 6px;
+      height: 6px;
+      background: #999;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    .cursor-spotlight {
+      position: fixed;
+      width: 350px;
+      height: 350px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.07) 30%, transparent 65%);
+      pointer-events: none;
+      z-index: 998;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.3s ease-out, transform 0.1s ease-out;
+      opacity: 0;
+    }
+
+    /* Main Content Layout & Typography */
+    .container {
+      position: relative;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      z-index: 10;
+    }
+
+    .glitch-container {
+      position: relative;
+    }
+
+    .glitch {
+      font-size: clamp(3rem, 12vw, 10rem);
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 
+        0 0 20px rgba(255, 255, 255, 0.8),
+        0 0 40px rgba(255, 255, 255, 0.6),
+        0 0 60px rgba(255, 255, 255, 0.4);
+      animation: glitch 2s infinite;
+      position: relative;
+    }
+
+    .glitch::before,
+    .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .glitch::before {
+      animation: glitchTop 1s infinite;
+      clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+      color: #666;
+    }
+
+    .glitch::after {
+      animation: glitchBottom 1.5s infinite;
+      clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
+      color: #999;
+    }
+
+    .subtitle {
+      font-size: clamp(1.2rem, 3vw, 2.5rem);
+      color: #fff;
+      margin: 1.5rem 0;
+      opacity: 0;
+      animation: fadeInUp 1s ease-out 0.5s forwards;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    }
+
+    .description {
+      font-size: clamp(0.9rem, 1.8vw, 1.3rem);
+      color: #ccc;
+      margin: 1.5rem 0;
+      max-width: 550px;
+      opacity: 0;
+      animation: fadeInUp 1s ease-out 1s forwards;
+      line-height: 1.6;
+    }
+
+    .actions {
+      display: flex;
+      gap: 2rem;
+      margin-top: 2rem;
+      opacity: 0;
+      animation: fadeInUp 1s ease-out 1.5s forwards;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      position: relative;
+      padding: 12px 25px;
+      background: transparent;
+      color: #fff;
+      text-decoration: none;
+      border: 2px solid #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-family: 'Raleway', sans-serif;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(255, 255, 255, 0.2);
+      border-color: #fff;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-home {
+      background: linear-gradient(45deg, #333, #666);
+      border: 2px solid #fff;
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .btn-home:hover {
+      background: linear-gradient(45deg, #555, #888);
+      color: #fff;
+      transform: translateY(-3px) scale(1.05);
+    }
+    
+    /* Game Styles */
+    #rogueFragment {
+      position: fixed;
+      display: none;
+      width: 25px;
+      height: 25px;
+      font-size: 20px;
+      font-weight: 900;
+      color: #fff;
+      text-align: center;
+      line-height: 25px;
+      cursor: pointer;
+      z-index: 1001;
+      border: 1px solid #fff;
+      background-color: #000;
+      box-shadow: 0 0 10px #fff, 0 0 20px #fff;
+      animation: fragmentFlicker 0.3s infinite alternate;
+    }
+
+    .fragment-caught {
+        animation: fragmentCaughtAnim 0.3s ease-out forwards !important;
+    }
+
+    #scoreDisplay {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      font-size: 1.5rem; 
+      font-weight: 700;
+      color: #fff; 
+      z-index: 1002; 
+      text-shadow: 0 0 5px #fff, 0 0 10px #fff;
+      padding: 10px;
+      background-color: rgba(0,0,0,0.3);
+      opacity: 0; 
+      transform: translateY(-20px); 
+      transition: opacity 0.3s ease-out, transform 0.3s ease-out, color 0.2s ease-out; 
+    }
+
+    #scoreDisplay.visible {
+        opacity: 1;
+        transform: translateY(0); 
+        color: #fff; 
+    }
+
+    /* Animations & Keyframes */
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes twinkle {
+      0% { opacity: 0.2; transform: scale(1); }
+      100% { opacity: 0.8; transform: scale(1.2); }
+    }
+
+    @keyframes glitch {
+      0%, 100% { transform: translate(0); }
+      20% { transform: translate(-2px, 2px); }
+      40% { transform: translate(-2px, -2px); }
+      60% { transform: translate(2px, 2px); }
+      80% { transform: translate(2px, -2px); }
+    }
+
+    @keyframes glitchTop {
+      0%, 100% { transform: translate(0); }
+      20% { transform: translate(-2px, -2px); }
+      40% { transform: translate(-2px, 2px); }
+      60% { transform: translate(2px, -2px); }
+      80% { transform: translate(2px, 2px); }
+    }
+
+    @keyframes glitchBottom {
+      0%, 100% { transform: translate(0); }
+      25% { transform: translate(2px, 2px); }
+      50% { transform: translate(-2px, -2px); }
+      75% { transform: translate(2px, -2px); }
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes fragmentFlicker {
+      0% { opacity: 0.7; transform: scale(1) rotate(0deg); border-color: #fff; color: #fff;}
+      50% { opacity: 1; transform: scale(1.1) rotate(5deg); border-color: #ccc; color: #ccc;}
+      100% { opacity: 0.6; transform: scale(0.9) rotate(-5deg); border-color: #aaa; color: #aaa;}
+    }
+
+    @keyframes fragmentCaughtAnim {
+        0% { transform: scale(1.2); opacity: 1; background-color: #fff;}
+        100% { transform: scale(0); opacity: 0; background-color: #00ff00;}
+    }
+
+    /* Media Queries */
+    @media (max-width: 768px) {
+      .actions {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .glitch {
+        font-size: clamp(3.5rem, 18vw, 8rem);
+      }
+      
+      .subtitle {
+        font-size: clamp(1.4rem, 5vw, 2.5rem);
+      }
+      
+      .description {
+        font-size: clamp(1rem, 3.5vw, 1.4rem);
+        max-width: 90%;
+      }
+
+      .btn {
+        font-size: 0.9rem;
+        padding: 12px 25px;
+      }
+
+      #scoreDisplay {
+        font-size: 1.2rem;
+        padding: 8px;
+        top: 10px;
+        right: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="stars"></div>
+  <div class="custom-cursor"></div>
+  <div class="cursor-spotlight"></div>
+  <div id="rogueFragment">#</div>
+  <div id="scoreDisplay">Score: 0</div>
+  
+  <div class="container">
+    <div class="glitch-container">
+      <h1 class="glitch" data-text="404">404</h1>
+    </div>
+    
+    <h2 class="subtitle">Page Not Found</h2>
+    
+    <p class="description">
+      Oops! The page you're looking for isn't here. 
+      It might have been moved, deleted, or perhaps it never existed in this digital space.
+    </p>
+    
+    <div class="actions">
+      <a href="/" class="btn btn-home">
+        <i class="fa-solid fa-home"></i> Return to Reality
+      </a>
+      <a href="javascript:history.back()" class="btn">
+        <i class="fa-solid fa-arrow-left"></i> Escape the Void
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // Element Selectors
+    const starsContainer = document.querySelector('.stars') as HTMLElement;
+    const customCursorElement = document.querySelector('.custom-cursor') as HTMLElement;
+    const spotlightElement = document.querySelector('.cursor-spotlight') as HTMLElement;
+    const glitchTextElement = document.querySelector('.glitch') as HTMLElement;
+    const fragmentElement = document.getElementById('rogueFragment') as HTMLElement;
+    const scoreDisplayElement = document.getElementById('scoreDisplay') as HTMLElement;
+
+    // Stars Module
+    function createStars() {
+      if (!starsContainer) return;
+      const numStars = 200;
+      for (let i = 0; i < numStars; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.width = Math.random() * 3 + 1 + 'px';
+        star.style.height = star.style.width;
+        star.style.animationDelay = Math.random() * 2 + 's';
+        star.style.animationDuration = (Math.random() * 3 + 1) + 's';
+        starsContainer.appendChild(star);
+      }
+    }
+
+    // Cursor Module
+    const cursorTrails: HTMLElement[] = [];
+    let cursorX = 0, cursorY = 0;
+    let targetX = 0, targetY = 0;
+    let spotlightVisible = false;
+
+    function createCursorTrails() {
+      for (let i = 0; i < 10; i++) {
+        const trail = document.createElement('div');
+        trail.className = 'cursor-trail';
+        document.body.appendChild(trail);
+        cursorTrails.push(trail);
+      }
+    }
+
+    function animateCursor() {
+      if (customCursorElement) {
+        cursorX += (targetX - cursorX) * 0.1;
+        cursorY += (targetY - cursorY) * 0.1;
+        customCursorElement.style.left = cursorX - 10 + 'px';
+        customCursorElement.style.top = cursorY - 10 + 'px';
+      }
+
+      if (spotlightElement) {
+        spotlightElement.style.left = targetX + 'px';
+        spotlightElement.style.top = targetY + 'px';
+      }
+
+      cursorTrails.forEach((trail, index) => {
+        const delay = index * 2;
+        const trailX = cursorX - (delay * 2);
+        const trailY = cursorY - (delay * 2);
+        trail.style.left = trailX - 3 + 'px';
+        trail.style.top = trailY - 3 + 'px';
+        trail.style.opacity = ((cursorTrails.length - index) / cursorTrails.length * 0.5).toString();
+      });
+      requestAnimationFrame(animateCursor);
+    }
+
+    document.addEventListener('mousemove', (e) => {
+      targetX = e.clientX;
+      targetY = e.clientY;
+      if (!spotlightVisible && spotlightElement) {
+        spotlightElement.style.opacity = '1';
+        spotlightVisible = true;
+      }
+    });
+
+    document.addEventListener('mouseleave', () => {
+       if (spotlightElement) {
+           spotlightElement.style.opacity = '0';
+           spotlightVisible = false;
+       }
+    });
+
+    // General Page Interactions Module
+    if (glitchTextElement) {
+      glitchTextElement.addEventListener('mouseenter', () => {
+        glitchTextElement.style.animationDuration = '0.1s';
+      });
+      glitchTextElement.addEventListener('mouseleave', () => {
+        glitchTextElement.style.animationDuration = '2s';
+      });
+    }
+
+    document.addEventListener('click', (event) => {
+      if (event.target !== fragmentElement && !fragmentElement.contains(event.target as Node)) {
+        document.body.style.animation = 'none'; 
+        document.body.style.transform = 'translate(2px, 2px)';
+        setTimeout(() => {
+          document.body.style.transform = 'translate(0, 0)';
+        }, 100);
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        window.history.back();
+      } else if (e.key === 'Enter' || e.key === ' ') {
+        window.location.href = '/';
+      }
+    });
+
+    // Rogue Data Fragment Game Module
+    let fragmentTimeoutId: number;
+    let isFragmentActive = false;
+    let currentScore = 0;
+    const pointsPerFragment = 100;
+    let scoreVisibleTimeoutId: number | undefined;
+
+    function updateScoreDisplay() {
+      if (scoreDisplayElement) {
+        if (scoreVisibleTimeoutId) {
+            clearTimeout(scoreVisibleTimeoutId);
+        }
+        scoreDisplayElement.textContent = `Score: ${currentScore}`;
+        scoreDisplayElement.classList.add('visible');
+        scoreVisibleTimeoutId = window.setTimeout(() => {
+          if (scoreDisplayElement) {
+            scoreDisplayElement.classList.remove('visible');
+          }
+        }, 1200);
+      }
+    }
+
+    function spawnFragment() {
+      if (!fragmentElement || isFragmentActive) return;
+      isFragmentActive = true;
+      fragmentElement.classList.remove('fragment-caught'); 
+      fragmentElement.style.animation = 'fragmentFlicker 0.3s infinite alternate';
+      fragmentElement.style.display = 'block'; 
+      fragmentElement.style.opacity = '1';
+
+      const maxX = window.innerWidth - fragmentElement.offsetWidth - 20; 
+      const maxY = window.innerHeight - fragmentElement.offsetHeight - 20;
+      const randomX = Math.random() * maxX + 10; 
+      const randomY = Math.random() * maxY + 10;
+      fragmentElement.style.left = randomX + 'px';
+      fragmentElement.style.top = randomY + 'px';
+
+      const chars = '#%$&@*!?';
+      fragmentElement.textContent = chars[Math.floor(Math.random() * chars.length)];
+      const fragmentLifetime = Math.random() * 1500 + 1000; 
+      fragmentTimeoutId = window.setTimeout(() => {
+        hideFragment(false);
+      }, fragmentLifetime);
+    }
+
+    function hideFragment(caught: boolean) {
+      if (!fragmentElement) return;
+      clearTimeout(fragmentTimeoutId);
+      isFragmentActive = false;
+
+      if (caught) {
+        currentScore += pointsPerFragment;
+        updateScoreDisplay();
+        fragmentElement.classList.add('fragment-caught');
+        setTimeout(() => {
+          if (fragmentElement) {
+            fragmentElement.style.display = 'none';
+            fragmentElement.classList.remove('fragment-caught');
+          }
+          scheduleNextSpawn(); 
+        }, 300);
+      } else {
+        if (fragmentElement) {
+          fragmentElement.style.display = 'none';
+        }
+        scheduleNextSpawn();
+      }
+    }
+
+    function onFragmentClick() {
+      if (isFragmentActive) {
+        hideFragment(true);
+      }
+    }
+
+    function scheduleNextSpawn() {
+      const delay = Math.random() * 4000 + 2000; 
+      setTimeout(spawnFragment, delay);
+    }
+
+    function startGameFragmentGame() {
+      if (fragmentElement && scoreDisplayElement) {
+        fragmentElement.addEventListener('click', onFragmentClick);
+        scheduleNextSpawn(); 
+      }
+    }
+    
+    // Initialization
+    document.addEventListener('DOMContentLoaded', () => {
+      createStars();
+      createCursorTrails();
+      animateCursor();
+      startGameFragmentGame();
+    });
+  </script>
+</body>
+</html> 
