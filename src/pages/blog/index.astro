@@ -196,6 +196,105 @@
           .blog-card {
             max-width: 100%;
           }
+          .floating-nav {
+            top: 1rem;
+            left: 1rem;
+            min-width: auto;
+            z-index: 1001;
+          }
+
+          .mobile-nav-toggle {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+            width: 30px;
+            height: 30px;
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            z-index: 1002;
+          }
+
+          .hamburger-line {
+            width: 100%;
+            height: 2px;
+            background: #333;
+            transition: all 0.3s ease;
+          }
+
+          .mobile-nav-toggle.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+          }
+
+          .mobile-nav-toggle.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+          }
+
+          .mobile-nav-toggle.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+          }
+
+          .nav-menu {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100vh;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 3rem;
+            transition: left 0.4s ease;
+            z-index: 999;
+            cursor: pointer;
+          }
+
+          .nav-menu.show {
+            left: 0;
+          }
+
+          .nav-item {
+            padding: 2rem 4rem;
+            gap: 2.5rem;
+            font-size: 5rem;
+            border-bottom: none;
+            cursor: pointer;
+          }
+
+          .nav-number {
+            font-size: 5rem;
+            min-width: 120px;
+            height: 120px;
+          }
+
+          .nav-label {
+            font-size: 9rem;
+            font-weight: 500;
+          }
+        }
+
+        @media (min-width: 769px) {
+          .mobile-nav-toggle {
+            display: none;
+          }
+
+          .nav-menu {
+            position: static;
+            opacity: 1;
+            visibility: visible;
+            transform: none;
+            background: none;
+            border: none;
+            border-radius: 0;
+          }
         }
 
         .hero-placeholder {
@@ -292,37 +391,38 @@
           letter-spacing: 0.5px;
         }
 
-        @media (max-width: 768px) {
-          .floating-nav {
-            display: none;
-          }
-        }
-
       </style>
     </head>
     <body>
       <!-- Floating Navigation Menu -->
       <nav class="floating-nav">
-        <a href="/" class="nav-item">
-          <span class="nav-number">01</span>
-          <span class="nav-label">HOME</span>
-        </a>
-        <a href="/blog" class="nav-item active">
-          <span class="nav-number">02</span>
-          <span class="nav-label">BLOG</span>
-        </a>
-        <a href="/projects" class="nav-item">
-          <span class="nav-number">03</span>
-          <span class="nav-label">PROJECTS</span>
-        </a>
-        <a href="/about-me" class="nav-item">
-          <span class="nav-number">04</span>
-          <span class="nav-label">ABOUT</span>
-        </a>
-        <a href="/contact" class="nav-item">
-          <span class="nav-number">05</span>
-          <span class="nav-label">CONTACT</span>
-        </a>
+        <div class="mobile-nav-toggle" id="mobileNavToggle">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </div>
+        <div class="nav-menu" id="navMenu">
+          <a href="/" class="nav-item">
+            <span class="nav-number">01</span>
+            <span class="nav-label">HOME</span>
+          </a>
+          <a href="/blog" class="nav-item active">
+            <span class="nav-number">02</span>
+            <span class="nav-label">BLOG</span>
+          </a>
+          <a href="/projects" class="nav-item">
+            <span class="nav-number">03</span>
+            <span class="nav-label">PROJECTS</span>
+          </a>
+          <a href="/about-me" class="nav-item">
+            <span class="nav-number">04</span>
+            <span class="nav-label">ABOUT</span>
+          </a>
+          <a href="/contact" class="nav-item">
+            <span class="nav-number">05</span>
+            <span class="nav-label">CONTACT</span>
+          </a>
+        </div>
       </nav>
 
       <div class="container">
@@ -403,6 +503,45 @@
 
       <script is:inline>
         window.addEventListener('DOMContentLoaded', function () {
+          // Mobile hamburger menu toggle
+          const mobileToggle = document.getElementById('mobileNavToggle');
+          const navMenu = document.getElementById('navMenu');
+          
+          if (mobileToggle && navMenu) {
+            // Toggle menu when clicking hamburger
+            mobileToggle.addEventListener('click', function(e) {
+              e.stopPropagation();
+              mobileToggle.classList.toggle('active');
+              navMenu.classList.toggle('show');
+            });
+
+            // Close menu when clicking anywhere on the overlay (but not on nav items)
+            navMenu.addEventListener('click', function(event) {
+              // Only close if clicking on the background, not on nav items
+              if (event.target === navMenu) {
+                mobileToggle.classList.remove('active');
+                navMenu.classList.remove('show');
+              }
+            });
+
+            // Close menu when pressing escape key
+            document.addEventListener('keydown', function(event) {
+              if (event.key === 'Escape' && navMenu.classList.contains('show')) {
+                mobileToggle.classList.remove('active');
+                navMenu.classList.remove('show');
+              }
+            });
+
+            // Close menu when clicking nav items (navigate)
+            const navItems = navMenu.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+              item.addEventListener('click', function() {
+                mobileToggle.classList.remove('active');
+                navMenu.classList.remove('show');
+              });
+            });
+          }
+
           // Text shuffle animation
           function shuffleText(element, originalText, duration = 300) {
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -429,13 +568,15 @@
             }, stepDuration);
           }
 
-          // Add hover animation to nav labels
+          // Add hover animation to nav labels (desktop only)
           const navItems = document.querySelectorAll('.nav-label');
           navItems.forEach(item => {
             const originalText = item.textContent;
             
             item.parentElement.addEventListener('mouseenter', () => {
-              shuffleText(item, originalText, 500);
+              if (window.innerWidth > 768) {
+                shuffleText(item, originalText, 500);
+              }
             });
           });
 
