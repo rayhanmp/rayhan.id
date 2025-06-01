@@ -51,7 +51,7 @@
 
         .blog-header {
           text-align: center;
-          margin: 4rem 0 3rem 0;
+          margin: 9rem 0 3rem 0;
         }
 
         .blog-header h1 {
@@ -73,24 +73,6 @@
 
         .back-home a:hover {
           opacity: 0.8;
-        }
-        #tag-filters {
-        display: flex;
-        gap: 0.5rem;
-        margin-bottom: 1rem;
-      }
-
-        #tag-filters button {
-          padding: 0.5em 1em;
-          border: none;
-          background-color: var(--gray);
-          cursor: pointer;
-        }
-
-        #tag-filters button:hover {
-          background-color: var(--accent);
-          font-weight: 700;
-          color: #3A5D44;
         }
 
         .blog-grid {
@@ -343,12 +325,6 @@
         </a>
       </nav>
 
-      <div id="tag-filters">
-        <button data-tag="all">All</button>
-        {allTags.map(tag => (
-          <button data-tag={tag}>{tag}</button>
-        ))}
-      </div>
       <div class="container">
         <div class="blog-header">
           <h1>📚 Blog</h1>
@@ -460,26 +436,6 @@
             
             item.parentElement.addEventListener('mouseenter', () => {
               shuffleText(item, originalText, 500);
-            });
-          });
-
-          // Tag filtering functionality
-          const buttons = document.querySelectorAll('#tag-filters button');
-          const posts = document.querySelectorAll('.blog-card');
-
-          buttons.forEach(button => {
-            button.addEventListener('click', () => {
-              const tag = button.dataset.tag;
-
-              posts.forEach(post => {
-                const tags = post.dataset.tags.split(',');
-                const show = tag === 'all' || tags.includes(tag);
-                if (show) {
-                  gsap.to(post, { autoAlpha: 1, display: "block", duration: 0.3 });
-                } else {
-                  gsap.to(post, { autoAlpha: 0, display: "none", duration: 0.3 });
-                }
-              });
             });
           });
 
