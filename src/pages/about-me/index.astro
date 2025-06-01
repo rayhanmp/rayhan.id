@@ -1,0 +1,592 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import profile from '../../assets/rayv2.webp';
+---
+
+<BaseLayout title="About Me - Rayhan M" description="Learn more about Rayhan Maheswara Pramanda - Information Systems student, developer, and creative professional" currentPage="/about-me">
+
+<style>
+  .hero-section {
+    padding: 8rem 0 4rem 0;
+    text-align: left;
+  }
+
+  .hero-title {
+    font-size: 5.5rem;
+    line-height: 1.1;
+    margin-bottom: 2rem;
+    font-weight: 300;
+    color: #9b9b9b;
+  }
+
+  .hero-title .highlight {
+    font-weight: 700;
+    color: #000;
+  }
+
+  .hero-subtitle {
+    font-size: 1.8rem;
+    color: #666;
+    margin-bottom: 4rem;
+    line-height: 1.4;
+  }
+
+  .hero-images {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 4rem 0;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-divider {
+    width: 100%;
+    height: 1px;
+    background: #ddd;
+    margin: 3rem 0;
+  }
+
+  .hero-image {
+    border-radius: 8px;
+    overflow: hidden;
+    aspect-ratio: 1/1;
+  }
+
+  .hero-image img {
+    width: 100%;
+    height: 100%;
+  }
+
+  .hero-image:hover img {
+    filter: grayscale(0%);
+  }
+
+  .story-section {
+    padding: 6rem 0;
+    background: #ffffff;
+  }
+
+  .story-content {
+    max-width: 800px;
+    margin: 0 auto;
+    font-size: 1.7rem;
+    line-height: 1.7;
+    color: #444;
+  }
+
+  .story-content p {
+    margin-bottom: 2rem;
+  }
+
+  .pull-quote {
+    font-size: 2.4rem;
+    font-weight: 300;
+    font-style: italic;
+    color: #000;
+    text-align: center;
+    padding: 3rem 0;
+    margin: 3rem 0;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .experience-section {
+    padding: 6rem 0;
+    position: relative;
+  }
+
+  .experience-section .container {
+    display: flex;
+    gap: 4rem;
+    align-items: flex-start;
+  }
+
+  .experience-title {
+    position: sticky;
+    top: 8rem;
+    font-size: 4rem;
+    font-weight: 400;
+    color: #000;
+    line-height: 1.2;
+    width: 300px;
+    flex-shrink: 0;
+    height: fit-content;
+  }
+
+  .experience-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .experience-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .experience-item {
+    margin-bottom: 3rem;
+    padding: 3rem;
+    border-left: 4px solid #000;
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-radius: 0 8px 8px 0;
+  }
+
+  .experience-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .experience-logo {
+    width: 60px;
+    height: 60px;
+    background: #000;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 1.8rem;
+    margin-right: 2rem;
+  }
+
+  .experience-details h4 {
+    margin: 0;
+    font-size: 2rem;
+    color: #333;
+  }
+
+  .experience-details .role {
+    color: #000;
+    font-weight: 600;
+    margin: 0.5rem 0;
+  }
+
+  .experience-details .period {
+    color: #666;
+    font-size: 1.3rem;
+  }
+
+  .experience-description {
+    font-size: 1.5rem;
+    line-height: 1.6;
+    color: #555;
+    margin-top: 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .hero-title {
+      font-size: 3.5rem;
+    }
+    
+    .hero-subtitle {
+      font-size: 1.5rem;
+    }
+    
+    .hero-images {
+      grid-template-columns: 1fr;
+    }
+    
+    .experience-section .container {
+      flex-direction: column !important;
+      gap: 2rem !important;
+    }
+
+    .experience-title {
+      position: relative !important;
+      top: 0 !important;
+      font-size: 2.5rem !important;
+      width: 100% !important;
+      text-align: center !important;
+      flex-shrink: 1 !important;
+    }
+    
+    .experience-content {
+      width: 100% !important;
+    }
+    
+    .experience-grid {
+      gap: 2rem;
+    }
+    
+    .experience-header {
+      flex-direction: column;
+      text-align: center;
+    }
+    
+    .experience-logo {
+      margin: 0 0 1rem 0;
+    }
+    
+    .events-table {
+      font-size: 1.2rem;
+    }
+    
+    .events-table th,
+    .events-table td {
+      padding: 1rem 0.5rem;
+    }
+    
+    .events-title {
+      font-size: 2.5rem;
+    }
+  }
+
+  /* Events & Volunteers Section Styles */
+  .events-section {
+    padding: 6rem 0;
+    background: #ffffff;
+  }
+
+  .events-title {
+    font-size: 4rem;
+    font-weight: 400;
+    color: #000;
+    line-height: 1.2;
+    margin-bottom: 3rem;
+    text-align: center;
+  }
+
+  .events-content {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .events-intro {
+    font-size: 1.6rem;
+    line-height: 1.6;
+    color: #555;
+    margin-bottom: 3rem;
+    text-align: center;
+  }
+
+  .events-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    margin-bottom: 2rem;
+  }
+
+  .events-table th {
+    color: #555;
+    padding: 1.5rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 1.4rem;
+  }
+
+  .events-table td {
+    padding: 1.2rem 1rem;
+    border-bottom: 1px solid #eee;
+    font-size: 1.3rem;
+    color: #555;
+  }
+
+  .events-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .linkedin-link {
+    font-size: 1.5rem;
+    text-align: center;
+    color: #555;
+  }
+
+  .linkedin-link a {
+    color: #000;
+    text-decoration: none;
+  }
+
+  .linkedin-link a:hover {
+    color: #0077b5;
+  }
+</style>
+
+<div class="site-wrapper">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container">
+      <h1 class="hero-title">
+        I'm an Indonesian <span class="highlight">Developer</span> and <span class="highlight">Creative</span> living in <span class="highlight">Bandung, Indonesia</span>.
+      </h1>
+      <div class="hero-divider"></div>
+      <div class="hero-images">
+        <div class="hero-image">
+          <img src="/images/ray.jpg" alt="Rayhan" loading="lazy">
+        </div>
+        <div class="hero-image">
+          <img src="/images/ray2.jpg" alt="Rayhan in another photo" loading="lazy" style="object-fit: cover; filter: grayscale(100%);">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="story-section">
+    <div class="container">
+      <div class="story-content">
+        <p>
+          As a kid, I was always fascinated by how things worked. I loved taking apart electronics, 
+          experimenting with different software, and trying to understand the magic behind the 
+          screen. That curiosity eventually led me to pursue Information Systems and Technology 
+          at Institut Teknologi Bandung.
+        </p>
+
+        <p>
+          My involvement in organizations like HMIF ITB and 8EH Radio has given 
+          me invaluable experience in leadership, collaboration, and creative problem-solving. 
+          I believe in the power of interdisciplinary collaboration. My experience spans across 
+          technical development, creative design, and strategic planning. This diverse background 
+          allows me to bridge different perspectives and create solutions that are both technically 
+          sound and user-centered.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Experience Highlights -->
+  <section class="experience-section">
+    <div class="container">
+      <div class="experience-title">Key Experiences.</div>
+      <div class="experience-content">
+        <div class="experience-grid">
+          <div class="experience-item">
+            <div class="experience-header">
+              <div class="experience-logo">ITB</div>
+              <div class="experience-details">
+                <h4>Institut Teknologi Bandung</h4>
+                <div class="role">Information Systems and Technology Student</div>
+                <div class="period">2021 - Present</div>
+              </div>
+            </div>
+            <div class="experience-description">
+              Currently pursuing my degree in Information Systems and Technology, focusing on 
+              software engineering, data science, and system design. Maintaining strong academic 
+              performance while actively participating in various organizations and projects.
+            </div>
+          </div>
+          
+          <div class="experience-item">
+            <div class="experience-header">
+              <div class="experience-logo">F</div>
+              <div class="experience-details">
+                <h4>FIFGROUP</h4>
+                <div class="role">Backend Developer Intern</div>
+                <div class="period">June 2024 - September 2024</div>
+              </div>
+            </div>
+            <div class="experience-description">
+              Having worked as an intern in an finance company, I've learned how to handle large amount of data and tackle problems within a sensitive environment.
+              During my time there, I worked on projects related to data synchronization and observability platforms.
+            </div>
+          </div>
+
+          <div class="experience-item">
+            <div class="experience-header">
+              <div class="experience-logo">H</div>
+              <div class="experience-details">
+                <h4>Himpunan Mahasiswa Informatika ITB</h4>
+                <div class="role">Senator</div>
+                <div class="period">May 2024 - May 2025</div>
+              </div>
+            </div>
+            <div class="experience-description">
+              Serving as a senator in the student association, representing student interests and 
+              contributing to policy decisions that affect the academic and social environment of 
+              our department.
+            </div>
+          </div>
+
+          <div class="experience-item">
+            <div class="experience-header">
+              <div class="experience-logo">8EH</div>
+              <div class="experience-details">
+                <h4>8EH Radio ITB</h4>
+                <div class="role">Marketing Manager</div>
+                <div class="period">April 2022 - April 2023</div>
+              </div>
+            </div>
+            <div class="experience-description">
+              Led marketing strategies and campaigns for ITB's student radio station, developing 
+              creative content and managing digital presence to increase audience engagement and 
+              brand awareness across campus and beyond.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Events & Volunteers Section -->
+  <section class="events-section">
+    <div class="container">
+      <div class="events-content">
+        <h2 class="events-title">Events & Volunteers</h2>
+        <p class="events-intro">I also have been involved in various events and volunteering activities. Here are some of them:</p>
+        
+        <table class="events-table" id="eventsTable">
+          <thead>
+            <tr>
+              <th>Period</th>
+              <th>Event/Organisation</th>
+              <th>Position</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>March 2025 - June 2025</td>
+              <td>STEI ITB</td>
+              <td>Object-Oriented Programming Course Assistant</td>
+            </tr>
+            <tr>
+              <td>November 2024 - January 2025</td>
+              <td>STEI ITB</td>
+              <td>Computer Interaction Laboratory Course Assistant</td>
+            </tr>
+            <tr>
+              <td>September 2024 - January 2025</td>
+              <td>STEI ITB</td>
+              <td>Data Structure and Algorithm Course Assistant</td>
+            </tr>
+            <tr>
+              <td>September 2023 - October 2023</td>
+              <td>Wisuda Oktober HMIF ITB 2023</td>
+              <td>Publication and Documentation Staff</td>
+            </tr>
+            <tr>
+              <td>July 2023 - September 2023</td>
+              <td>OSKM ITB 2023</td>
+              <td>PIC of Aftermovie</td>
+            </tr>
+            <tr>
+              <td>July 2023 - January 2024</td>
+              <td>BIST League 6.0</td>
+              <td>Vice Head of Graphic Design Division</td>
+            </tr>
+            <tr>
+              <td>June 2023 - August 2023</td>
+              <td>SPARTA 2022 HMIF ITB</td>
+              <td>Publication and Documentation Staff</td>
+            </tr>
+            <tr>
+              <td>April 2023 - August 2023</td>
+              <td>Character Development Training ITB 2023</td>
+              <td>Trainer</td>
+            </tr>
+            <tr>
+              <td>April 2023 - May 2023</td>
+              <td>Kaderisasi Wilayah STEI-K 2023</td>
+              <td>Mentor</td>
+            </tr>
+            <tr>
+              <td>March 2023 - June 2023</td>
+              <td>Kaderisasi Wilayah STEI-K 2023</td>
+              <td>Head of Event Division</td>
+            </tr>
+            <tr>
+              <td>January 2023 - May 2023</td>
+              <td>ITB Basic Chemistry Laboratory</td>
+              <td>Laboratory Assistant</td>
+            </tr>
+            <tr>
+              <td>January 2023 - March 2023</td>
+              <td>8EH Radio ITB General Election</td>
+              <td>Election Coordinator</td>
+            </tr>
+            <tr>
+              <td>September 2022 - November 2022</td>
+              <td>Regenerasi 8EH Radio ITB 2022</td>
+              <td>Mentor</td>
+            </tr>
+            <tr>
+              <td>August 2022 - March 2023</td>
+              <td>ARKAVIDIA 2022</td>
+              <td>Staff of Documentation and Animation</td>
+            </tr>
+            <tr>
+              <td>August 2022 - February 2023</td>
+              <td>IEEE ITB Student Branch</td>
+              <td>Creative Director IEEE Asia-Pacific Student Convention 2022</td>
+            </tr>
+            <tr>
+              <td>August 2022 - January 2023</td>
+              <td>Regenerasi 8EH Radio ITB 2022</td>
+              <td>Deputy Head of Creative Department</td>
+            </tr>
+            <tr>
+              <td>July 2022 - September 2022</td>
+              <td>OSKM ITB 2022</td>
+              <td>Staff of Documentation</td>
+            </tr>
+            <tr>
+              <td>June 2022 - August 2022</td>
+              <td>8EH Radio ITB</td>
+              <td>Publication and Documentation Staff JAMGAZM x BURGERCHILL</td>
+            </tr>
+            <tr>
+              <td>June 2022 - July 2022</td>
+              <td>Himpunan Mahasiswa Informatika (HMIF) ITB</td>
+              <td>Creative Division Staff at Parade Wisuda Juli HMIF 2022</td>
+            </tr>
+            <tr>
+              <td>February 2022</td>
+              <td>TanyaKating</td>
+              <td>SBMPTN Biology Teacher Volunteer</td>
+            </tr>
+            <tr>
+              <td>September 2021 - November 2021</td>
+              <td>Parade Wisuda Oktober 2021</td>
+              <td>Staff of Website Division</td>
+            </tr>
+            <tr>
+              <td>June 2021 - March 2022</td>
+              <td>Mile Zero Project 2021</td>
+              <td>Staff of Video Design</td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <p class="linkedin-link">For more details, visit my <a href="https://linkedin.com/in/rayhanmp" title="LinkedIn"><i class="fa-brands fa-linkedin fa-md"></i><b> LinkedIn</b></a> page.</p>
+      </div>
+    </div>
+  </section>
+</div>
+<footer>
+    <div class="footer-content">
+      <div class="blog-divider"></div>
+
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.8rem; margin-top: 4rem;">
+        <nav style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; font-size: 1.4rem;">
+          <a href="/" style="text-decoration: none; color: inherit;">Home</a>
+          <a href="/about-me" style="text-decoration: none; color: inherit;">About</a>
+          <a href="/blog" style="text-decoration: none; color: inherit;">Blog</a>
+          <a href="/projects" style="text-decoration: none; color: inherit;">Projects</a>
+          <a href="/contact" style="text-decoration: none; color: inherit;">Contact</a>
+        </nav>
+
+        <div style="font-size: 1.4rem; color: #777;">
+          © {new Date().getFullYear()} Rayhan Maheswara Pramanda
+        </div>
+
+        <div style="display: flex; gap: 1rem; justify-content: center; font-size: 1.6rem;">
+          <a href="https://github.com/rayhanmp" target="_blank" rel="noopener" aria-label="GitHub">
+            <i class="fab fa-github"></i>
+          </a>
+          <a href="https://linkedin.com/in/rayhanmp" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <i class="fab fa-linkedin"></i>
+          </a>
+          <a href="mailto:rayhanmpramanda@gmail.com" aria-label="Email">
+            <i class="fas fa-envelope"></i>
+          </a>
+        </div>
+
+        <div style="margin-top: 1rem;">
+          <a href="#" style="font-size: 1.2rem; color: #aaa; text-decoration: underline;">Back to top ↑</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</BaseLayout> 
