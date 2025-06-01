@@ -8,12 +8,13 @@ export interface Props {
   tags?: string[];
   heroImage?: string;
   heroImageCaption?: string;
+  prevPost?: { slug: string; title: string; date: Date } | null;
+  nextPost?: { slug: string; title: string; date: Date } | null;
 }
 
-import NavBar from '../components/NavBar.astro';
 import '../styles/about.css';
 
-const { title, description, date, isPublished, readingTime, tags, heroImage, heroImageCaption } = Astro.props;
+const { title, description, date, isPublished, readingTime, tags, heroImage, heroImageCaption, prevPost, nextPost } = Astro.props;
 const author = "Rayhan M";
 ---
 
@@ -215,7 +216,30 @@ const author = "Rayhan M";
       <main class="blog-post">
         <slot />
       </main>
-              <div id="cusdis_thread"
+
+      {(prevPost || nextPost) && (
+        <div class="post-navigation">
+          <div class="blog-divider"></div>
+          <div class="navigation-links">
+            {prevPost && (
+              <a href={`/blog/${prevPost.slug}`} class="prev-post">
+                <span class="nav-label">← Previous Post</span>
+                <span class="nav-title">{prevPost.title}</span>
+                <span class="nav-date">{prevPost.date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+              </a>
+            )}
+            {nextPost && (
+              <a href={`/blog/${nextPost.slug}`} class="next-post">
+                <span class="nav-label">Next Post →</span>
+                <span class="nav-title">{nextPost.title}</span>
+                <span class="nav-date">{nextPost.date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+              </a>
+            )}
+          </div>
+        </div>
+      )}
+
+      <div id="cusdis_thread"
   data-host="https://cusdis.rayhan.id"
   data-app-id="24993037-2949-47f4-8fc1-dcf709ba8625"
   data-page-id={Astro.url.pathname}
@@ -280,3 +304,66 @@ const author = "Rayhan M";
     </script>
   </body>
 </html>
+
+<style>
+      .post-navigation {
+        margin: 4rem 0;
+      }
+
+      .navigation-links {
+        display: flex;
+        justify-content: space-between;
+        gap: 2rem;
+        margin-top: 2rem;
+      }
+
+      .prev-post, .next-post {
+        flex: 1;
+        padding: 1.5rem;
+        background: white;
+        border: 1px solid #eaeaea;
+        border-radius: 12px;
+        text-decoration: none;
+        color: inherit;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .prev-post:hover, .next-post:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+      }
+
+      .next-post {
+        text-align: right;
+      }
+
+      .nav-label {
+        font-size: 1.4rem;
+        color: #666;
+        font-weight: 500;
+      }
+
+      .nav-title {
+        font-size: 1.8rem;
+        color: #222;
+        font-weight: 600;
+      }
+
+      .nav-date {
+        font-size: 1.4rem;
+        color: #666;
+      }
+
+      @media (max-width: 768px) {
+        .navigation-links {
+          flex-direction: column;
+        }
+
+        .next-post {
+          text-align: left;
+        }
+      }
+</style>
