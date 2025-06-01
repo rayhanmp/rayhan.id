@@ -4,6 +4,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="Rayhan M" currentPage="/">
+  <!-- Add typed.js script specifically for this page -->
+  <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+  
   <style>
     /* Optimize animations with hardware acceleration */
     .loader, .img, .overlay {
@@ -51,9 +54,105 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       margin: 0 !important;
       padding: 0 !important;
     }
-  </style>  
+  </style>
 
   <script is:inline>
+    function loadGSAP() {
+      return new Promise((resolve, reject) => {
+        const script1 = document.createElement('script');
+        script1.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js';
+        script1.onload = function() {
+          const script2 = document.createElement('script');
+          script2.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js';
+          script2.onload = () => resolve();
+          script2.onerror = () => reject(new Error('Failed to load ScrollTrigger'));
+          document.head.appendChild(script2);
+        };
+        script1.onerror = () => reject(new Error('Failed to load GSAP'));
+        document.head.appendChild(script1);
+      });
+    }
+
+    // Initialize animations after GSAP loads
+    function initGSAPAnimations() {
+      if (typeof gsap === 'undefined') return;
+
+      function shouldShowLoader() {
+        if (sessionStorage.getItem('loaderShown')) {
+          return false;
+        }
+        
+        if (document.referrer) {
+          const referrerDomain = new URL(document.referrer).hostname;
+          const currentDomain = window.location.hostname;
+          if (referrerDomain === currentDomain) {
+            return false;
+          }
+        }
+        
+        return true;
+      }
+
+      if (!shouldShowLoader()) {
+        const loader = document.querySelector('.loader');
+        if (loader) {
+          loader.style.display = 'none';
+        }
+        document.body.classList.remove('lock-scroll');
+        return;
+      }
+
+      sessionStorage.setItem('loaderShown', 'true');
+
+      gsap.to(".overlay", {
+        clipPath: "polygon(0 0, 100% 0, 100% 0%, 0 0)",
+        ease: "sine.inOut",
+        duration: 2,
+        stagger: {
+          amount: 0.5,
+        },
+        force3D: true
+      });
+
+      gsap.to(".img", {
+        clipPath: "polygon(0 100%, 100% 100%, 100% 0%, 0% 0%)",
+        ease: "power2.inOut",
+        duration: 2,
+        stagger: {
+          amount: 1.5,
+        },
+        force3D: true
+      });
+
+      gsap.to(".loader", {
+        clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
+        ease: "expo.inOut",
+        duration: 2,
+        delay: 2,
+        force3D: true,
+        onComplete: () => {
+          document.body.classList.remove('lock-scroll');
+          window.scrollTo(0, 0);
+        }
+      });
+    }
+
+    // Initialize ScrollTrigger animations
+    function initScrollTrigger() {
+      if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+      
+      gsap.registerPlugin(ScrollTrigger);
+      
+      document.querySelectorAll('section').forEach(section => {
+        section.classList.add('fade-in');
+        ScrollTrigger.create({
+          trigger: section,
+          start: "top 80%",
+          onEnter: () => section.classList.add('visible')
+        });
+      });
+    }
+
     function shouldShowLoader() {
       if (sessionStorage.getItem('loaderShown')) {
         return false;
@@ -73,13 +172,22 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     if (shouldShowLoader()) {
       document.body.classList.add('lock-scroll');
     } else {
-      // Skip loader - hide it immediately and unlock scroll
       const loader = document.querySelector('.loader');
       if (loader) {
         loader.style.display = 'none';
       }
       document.body.classList.remove('lock-scroll');
     }
+
+    window.addEventListener('load', async function() {
+      try {
+        await loadGSAP();
+        initGSAPAnimations();
+        initScrollTrigger();
+      } catch (error) {
+        console.error('Failed to load GSAP:', error);
+      }
+    });
   </script>
 
   <div class="loader">
@@ -383,70 +491,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   </div>
   <button id="jumpToTop" style="padding-bottom:1rem;background-color: #222; position: fixed; z-index: 100; right: 3rem; bottom: 3rem; opacity: 0; transition: opacity 0.3s ease-in-out;"><a href="#"><i class ="fa-solid fa-caret-up fa-2xl" style="color: #fff;"></i></a></button>
   <script is:inline>
-    window.addEventListener("load", function () {
-      function shouldShowLoader() {
-        if (sessionStorage.getItem('loaderShown')) {
-          return false;
-        }
-        
-        if (document.referrer) {
-          const referrerDomain = new URL(document.referrer).hostname;
-          const currentDomain = window.location.hostname;
-          if (referrerDomain === currentDomain) {
-            return false;
-          }
-        }
-        
-        return true;
-      }
-
-      if (!shouldShowLoader()) {
-        // Ensure loader is hidden and scroll is unlocked
-        const loader = document.querySelector('.loader');
-        if (loader) {
-          loader.style.display = 'none';
-        }
-        document.body.classList.remove('lock-scroll');
-        return;
-      }
-
-      sessionStorage.setItem('loaderShown', 'true');
-
-      gsap.to(".overlay", {
-        clipPath: "polygon(0 0, 100% 0, 100% 0%, 0 0)",
-        ease: "sine.inOut",
-        duration: 2,
-        stagger: {
-          amount: 0.5,
-        },
-        force3D: true // Enable hardware acceleration
-      });
-
-      gsap.to(".img", {
-        clipPath: "polygon(0 100%, 100% 100%, 100% 0%, 0% 0%)",
-        ease: "power2.inOut",
-        duration: 2,
-        stagger: {
-          amount: 1.5,
-        },
-        force3D: true // Enable hardware acceleration
-      });
-
-      gsap.to(".loader", {
-        clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
-        ease: "expo.inOut",
-        duration: 2,
-        delay: 2,
-        force3D: true,
-        onComplete: () => {
-          document.body.classList.remove('lock-scroll');
-          // Restore scroll position
-          window.scrollTo(0, 0);
-        }
-      });
-    });
-  </script>
-  <script is:inline>
     document.addEventListener('DOMContentLoaded', function() {
       function toggleTableRows() {
         const rows = document.querySelectorAll("#myTable .more-rows");
@@ -479,34 +523,44 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   </script>
 
   <script is:inline>
-    // Initialize GSAP ScrollTrigger
-    gsap.registerPlugin(ScrollTrigger);
+    function initializeTyped() {
+      const element = document.getElementById('interest-item');      
+      if (typeof window.Typed !== 'undefined' && element) {
+        new window.Typed('#interest-item', {
+          strings: ['Machine Learning', 'DevOps', 'Molecular Biology', 'Bioinformatics'],
+          typeSpeed: 40,
+          backSpeed: 30,
+          backDelay: 1500,
+          loop: true
+        });
+      }
+    }
+    function loadTypedJS() {
+      const script = document.createElement('script');
+      script.src = 'https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js';
+      script.onload = function() {
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', initializeTyped);
+        } else {
+          initializeTyped();
+        }
+      };
+      script.onerror = function() {
+        console.error('Failed to load Typed.js');
+      };
+      document.head.appendChild(script);
+    }
 
-    // Add fade-in animation to sections
-    document.querySelectorAll('section').forEach(section => {
-      section.classList.add('fade-in');
-      ScrollTrigger.create({
-        trigger: section,
-        start: "top 80%",
-        onEnter: () => section.classList.add('visible')
-      });
-    });
-
-    // Initialize typed.js for interests
-    new Typed('#interest-item', {
-      strings: ['Machine Learning', 'DevOps', 'Molecular Biology', 'Bioinformatics'],
-      typeSpeed: 40,
-      backSpeed: 30,
-      backDelay: 1500,
-      loop: true
-    });
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadTypedJS);
+    } else {
+      loadTypedJS();
+    }
   </script>
 
   <script is:inline>
-    // Add smooth scroll behavior and show/hide functionality
     const jumpToTopButton = document.getElementById('jumpToTop');
     
-    // Function to handle scroll events
     function handleScroll() {
       if (!jumpToTopButton) return;
       
@@ -517,10 +571,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       }
     }
 
-    // Add scroll event listener
     window.addEventListener('scroll', handleScroll);
 
-    // Add click handler for smooth scroll
     if (jumpToTopButton) {
       jumpToTopButton.addEventListener('click', function(e) {
         e.preventDefault();
