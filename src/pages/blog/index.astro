@@ -20,6 +20,7 @@
       <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet" />
       <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js" defer></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" defer></script>
+      <script src="https://kit.fontawesome.com/8c35c08da0.js" crossorigin="anonymous" defer></script>
       <style>
         .blog-post {
           margin-bottom: 2.5rem;
@@ -99,6 +100,7 @@
           row-gap: 5rem;
           margin-top: 2rem;
           justify-items: center;
+          margin-bottom: 16rem;
         }
 
         .blog-card {
@@ -220,6 +222,26 @@
           background: white;
         }
 
+        .blog-divider {
+          height: 1px;
+          background: linear-gradient(to right, #ddd, #ccc, #ddd);
+          margin: 2.5rem 0;
+          border-radius: 1px;
+          opacity: 0.9;
+        }
+
+        footer {
+          margin-top: 4rem;
+          text-align: center;
+          font-size: 1.4rem;
+          color: #999;
+        }
+
+        .footer-content {
+          max-width: calc(3 * 350px + 2 * 2rem);
+          margin: 0 auto;
+        }
+
       </style>
     </head>
     <body>
@@ -272,6 +294,42 @@
           ))}
         </div>
       </div>
+
+      <footer>
+        <div class="footer-content">
+          <div class="blog-divider"></div>
+
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 0.8rem; margin-top: 4rem;">
+            <nav style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; font-size: 1.4rem;">
+              <a href="/" style="text-decoration: none; color: inherit;">Home</a>
+              <a href="/about-me" style="text-decoration: none; color: inherit;">About</a>
+              <a href="/blog" style="text-decoration: none; color: inherit;">Blog</a>
+              <a href="/projects" style="text-decoration: none; color: inherit;">Projects</a>
+              <a href="/contact" style="text-decoration: none; color: inherit;">Contact</a>
+            </nav>
+
+            <div style="font-size: 1.4rem; color: #777;">
+              © {new Date().getFullYear()} Rayhan Maheswara Pramanda
+            </div>
+
+            <div style="display: flex; gap: 1rem; justify-content: center; font-size: 1.6rem;">
+              <a href="https://github.com/rayhanmp" target="_blank" rel="noopener" aria-label="GitHub">
+                <i class="fab fa-github"></i>
+              </a>
+              <a href="https://linkedin.com/in/rayhanmp" target="_blank" rel="noopener" aria-label="LinkedIn">
+                <i class="fab fa-linkedin"></i>
+              </a>
+              <a href="mailto:rayhanmpramanda@gmail.com" aria-label="Email">
+                <i class="fas fa-envelope"></i>
+              </a>
+            </div>
+
+            <div style="margin-top: 1rem;">
+              <a href="#" style="font-size: 1.2rem; color: #aaa; text-decoration: underline;">Back to top ↑</a>
+            </div>
+          </div>
+        </div>
+      </footer>
 
       <script is:inline>
         window.addEventListener('DOMContentLoaded', function () {
