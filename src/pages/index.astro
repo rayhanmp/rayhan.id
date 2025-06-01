@@ -54,7 +54,32 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   </style>  
 
   <script is:inline>
-    document.body.classList.add('lock-scroll');
+    function shouldShowLoader() {
+      if (sessionStorage.getItem('loaderShown')) {
+        return false;
+      }
+      
+      if (document.referrer) {
+        const referrerDomain = new URL(document.referrer).hostname;
+        const currentDomain = window.location.hostname;
+        if (referrerDomain === currentDomain) {
+          return false;
+        }
+      }
+      
+      return true;
+    }
+
+    if (shouldShowLoader()) {
+      document.body.classList.add('lock-scroll');
+    } else {
+      // Skip loader - hide it immediately and unlock scroll
+      const loader = document.querySelector('.loader');
+      if (loader) {
+        loader.style.display = 'none';
+      }
+      document.body.classList.remove('lock-scroll');
+    }
   </script>
 
   <div class="loader">
@@ -359,6 +384,34 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   <button id="jumpToTop" style="padding-bottom:1rem;background-color: #222; position: fixed; z-index: 100; right: 3rem; bottom: 3rem; opacity: 0; transition: opacity 0.3s ease-in-out;"><a href="#"><i class ="fa-solid fa-caret-up fa-2xl" style="color: #fff;"></i></a></button>
   <script is:inline>
     window.addEventListener("load", function () {
+      function shouldShowLoader() {
+        if (sessionStorage.getItem('loaderShown')) {
+          return false;
+        }
+        
+        if (document.referrer) {
+          const referrerDomain = new URL(document.referrer).hostname;
+          const currentDomain = window.location.hostname;
+          if (referrerDomain === currentDomain) {
+            return false;
+          }
+        }
+        
+        return true;
+      }
+
+      if (!shouldShowLoader()) {
+        // Ensure loader is hidden and scroll is unlocked
+        const loader = document.querySelector('.loader');
+        if (loader) {
+          loader.style.display = 'none';
+        }
+        document.body.classList.remove('lock-scroll');
+        return;
+      }
+
+      sessionStorage.setItem('loaderShown', 'true');
+
       gsap.to(".overlay", {
         clipPath: "polygon(0 0, 100% 0, 100% 0%, 0 0)",
         ease: "sine.inOut",
