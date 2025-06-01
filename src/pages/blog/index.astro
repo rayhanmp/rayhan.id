@@ -91,11 +91,98 @@
           font-weight: 700;
           color: #3A5D44;
         }
+
+        .blog-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 2rem 2rem;
+          row-gap: 5rem;
+          margin-top: 2rem;
+          justify-items: center;
+        }
+
+        .blog-card {
+          display: flex;
+          flex-direction: column;
+          padding: 0;
+          border: 1px solid #ddd;
+          border-radius: 12px;
+          background: #fff;
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+          height: 100%;
+          min-height: 150px;
+          overflow: hidden;
+          text-decoration: none;
+          color: inherit;
+          width: 100%;
+          max-width: 350px;
+        }
+
+        .blog-hero-image {
+          width: 100%;
+          height: 150px;
+          overflow: hidden;
+          border-radius: 12px 12px 0 0;
+        }
+
+        .blog-hero-image img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.3s ease;
+        }
+
+        .blog-card:hover .blog-hero-image img {
+          transform: scale(1.05);
+        }
+
+        .blog-content {
+          padding: 1.5rem;
+          display: flex;
+          flex-direction: column;
+          flex-grow: 1;
+        }
+
+        .blog-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .blog-title {
+          font-size: 1.5rem;
+          font-weight: bold;
+          color: #222;
+          margin-bottom: 0.5rem;
+          margin-top: 0;
+        }
+
+        .blog-title:hover {
+          color: #555;
+        }
+
+        .blog-date {
+          font-size: 0.95rem;
+          color: #666;
+          margin-bottom: 0.75rem;
+        }
+
+        .blog-description {
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          line-height: 1.5;
+          margin-bottom: auto;
+          flex-grow: 1;
+        }
+
         .tag-list {
           margin-top: 1rem;
           display: flex;
           flex-wrap: wrap;
           gap: 0.5rem;
+          min-height: 2rem;
         }
 
         .tag-badge {
@@ -104,13 +191,33 @@
           background-color: #f1f1f1;
           color: #444;
           border-radius: 999px;
-          text-decoration: none;
-          transition: background-color 0.2s ease;
+          display: inline-block;
         }
 
         .tag-badge:hover {
           background-color: var(--accent, #3A5D44);
           color: white;
+        }
+
+        @media (max-width: 1200px) {
+          .blog-grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+        }
+
+        @media (max-width: 768px) {
+          .blog-grid {
+            grid-template-columns: 1fr;
+          }
+          .blog-card {
+            max-width: 100%;
+          }
+        }
+
+        .hero-placeholder {
+          width: 100%;
+          height: 100%;
+          background: white;
         }
 
       </style>
@@ -132,42 +239,40 @@
           <a href="/">← Back to home</a>
         </div>
 
-        <div class="row">
+        <div class="blog-grid">
           {posts.map(({ slug, data }) => (
-            <div 
-              class="six columns blog-post" 
+            <a 
+              href={`/blog/${slug}`}
+              class="blog-card" 
               data-tags={data.tags ? data.tags.join(',') : ''}
             >
-              <a href={`/blog/${slug}`} class="blog-title">{data.title}</a>
-              <div class="blog-date">
-                {new Date(data.date).toLocaleDateString()}
+              <div class="blog-hero-image">
+                {data.heroImage ? (
+                  <img src={data.heroImage} alt={data.title} loading="lazy" />
+                ) : (
+                  <div class="hero-placeholder"></div>
+                )}
               </div>
-              <p>{data.description ?? "No description provided."}</p>
-
-              {data.tags && data.tags.length > 0 && (
-                <div class="tag-list">
-                  {data.tags.map(tag => (
-                    <a href={`/blog/tag/${tag}`} class="tag-badge">#{tag}</a>
-                  ))}
+              <div class="blog-content">
+                <h3 class="blog-title">{data.title}</h3>
+                <div class="blog-date">
+                  {new Date(data.date).toLocaleDateString()}
                 </div>
-              )}
-            </div>
+                <p class="blog-description">{data.description ?? "No description provided."}</p>
+
+                <div class="tag-list">
+                  {data.tags && data.tags.length > 0 ? (
+                    data.tags.map(tag => (
+                      <span class="tag-badge">#{tag}</span>
+                    ))
+                  ) : null}
+                </div>
+              </div>
+            </a>
           ))}
         </div>
       </div>
 
-      <script>
-        window.addEventListener('DOMContentLoaded', function () {
-          anime({
-            targets: '.blog-post',
-            opacity: [0, 1],
-            translateY: [20, 0],
-            delay: anime.stagger(100),
-            duration: 700,
-            easing: 'easeOutQuad'
-          });
-        });
-      </script>
       <script is:inline>
         window.addEventListener('DOMContentLoaded', function () {
           const buttons = document.querySelectorAll('#tag-filters button');

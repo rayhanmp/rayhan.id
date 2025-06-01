@@ -9,8 +9,6 @@ heroImageCaption: 'Image by Pexel'
 ---
 When I was just starting my journey as an STI student, I remember being baffled seeing seniors effortlessly glide through black screens filled with obscure commands. "Why not just click buttons like normal people?" I thought. .
 
-## The Real Power of CLI: Efficiency and Contro
-
 
 
 

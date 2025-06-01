@@ -2,7 +2,7 @@
 title: "It's the lorem ipsum"
 description: "This is my very first post using content collections."
 date: 2025-04-03
-isPublished: true
+isPublished: false
 tags: ["bio", "ml", "devlog"]
 ---
 
