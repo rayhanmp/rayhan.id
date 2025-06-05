@@ -310,45 +310,72 @@ const allTags = Array.from(
   </footer>
 
   <script is:inline>
-    // Animation
-    anime({
-      targets: '.blog-card',
-      opacity: [0, 1],
-      translateY: [20, 0],
-      delay: anime.stagger(100),
-      duration: 700,
-      easing: 'easeOutQuad'
-    });
-
-    // Fuzzy client-side search using Fuse.js
-    const searchInput = document.getElementById('search');
-    let searchIndex = [];
-    let fuse;
-    fetch('/search-index.json')
-      .then(r => r.json())
-      .then(async data => {
-        searchIndex = data;
-        const { default: Fuse } = await import('https://cdn.jsdelivr.net/npm/fuse.js@7.1.0/dist/fuse.esm.js');
-        fuse = new Fuse(searchIndex, {
+    // Search post with Fuse.js
+    let searchData = [];
+    let fuse = null;
+    
+    async function setupSearch() {
+      try {
+        const response = await fetch('/search-index.json');
+        searchData = await response.json();
+        
+        const FuseModule = await import('https://esm.sh/fuse.js@7.1.0');
+        fuse = new FuseModule.default(searchData, {
           keys: ['title', 'description', 'tags'],
-          threshold: 0.3
+          threshold: 0.3,
+          ignoreLocation: true
         });
-      });
-
-    searchInput?.addEventListener('input', () => {
-      const query = searchInput.value.trim();
-      let matches;
-      if (!query) {
-        matches = searchIndex.map(item => item.slug);
-      } else if (fuse) {
-        matches = fuse.search(query).map(result => result.item.slug);
-      } else {
-        matches = [];
+      } catch (error) {
+        console.log('Search failed to load');
       }
-      document.querySelectorAll('.blog-card').forEach(card => {
-        const slug = card.getAttribute('href').split('/').pop();
-        card.style.display = matches.includes(slug) ? '' : 'none';
+    }
+    
+    function doSearch(query) {
+      const cards = document.querySelectorAll('.blog-card');
+      
+      // If no search, show everything
+      if (!query.trim()) {
+        cards.forEach(card => card.style.display = '');
+        return;
+      }
+      
+      if (!fuse) return;
+      
+      const results = fuse.search(query);
+      const matchedSlugs = results.map(result => result.item.slug);
+      
+      cards.forEach(card => {
+        const href = card.getAttribute('href');
+        const slug = href ? href.split('/').pop() : '';
+        card.style.display = matchedSlugs.includes(slug) ? '' : 'none';
       });
-    });
+    }
+    
+    function connectSearchBox() {
+      const searchBox = document.getElementById('search');
+      if (!searchBox) return;
+      
+      searchBox.addEventListener('input', (e) => doSearch(e.target.value));
+      searchBox.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') doSearch(e.target.value);
+      });
+    }
+    
+    function animateCards() {
+      if (typeof anime !== 'undefined') {
+        anime({
+          targets: '.blog-card',
+          opacity: [0, 1],
+          translateY: [20, 0],
+          delay: anime.stagger(100),
+          duration: 700,
+          easing: 'easeOutQuad'
+        });
+      }
+    }
+    
+    setupSearch();
+    connectSearchBox();
+    animateCards();
   </script>
 </BaseLayout>
