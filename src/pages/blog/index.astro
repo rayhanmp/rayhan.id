@@ -201,6 +201,21 @@ const allTags = Array.from(
       opacity: 0.9;
     }
 
+    .search-box {
+      display: flex;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    .search-box input {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      width: 100%;
+      max-width: 300px;
+    }
+
     footer {
       margin-top: 4rem;
       text-align: center;
@@ -218,6 +233,10 @@ const allTags = Array.from(
     <div class="blog-header">
       <h1>📚 Blog</h1>
       <p>Thoughts, notes, and everything in-between.</p>
+    </div>
+
+    <div class="search-box">
+      <input id="search" type="text" placeholder="Search posts..." />
     </div>
 
     <div class="blog-grid">
@@ -299,6 +318,37 @@ const allTags = Array.from(
       delay: anime.stagger(100),
       duration: 700,
       easing: 'easeOutQuad'
+    });
+
+    // Fuzzy client-side search using Fuse.js
+    const searchInput = document.getElementById('search');
+    let searchIndex = [];
+    let fuse;
+    fetch('/search-index.json')
+      .then(r => r.json())
+      .then(async data => {
+        searchIndex = data;
+        const { default: Fuse } = await import('https://cdn.jsdelivr.net/npm/fuse.js@7.1.0/dist/fuse.esm.js');
+        fuse = new Fuse(searchIndex, {
+          keys: ['title', 'description', 'tags'],
+          threshold: 0.3
+        });
+      });
+
+    searchInput?.addEventListener('input', () => {
+      const query = searchInput.value.trim();
+      let matches;
+      if (!query) {
+        matches = searchIndex.map(item => item.slug);
+      } else if (fuse) {
+        matches = fuse.search(query).map(result => result.item.slug);
+      } else {
+        matches = [];
+      }
+      document.querySelectorAll('.blog-card').forEach(card => {
+        const slug = card.getAttribute('href').split('/').pop();
+        card.style.display = matches.includes(slug) ? '' : 'none';
+      });
     });
   </script>
 </BaseLayout>

@@ -1,0 +1,24 @@
+[
+  {
+    "title": "My Journey in the Analog Camera World",
+    "slug": "analog",
+    "description": "From digital to analog camera",
+    "tags": [
+      "photography"
+    ]
+  },
+  {
+    "title": "Why You Should Start Loving the Command Line",
+    "slug": "cli",
+    "description": "CLI tools are often avoided like a plague, but they deserve more love.",
+    "tags": []
+  },
+  {
+    "title": "About This Site",
+    "slug": "my-site",
+    "description": "How this site came to be and why I made it.",
+    "tags": [
+      "personal"
+    ]
+  }
+]
