@@ -243,7 +243,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
     </section>
     <hr>
-    <section class="section" id="certificate"> 
+    <section class="section" id="projects"> 
       <h3>Projects</h3>
       <div class="row">
           <div class="six columns">
@@ -279,52 +279,44 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <h3>Skills and Competencies</h3>
       <div class="skill-container">
         <div class="skill-wrapper">
-            <div class="skill">
+          <div class="skill long-skill">
+          <div class ="skill-icon-wrapper"><i class="fa-solid fa-globe fa-xl skill-icon"></i></div>
+            <div><b>Web Development</b><br><div class="skill-text">Comfortable with major web development frameworks and toolings, including, but not limited to NodeJS, SpringBoot, FastAPI, Astro, React, Tailwind, Prisma, and Vite.</div></div>
+            </div>
+            <div class="skill long-skill">
                 <div class ="skill-icon-wrapper"> <i class="fa-solid fa-database fa-xl skill-icon"></i></div>
-                <div style="font-size: 1.3rem;"><b>Database</b><br><div style="font-size: 1.2rem;">Had some experience working with MongoDB, MariaDB, and PostgreSQL.</div></div>
+                <div><b>Database</b><br><div class="skill-text">Proficient with popular DBMS like PostgreSQL, MySQL, SQLite and OracleDB. Had some experience with more modern-storage like S3 (especially with R2), Elastic, and Supabase.</div></div>
+                
             </div>
             <div class="skill">
-              <div class ="skill-icon-wrapper"><i class="fa-brands fa-figma fa-xl skill-icon"></i></div>
-                <div style="font-size: 1.3rem;"><b>Figma</b><br><div style="font-size: 1.2rem;">Making design system, using plugins, prototyping, etc.</div></div>
+              <div class ="skill-icon-wrapper"><i class="fa-solid fa-bars-staggered fa-xl skill-icon"></i></div>
+              <div><b>CI/CD</b><br><div class="skill-text">Proficient with Docker, have used relevant Linux commands, server setup, Nginx, and Github Actions. Some experience with "infra tools" like Grafana and Elastic.</div></div>
             </div>
 
-        <div class="skill-wrapper">
-          <div class="skill">
-            <div class ="skill-icon-wrapper"><i class="fa-brands fa-js fa-xl skill-icon"></i></div>
-              <div style="font-size: 1.3rem;"><b>JavaScript</b><br><div style="font-size: 1.2rem;">React, Next, Express, Node, Vite, etc.</div></div>
+          <div class="skill long-skill">
+            <div class ="skill-icon-wrapper"><i class="fa-solid fa-brain fa-xl skill-icon"></i></div>
+              <div><b>Data Science & Machine Learning</b><br><div class="skill-text">Ranging from data preprocessing, feature engineering, model training, and evaluation. Have used MLFlow, PyTorch, Langchain, OpenAI-API, and more. Rest assured, I'm not just an scikit-learn importer.</div></div>
+            </div>
+            <div class="skill long-skill">
+              <div class ="skill-icon-wrapper"><i class="fa-solid fa-code-branch fa-xl skill-icon"></i></div>
+              <div><b>Git</b><br><div class="skill-text">Comfortable with the standard Git workflow, including branching, merging, ammending, and rebasing. You name it. I can work in teams.</div></div>
+            </div>
+
             </div>
             <div class="skill">
-              <div class ="skill-icon-wrapper"><i class="fa-brands fa-github fa-xl skill-icon"></i></div>
-              <div style="font-size: 1.3rem;"><b>Git</b><br><div style="font-size: 1.2rem;">GitHub, GitLab, etc.</div></div>
-            </div>
-            <div class="skill">
-              <div class ="skill-icon-wrapper"><i class="fa-brands fa-docker fa-xl skill-icon"></i></div>
-              <div style="font-size: 1.3rem;"><b>Docker</b><br><div style="font-size: 1.2rem;">Can use basic containerization for deployment.</div></div>
-            </div>
-            <div class="skill">
-              <div class ="skill-icon-wrapper"><i class="fa-solid fa-file-lines fa-xl skill-icon"></i></div>
-              <div style="font-size: 1.3rem;"><b>LaTeX</b><br><div style="font-size: 1.2rem;">Basic formatting.</div></div>
-            </div>
-            </div>
-          <div class="skill-wrapper">
-            <div class="skill">
-              <div class ="skill-icon-wrapper"><i class="fa-brands fa-python fa-xl skill-icon"></i></div>
-                <div style="font-size: 1.3rem;"><b>Python</b><br><div style="font-size: 1.2rem;">Pandas, Matplotlib, FastAPI, etc.</div></div>
+              <div class ="skill-icon-wrapper"><i class="fa-solid fa-gear fa-xl skill-icon"></i></div>
+                <div><b>General Tools</b><br><div class="skill-text">Kafka, Tableau, Postman, Selenium, and LaTeX.</div></div>
               </div>
               <div class="skill">
-                <div class ="skill-icon-wrapper"><i class="fa-solid fa-clapperboard fa-xl skill-icon"></i></div>
-                <div style="font-size: 1.3rem;"><b>Photo/Video Production</b><br><div style="font-size: 1.2rem;">Proficient in operating various cameras, lighting equipments, gaffer tools, and video editing.</div></div>
-              </div>
+                <div class ="skill-icon-wrapper"><i class="fa-solid fa-dna fa-xl skill-icon"></i></div>
+                <div><b>Bio/Cheminformatics</b><br><div class="skill-text">EPI2ME, BioPython, MEGA, Mothur, RDKit, Vina, PyMOL, VMD, ImageJ, Benchling, and more.</div></div>
               </div>
               
-            <div class="skill-wrapper">
               <div class="skill">
-                <div class ="skill-icon-wrapper"><i class="fa-brands fa-microsoft fa-xl skill-icon"></i></div>
-                <div style="font-size: 1.3rem;"><b>Microsoft Office / Google Suite</b><br><div style="font-size: 1.2rem;">Familiar with Word, Excel, Powerpoint, and their analogue in Google Suite. Proficient in typesetting as well as advanced Excel formulas such as VLOOKUP, SORT, INDEX, etc. Have used Google Suite API in the past.</div></div>
+                <div class ="skill-icon-wrapper"><i class="fa-solid fa-flask fa-xl skill-icon"></i></div>
+                <div><b>Lab Stuff</b><br><div class="skill-text">Able to perform lab protocols, including, but not limited to, autoclave, solution prep, PCR, gel electrophoresis, DNA isolation, bacterial transformation, and basic animal cell culture proto   cols (primary culture, freezing, thawing, cell counting, MTT assay, etc).</div></div>
               </div>  
-            </div>
-        </div>
-          </div>
+      </div>
     </section>
    
     <hr>
