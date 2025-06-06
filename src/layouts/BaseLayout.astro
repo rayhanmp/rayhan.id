@@ -1,5 +1,6 @@
 ---
 import FloatingNav from '../components/FloatingNav.astro';
+import { ViewTransitions } from 'astro:transitions';
 
 export interface Props {
   title: string;
@@ -8,6 +9,7 @@ export interface Props {
 }
 
 const { title, description, currentPage } = Astro.props;
+const isHomePage = currentPage === '/' || Astro.url.pathname === '/';
 ---
 
 <!DOCTYPE html>
@@ -31,10 +33,107 @@ const { title, description, currentPage } = Astro.props;
     <link rel="dns-prefetch" href="https://kit.fontawesome.com" />
     <link rel="dns-prefetch" href="https://unpkg.com" />
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
+
+    <!-- View Transitions - disabled for home page -->
+    {!isHomePage && <ViewTransitions />}
+    
+    <style>
+      /* Custom View Transition Styles */
+      ::view-transition-old(root),
+      ::view-transition-new(root) {
+        animation-duration: 0.4s;
+        animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      }
+
+      /* Smooth fade transition */
+      ::view-transition-old(root) {
+        animation-name: slide-out;
+      }
+
+      ::view-transition-new(root) {
+        animation-name: slide-in;
+      }
+
+      @keyframes slide-out {
+        from {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        to {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+      }
+
+      @keyframes slide-in {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Ensure smooth transitions on mobile */
+      @media (max-width: 768px) {
+        ::view-transition-old(root),
+        ::view-transition-new(root) {
+          animation-duration: 0.3s;
+        }
+      }
+
+      /* Loading state to prevent flash */
+      html.loading * {
+        animation-duration: 0s !important;
+        animation-delay: 0s !important;
+        transition-duration: 0s !important;
+        transition-delay: 0s !important;
+      }
+    </style>
   </head>
   <body>
     <FloatingNav currentPage={currentPage} />
     
     <slot />
+
+    <script define:vars={{ isHomePage }}>
+      // Add loading class during transitions (only when not on home page)
+      if (!isHomePage) {
+        document.addEventListener('astro:before-preparation', () => {
+          document.documentElement.classList.add('loading');
+        });
+
+        document.addEventListener('astro:after-swap', () => {
+          document.documentElement.classList.remove('loading');
+        });
+      }
+
+      // Handle navigation state
+      document.addEventListener('astro:page-load', () => {
+        // Ensure FloatingNav stays active
+        const currentPath = window.location.pathname;
+        const navLinks = document.querySelectorAll('.floating-nav a');
+        
+        navLinks.forEach(link => {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === currentPath || 
+              (currentPath === '/' && link.getAttribute('href') === '/')) {
+            link.classList.add('active');
+          }
+        });
+      });
+
+      // Disable transitions when navigating TO home page
+      document.addEventListener('astro:before-preparation', (event) => {
+        const targetUrl = new URL(event.to);
+        if (targetUrl.pathname === '/') {
+          // Force a regular page load instead of transition
+          window.location.href = event.to;
+          event.preventDefault();
+        }
+      });
+    </script>
   </body>
 </html> 
