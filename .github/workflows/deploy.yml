@@ -9,11 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
 
-      - uses: actions/upload-artifact@v4
+    steps:
+      - uses: actions/checkout@v4
         with:
-          name: site
-          path: dist
-          retention-days: 30
+          fetch-depth: 1
 
       - uses: actions/setup-node@v4
         with:
@@ -31,6 +30,7 @@ jobs:
         with:
           name: site
           path: dist
+          retention-days: 30
 
       - name: Setup SSH
         run: |
