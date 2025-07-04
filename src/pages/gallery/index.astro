@@ -1,11 +1,13 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
+const s3_URL = 'https://assets.rayhan.id/';
+
 const photos = [
   {
-    id: 7,
-    src: '/images/posts/HCL_8.jpg',
-    thumb: '/images/posts/HCL_8.jpg',
+    id: 28,
+    src: `${s3_URL}HCL_8.jpg`,
+    thumb: `${s3_URL}HCL_8.webp`,
     title: 'University of Indonesia',
     description: 'Taken during a visit to the University of Indonesia, around April 2025',
     date: '2024',
@@ -23,8 +25,8 @@ const photos = [
   },
   {
     id: 8,
-    src: '/images/posts/HCL_13 (1).jpg',
-    thumb: '/images/posts/HCL_13 (1).jpg',
+    src: `${s3_URL}HCL_13 (1).jpg`,
+    thumb: `${s3_URL}HCL_13 (1).webp`,
     title: 'Panico Eating His Food',
     description: 'Memory of my beloved cat in Bandung.',
     date: '2025',
@@ -33,8 +35,8 @@ const photos = [
   },
   {
     id: 9,
-    src: '/images/posts/analog.jpg',
-    thumb: '/images/posts/analog.jpg',
+    src: `${s3_URL}analog.jpg`,
+    thumb: `${s3_URL}analog.webp`,
     title: 'Labtek V Parking Lot',
     description: 'Taken with Kodak Ultra F9 with Fujicolor C200',
     date: '2025',
@@ -43,8 +45,8 @@ const photos = [
   },
   {
     id: 10,
-    src: '/images/posts/HCL_9.jpg',
-    thumb: '/images/posts/HCL_9.jpg',
+    src: `${s3_URL}HCL_9.jpg`,
+    thumb: `${s3_URL}HCL_9.webp`,  
     title: 'HMIF ITB at ITB April Graduation Ceremony',
     description: 'Taken during the ITB April Graduation Ceremony with Kodak Ultra F9',
     date: '2025',
@@ -53,8 +55,8 @@ const photos = [
   },
   {
     id: 11,
-    src: '/images/esp32_1.gif',
-    thumb: '/images/esp32_1.gif',
+    src: `${s3_URL}esp32_1.gif`,
+    thumb: `${s3_URL}esp32_1.gif`,
     title: 'Prototyping with ESP32',
     description: 'Animated demonstration of an ESP32 microcontroller',
     date: '2023',
@@ -63,8 +65,8 @@ const photos = [
   },
   {
     id: 13,
-    src: '/images/intro1v2-min.webp',
-    thumb: '/images/intro1v2-min.jpg',
+    src: `${s3_URL}intro1v2-min.jpg`,
+    thumb: `${s3_URL}intro1v2-min.webp`,
     title: 'Yovie & Nuno Performing at Balai Kartini',
     description: 'Taken during the Yovie & Nuno performance at Balai Kartini for SIXTORWS 2019',
     date: '2019',
@@ -73,8 +75,8 @@ const photos = [
   },
   {
     id: 14,
-    src: '/images/intro2v2-min.webp',
-    thumb: '/images/intro2v2-min.jpg',
+    src: `${s3_URL}intro2v2-min.jpg`,
+    thumb: `${s3_URL}intro2v2-min.webp`,
     title: 'Random Shell Gas Station',
     description: 'Taken somewhere in East Jakarta',
     date: '2019',
@@ -82,19 +84,9 @@ const photos = [
     category: 'digital'
   },
   {
-    id: 16,
-    src: '/images/intro4v2-min.webp',
-    thumb: '/images/intro4v2-min.jpg',
-    date: '2022',
-    title: 'Braga Citywalk at Night',
-    description: '-',
-    location: 'Bandung',
-    category: 'digital'
-  },
-  {
     id: 17,
-    src: '/images/intro5v2-min.webp',
-    thumb: '/images/intro5v2-min.jpg',
+    src: `${s3_URL}intro5v2-min.jpg`,
+    thumb: `${s3_URL}intro5v2-min.webp`,
     title: 'East Jakarta DBL Performance',
     description: 'Taken in GOR Soemantri with Olympus OM-1',
     date: '2019',
@@ -102,7 +94,7 @@ const photos = [
     category: 'digital'
   },
   {
-    id: 1,
+    id: 23,
     src: 'https://www.youtube.com/watch?v=gFUsewJtqW0', 
     thumb: 'https://img.youtube.com/vi/gFUsewJtqW0/maxresdefault.jpg', 
     title: 'Dari 21, untuk 21',
@@ -124,7 +116,7 @@ const photos = [
     duration: '5:47'
   },
   {
-    id: 21,
+    id: 22,
     src: 'https://www.youtube.com/watch?v=2PrdbASpFcc', 
     thumb: 'https://img.youtube.com/vi/2PrdbASpFcc/maxresdefault.jpg',
     title: 'AFTERMOVIE OSKM & ITB SHOWCASE 2023',
@@ -133,7 +125,68 @@ const photos = [
     category: 'video',
     type: 'video',
     duration: '5:47'
-  }
+  },
+  {
+    id: 23,
+    src: `${s3_URL}leaf.jpg`,
+    thumb: `${s3_URL}leaf.webp`,
+    title: 'Random Leaf',
+    description: 'Taken near my kost with Minolta SRT101 - Kodak 400TX',
+    date: '2025',
+    location: 'Bandung',
+    category: 'analog'
+  },
+  {
+    id: 24,
+    src: `${s3_URL}perpus.jpg`,
+    thumb: `${s3_URL}perpus.webp`,
+    title: 'Bandung Institute of Technology Main Library',
+    description: 'Taken with Minolta SRT101 - Kodak 400TX',
+    date: '2025',
+    location: 'Bandung',
+    category: 'analog'
+  },
+  {
+    id: 25,
+    src: `${s3_URL}cats.jpg`,
+    thumb: `${s3_URL}cats.webp`,
+    title: 'Nunito Kittens Near Labtek V',
+    description: 'Taken with Minolta SRT101 - Kodak 400TX',
+    date: '2025',
+    location: 'Bandung',
+    category: 'analog'
+  },
+  {
+    id: 26,
+    src: `${s3_URL}borma.jpg`,
+    thumb: `${s3_URL}borma.webp`,
+    title: 'Borma Dago in the Morning',
+    description: 'Taken with Minolta SRT101 - Kodak 400TX',
+    date: '2025',
+    location: 'Bandung',
+    category: 'analog'
+  },
+  {
+    id: 27,
+    src: `${s3_URL}oskm.jpg`,
+    thumb: `${s3_URL}oskm.webp`,
+    title: 'OSKM 2023 Crew Getting Ready',
+    description: 'Taken with Lumix GH5',
+    date: '2023',
+    location: 'Bandung',
+    category: 'digital'
+  },
+  {
+    id: 7,
+    src: `${s3_URL}oskm2.jpg`,
+    thumb: `${s3_URL}oskm2.webp`,
+    title: 'Ceremony During OSKM 2023',
+    description: 'Taken with Lumix GH5',
+    date: '2023',
+    location: 'Bandung',
+    category: 'digital'
+  },
+  
 ];
 
 const categories = [
