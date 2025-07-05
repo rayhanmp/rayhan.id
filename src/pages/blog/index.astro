@@ -3,7 +3,9 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const allPosts = await getCollection('posts');
-const posts = allPosts.filter((post) => post.data.isPublished);
+const posts = allPosts
+  .filter((post) => post.data.isPublished)
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 const allTags = Array.from(
   new Set(posts.flatMap(post => post.data.tags || []))
 );
