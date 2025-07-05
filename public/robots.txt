@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+
+Sitemap: https://rayhan.id/sitemap-index.xml
