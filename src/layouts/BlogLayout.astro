@@ -26,6 +26,21 @@ const author = "Rayhan M";
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title} | Rayhan's Blog</title>
     <meta name="description" content={description} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={`https://rayhan.id${heroImage ?? '/images/posts/pexels-bertellifotografia-16094040.jpg'}`} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={`https://rayhan.id${heroImage ?? '/images/posts/pexels-bertellifotografia-16094040.jpg'}`} />
+    <meta property="og:url" content={`https://rayhan.id${Astro.url.pathname}`} />
+    <meta property="og:site_name" content="Rayhan's Blog" />
+
     <link rel="stylesheet" href="/css/normalize.css" />
     <link rel="stylesheet" href="/css/skeleton.css" />
     <link rel="stylesheet" href="/css/custom.css" />
