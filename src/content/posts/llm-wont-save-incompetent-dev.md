@@ -37,7 +37,7 @@ We’ve established that a dev’s job is to bridge the gap between vague human 
 
 To illustrate my point, let’s say you’re building a URL shortener and want to add a caching layer. If you’ve never built one before, you might not even think about cache eviction policies or performance trade-offs. The LLM may spit out a synchronous in-memory cache, which could slow your service under load. If you lack the judgment to question that, the result is still bad, even if the code "works."
 
-### 6. LLMs are not good everything
+### 6. LLMs are not good at everything
 LLMs are surprisingly decent at writing web code, but there are domains they still struggle with. For example, they’re notoriously bad at writing embedded systems code, CUDA, and other low-level tasks. That’s partly because those domains are underrepresented in the training data. Moreover, labs  aren’t particularly incentivised to fix that either, since those fields are less popular. With that in mind, if you want to code in those niche fields, LLMs are simply not reliable.
 
 To conclude everything I've said above, LLMs are useful tools. But like any tool, their value depends on the person using them. Competent devs use them not to replace their thinking process. They know when to trust, when to verify, and when to discard. Learning CS fundamentals and understanding system constraints are a must to enable the efficient and effective use of LLMs. No amount of vibes can save you from that.

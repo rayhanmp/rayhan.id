@@ -2,7 +2,7 @@
 title: Why You Should Start Loving the Command Line
 description: CLI tools are often avoided like a plague, but they deserve more love.
 date: 2025-04-05  
-isPublished: true
+isPublished: false
 tags: []
 heroImage: '/images/posts/cli.jpg'
 heroImageCaption: 'Image by Pexel'
