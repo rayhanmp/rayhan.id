@@ -43,7 +43,7 @@
   margin-bottom: 1.5rem;}
 
 /* For devices larger than 400px */
-@media (min-width: 400px) {
+@media (min-width: 300px) {
   .container {
     width: 85%;
     padding: 0; }
