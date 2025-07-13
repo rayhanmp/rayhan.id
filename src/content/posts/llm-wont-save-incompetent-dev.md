@@ -1,0 +1,43 @@
+---
+title:  "Garbage-in, Garbage-out: Why LLM Can't Save Incompetent Dev"
+description: A cautionary tale about prompt engineering, critical thinking, and the difference between a tool and a silver bullet.
+date: 2025-07-12  
+isPublished: true
+tags: []
+heroImage: '/images/posts/pexels-bertellifotografia-16094040.jpg'
+heroImageCaption: 'Photo by Matheus Bertelli'
+---
+
+**Picture this:** It's 9 AM. Your team has just wrapped up the daily stand-up. While others are still enjoying their coffee, you're already knee-deep in ChatGPT-hell. Fingers hovering, copying and pasting error messages from your program into the textbox. Some time later, the code finally works. You push it. It gets merged. You relax. Until... a critical bug, introduced by your code, starts wreaking havoc in production.
+
+We’ve all seen the movie. The sequel is worse. Because now the spaghetti ships at near-light speed, and the meatballs are machine-generated. The promise that large language models would “democratise software development” has collided with an awkward reality: the same people who once shipped tangled mess are still shipping tangled mess, just at much higher velocity.
+
+Now, you might ask: why is this happening? Aren't LLMs supposed to be our saviours, democratising software development for the masses? Let's unpack that together.
+
+Recent developments in the AI world have enabled the rise of large language models. At a quick glance, they seem incredibly promising. We now have ways to interact with machines less rigorously, through interfaces allowing us to express our intentions vaguely, even conversationally. This ease has made developers increasingly dependent on them. “Programming is easier with LLMs,” many claim. In fact, this phenomenon now has its own name: "vibe coding," as coined by Andrej Karpathy on his Twitter/X account.
+
+Yet, as appealing as “vibe coding” sounds, it exposes a fundamental issue: code is just an artefact, a means to an end. Humans aren't perfectly logical beings. More often than not, we can't clearly articulate what we truly want. As technology grows increasingly complex, the gap between non-technical requirements and implementation details widens. Thus, a developer’s role isn't simply producing code. It's about translating abstract, vague, and often contradictory requirements into structured instructions that machines can execute reliably.
+
+In light of that, here’s why LLMs won’t save an incompetent dev.
+
+### 1. LLMs need context
+An incompetent developer usually has little to no real experience building and managing actual systems. How the model will respond to you largely depends on what you give it: **the input tokens**. Software engineering, as the name suggests, is about engineering. And engineering is constrained by many factors: money, time, people, culture, existing system, etc. If you don't know the constraint of the system well enough, you won’t be able to provide the model with the context it needs.
+
+### 2. LLMs don't always produce good code
+Today, most code benchmarks focus on whether the code runs and produces the correct output—not on maintainability or clarity. While this might be fine for MVPs, it often causes problems down the line. Sometimes, you end up having to refactor or even rewrite the code from scratch, which can be complex and expensive—requiring an experienced developer. So, we’re back to square one.
+
+### 3. Incompetent devs can't recognise bullshit
+LLMs are basically overglorified text completion engines. They predict the most likely next token from their latent space. However, they don't always get things correctly. A particulary recurrent problem is related to dependencies. Version numbers don't have inherent meaning to them. They may generate code using deprecated functions or versions where those functions never existed.
+
+### 4. LLM adds extra dependency
+It's usually a good thing to make sure the knowledge in your team is distributed. Everyone needs to know how the system works. Otherwise, the loss of a single team member can be catastrophic during emergencies. Many teams get around this by doing knowledge-transfer, documenting their decisions, and using knowledge-management system. But if your code is heavily LLM-written and no one understands how or why it works, you're now dependent on the model itself. What happens if the LLM service goes down? This can be mitigated by reviewing and understanding the generated code, but the risk still increases.
+
+### 5. Competent devs know the right question to ask
+We’ve established that a dev’s job is to bridge the gap between vague human intent and structured machine logic. While LLM may provide you an illusion of competence, you still need to ask the right questions. Language models are trained on a large, diverse corpus of text. Well, sadly, most of what we produce in the internet are garbage slops. As such, if you don't give the model the right prompt, it will have a tendency to produce garbage. Garbage-in, garbage-out. 
+
+To illustrate my point, let’s say you’re building a URL shortener and want to add a caching layer. If you’ve never built one before, you might not even think about cache eviction policies or performance trade-offs. The LLM may spit out a synchronous in-memory cache, which could slow your service under load. If you lack the judgment to question that, the result is still bad, even if the code "works."
+
+### 6. LLMs are not good everything
+LLMs are surprisingly decent at writing web code, but there are domains they still struggle with. For example, they’re notoriously bad at writing embedded systems code, CUDA, and other low-level tasks. That’s partly because those domains are underrepresented in the training data. Moreover, labs  aren’t particularly incentivised to fix that either, since those fields are less popular. With that in mind, if you want to code in those niche fields, LLMs are simply not reliable.
+
+To conclude everything I've said above, LLMs are useful tools. But like any tool, their value depends on the person using them. Competent devs use them not to replace their thinking process. They know when to trust, when to verify, and when to discard. Learning CS fundamentals and understanding system constraints are a must to enable the efficient and effective use of LLMs. No amount of vibes can save you from that.
