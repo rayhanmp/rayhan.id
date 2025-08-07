@@ -15,7 +15,7 @@ import OddsVsLogitComparison from '../../components/OddsVsLogitComparison.tsx';
 import InteractiveROCCurve from '../../components/InteractiveROCCurve.tsx';
 import RegularizationViz from '../../components/L2RegularizationViz.tsx';
 
-In the early 1900s, the use of linear regression has started to become much more common. Everyone use it to try to gauge the correlation between two variables, allowing them to predict a continuous value, such as the relation between age to height.
+In the early 1900s, the use of linear regression has started to become much more common. Everyone uses it to try to gauge the correlation between two variables, allowing them to predict a continuous value, such as the relation between age and height.
 
 **However, a new question appears:**
 
@@ -23,9 +23,9 @@ In the early 1900s, the use of linear regression has started to become much more
 
 Of course, people initially tried using ordinary linear regression for this case. But the results were often disappointing: the predicted probabilities could end up being negative or even greater than 1, values that clearly make no sense from a probabilistic standpoint. 😶‍🌫️
 
-As ever, researchers refused to accept defeat. Hence, in this article, we will do a deep dive into logistic regression, how they came to be, how they work, their assumptions, and how to implement them from scratch. While the math can be a bit dense, I will try to accompany them with interesting and interactive visuals so you can get the intuition behind them.
+As ever, researchers refused to accept defeat. Hence, in this article, we will do a deep dive into logistic regression, how it came to be, how it works, its assumptions, and how to implement it from scratch. While the math can be a bit dense, I will try to accompany it with interesting and interactive visuals so you can get the intuition behind it.
 
-Due to their likeness to linear regression, logistic regression is often seen as a simple, uninteresting algorithm. However, I beg to differ. Understanding how the math and intuition behind LR can certainly help you build a good intuition in the realm of machine learning, since it's not overly complex, yet carries a lot of fundamentals that can be beneficial later on.
+Due to their likeness to linear regression, logistic regression is often seen as a simple, uninteresting algorithm. However, I beg to differ. Understanding how the math and intuition behind LR can certainly help you build good intuition in the realm of machine learning, since it's not overly complex, yet carries a lot of fundamentals that can be beneficial later on.
 
 With that in mind, let's get going, shall we? 😋
 
@@ -57,7 +57,7 @@ Now try plugging in values for age:
 
 Notice how for ages like 20 or 80, the prediction is below 0 or above 1, which makes no sense for a probability. 
 
-Aside from unbounded output, classification tasks often violate the basic assumption of linear regression: **homoscedasticity** (errors have the same variance, regardless of the value of x). For example, if we try to predict whether someone has a diabetes or not, that is $y=0$ or $y=1$, we can think of it like a Bernoulli distribution.
+Aside from unbounded output, classification tasks often violate the basic assumption of linear regression: **homoscedasticity** (errors have the same variance, regardless of the value of x). For example, if we try to predict whether someone has diabetes or not, that is $y=0$ or $y=1$, we can think of it like a Bernoulli distribution.
 
 For a Bernoulli random variable, the variance is:
 $$
@@ -73,7 +73,7 @@ Let's try plugging in some numbers:
 
 So, the variance depends on the predicted value itself. This means that the spread of the errors is not constant!
 
-Last but not least, the loss function in linear regression, Mean Squared Error (MSE), is also not suitable for classification task. MSE punishes error linearly, whereas in classification task we want to punish confident but wrong prediction heavily.
+Last but not least, the loss function in linear regression, Mean Squared Error (MSE), is also not suitable for classification tasks. MSE punishes error linearly, whereas in classification tasks we want to punish confident but wrong prediction heavily.
 
 ---
 
@@ -120,9 +120,9 @@ As opposed to odds that grow sharply as probability approaching 1, logit behaves
 However, you should **try it yourself** by playing with the interactive sliders below.
 <OddsVsLogitComparison client:load />
 
-As you can see, logits behaves more nicely when being plotted on a linear scale, while still preserving the information behind. This very property allows us to model probability to a linear function, that is:
+As you can see, logits behave more nicely when being plotted on a linear scale, while still preserving the information behind. This very property allows us to model probability to a linear function, that is:
 $$
-z = W^T + x
+z = W^{T}X + b
 $$
 
 Now, the next question is: how do we inverse it back to probability? Congratulations, you just asked the million dollar questions.
@@ -586,12 +586,12 @@ We are trying to minimise this loss, i.e., find the weights that make the predic
 
 To penalise complexity, we can add a regularisation term to the loss. The two most common types are:
 
-**L1 Regularization (Lasso):**
+**L1 Regularisation (Lasso):**
 $$
 \Omega_{\text{L1}}(\mathbf{w}) = \lambda \sum_{j=1}^d |w_j| = \lambda \|\mathbf{w}\|_1
 $$
 
-**L2 Regularization (Ridge):**
+**L2 Regularisation (Ridge):**
 $$
 \Omega_{\text{L2}}(\mathbf{w}) = \lambda \sum_{j=1}^d w_j^2 = \lambda \|\mathbf{w}\|_2^2
 $$
@@ -604,9 +604,9 @@ $$
 
 This discourages large weights and keeps the model smoother.
 
-### Visualizing Regularization Penalties
+### Visualizing Regularisation Penalties
 
-Let's explore how different regularization techniques penalize weights. You can toggle between **L1 (Lasso)** and **L2 (Ridge)** regularization to see their different behaviors:
+Let's explore how different regularisation techniques penalize weights. You can toggle between **L1 (Lasso)** and **L2 (Ridge)** regularisation to see their different behaviors:
 
 <RegularizationViz client:load />
 
