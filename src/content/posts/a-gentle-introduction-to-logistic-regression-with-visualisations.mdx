@@ -1,0 +1,626 @@
+---
+title: "A Gentle Introduction to Logistic Regression with Visualisations"
+description: "A deep dive into logistic regression with visuals for both newcomers and enthusiasts."
+date: 2025-08-07
+isPublished: true
+tags: ["Machine Learning"]
+heroImage: '/images/posts/pexels-anna-nekrashevich-6801648.jpg'
+heroImageCaption: 'Photo by Anna Nekrashevich'
+---
+import ConvexNonconvexViz from '../../components/ConvexNonconvexViz.tsx';
+import LogisticRegressionLearning from '../../components/LogisticRegressionLearning.tsx';
+import ConvexNotStrict from '../../components/ConvexNotStrict.tsx';
+import SigmoidCalculator from '../../components/SigmoidCalculator.tsx';
+import OddsVsLogitComparison from '../../components/OddsVsLogitComparison.tsx';
+import InteractiveROCCurve from '../../components/InteractiveROCCurve.tsx';
+import RegularizationViz from '../../components/L2RegularizationViz.tsx';
+
+In the early 1900s, the use of linear regression has started to become much more common. Everyone use it to try to gauge the correlation between two variables, allowing them to predict a continuous value, such as the relation between age to height.
+
+**However, a new question appears:**
+
+> What if we want to predict the probability of something happening? For example, whether someone will develop a disease or not, or whether a product will sell well on the market?
+
+Of course, people initially tried using ordinary linear regression for this case. But the results were often disappointing: the predicted probabilities could end up being negative or even greater than 1, values that clearly make no sense from a probabilistic standpoint. 😶‍🌫️
+
+As ever, researchers refused to accept defeat. Hence, in this article, we will do a deep dive into logistic regression, how they came to be, how they work, their assumptions, and how to implement them from scratch. While the math can be a bit dense, I will try to accompany them with interesting and interactive visuals so you can get the intuition behind them.
+
+Due to their likeness to linear regression, logistic regression is often seen as a simple, uninteresting algorithm. However, I beg to differ. Understanding how the math and intuition behind LR can certainly help you build a good intuition in the realm of machine learning, since it's not overly complex, yet carries a lot of fundamentals that can be beneficial later on.
+
+With that in mind, let's get going, shall we? 😋
+
+---
+
+### Why can't we use linear regression?
+
+At first glance, it might seem tempting to use ordinary linear regression to model probabilities. After all, it has been a reliable workhorse in statistics since the early 20th century, used to model continuous relationships like height versus age or income versus education level. So, when faced with a question like “What is the probability that a person will develop diabetes based on their age?”, some researchers naturally tried to apply the same linear approach:
+
+$$
+\hat{y}(x) = w_{0} + w_{1}x
+$$
+
+Let’s assume we train the model and it gives us:
+
+$$
+\hat{y}(x) = -2 + 0.05x
+$$
+
+Now try plugging in values for age:
+
+| Age (x) | Prediction $\hat{y}(x)$    |
+| ------- | -------------------------- |
+| 20      | $-2 + 0.05 \cdot 20 = -1$  |
+| 40      | $-2 + 0.05 \cdot 40 = 0$   |
+| 50      | $-2 + 0.05 \cdot 50 = 0.5$ |
+| 60      | $-2 + 0.05 \cdot 60 = 1$   |
+| 80      | $-2 + 0.05 \cdot 80 = 2$   |
+
+Notice how for ages like 20 or 80, the prediction is below 0 or above 1, which makes no sense for a probability. 
+
+Aside from unbounded output, classification tasks often violate the basic assumption of linear regression: **homoscedasticity** (errors have the same variance, regardless of the value of x). For example, if we try to predict whether someone has a diabetes or not, that is $y=0$ or $y=1$, we can think of it like a Bernoulli distribution.
+
+For a Bernoulli random variable, the variance is:
+$$
+Var(y) = \hat{y}(1-\hat{y})
+$$
+
+Let's try plugging in some numbers:
+| $\hat{y}$ | Variance |
+| --------- | ---------------------------------------- |
+| 0.1       | 0.09                                     |
+| 0.5       | 0.25                                     |
+| 0.9       | 0.09                                     |
+
+So, the variance depends on the predicted value itself. This means that the spread of the errors is not constant!
+
+Last but not least, the loss function in linear regression, Mean Squared Error (MSE), is also not suitable for classification task. MSE punishes error linearly, whereas in classification task we want to punish confident but wrong prediction heavily.
+
+---
+
+### Quick Recap to Probabilities
+
+Before we continue, we need to understand what odds are.
+
+If the probability of an event is:
+
+$$
+P(y=1)=p
+$$
+
+Then, the odds are defined as:
+$$
+odds = \frac{p}{1-p}
+$$
+
+Now, bear with me for a second. It's not that complicated. Odds are just a ratio between "How likely something is to happen" compared to "how likely it is not to happen."
+
+Look at the examples below:
+
+|Probability |Odds | Spoken As            |
+|------------------:|---------------------:|----------------------|
+| 0.5               | 1                   | “1 to 1” (even odds) |
+| 0.75              | 3                   | “3 to 1 in favour”   |
+| 0.9               | 9                   | “9 to 1 in favour”   |
+| 0.01              | 0.0101              | “1 to 99 against”    |
+| 0.0               | 0                   | Impossible           |
+| 1.0               | ∞                   | Certain              |
+
+So, odds can range from 0 to ∞, but probability only goes from 0 to 1.
+
+### Log-odds a.k.a logits
+
+Now that we understand odds, let's take it one step further. **Log-odds** (also called **logits**) are simply the natural logarithm of the odds:
+
+$$
+\text{logit}(p) = \log\left(\frac{p}{1-p}\right)
+$$
+
+As opposed to odds that grow sharply as probability approaching 1, logit behaves more linearly. Moreover, it also scales from $-\infty$ to $\infty$ making it easier to interpret and work with.
+
+However, you should **try it yourself** by playing with the interactive sliders below.
+<OddsVsLogitComparison client:load />
+
+As you can see, logits behaves more nicely when being plotted on a linear scale, while still preserving the information behind. This very property allows us to model probability to a linear function, that is:
+$$
+z = W^T + x
+$$
+
+Now, the next question is: how do we inverse it back to probability? Congratulations, you just asked the million dollar questions.
+
+---
+### Introducing the sigmoid function
+
+In the nineteenth century, Pierre François Verhulst introduced a function to model population growth: **logistic function** (sometimes called as sigmoid due to its S shape).
+$$
+\sigma(z) = \frac{1}{1 + e^{-z}}
+$$
+
+Now, you might ask, what's so special about it? Well, the interesting thing is that, due to special properties of $e$, no matter how big or small $z$ is, it will always get mapped between [0, 1].
+
+**Try it yourself!** Play around with different values of $z$ and see how the sigmoid function behaves:
+
+<SigmoidCalculator client:load />
+
+Please note that while I capped the value between {-20, 20} due to precision issue, in reality, the value of $z$ can be anything, meaning $z \in \mathbb{R}$. The sigmoid function produces **asymptotes** in 0 and 1, meaning they will approach it, but never truly reach them.
+
+If it's not obvious to you, yet, the sigmoid curve resembles the logits curve, quite well, isn't it? In fact, we can inverse the value of logits to probability with sigmoid function! Not convinced? Let's prove it together.
+
+We start with the logit function:
+
+$$
+z = \log\left(\frac{p}{1 - p}\right)
+$$
+
+Exponentiate both sides:
+
+$$
+e^z = \frac{p}{1 - p}
+$$
+
+Multiply both sides by $(1 - p)$:
+
+$$
+e^z (1 - p) = p
+$$
+
+Distribute the LHS:
+$$
+e^z - e^z p = p
+$$
+
+Move all terms to one side:
+$$
+e^z = p + e^z p = p(1 + e^z)
+$$
+
+Solve for $p$:
+$$
+p = \frac{e^z}{1 + e^z}
+$$
+
+Divide numerator and denominator by $e^z$ to simplify:
+
+$$
+p = \frac{1}{1 + e^{-z}}
+$$
+
+**We now have the sigmoid function.** Neat, right?
+
+---
+
+### Maximum Likelihood Estimation (MLE)
+
+In this article, we will assume we are doing binary classification. Usually, we assume our labels follow the Bernoulli distribution.
+So for each data point $x_{i}$, the label $y_{i} \in \{0,1\}$.
+
+That means we assume:
+$$
+y_i \sim \text{Bernoulli}(p_i)
+$$
+
+With probability:
+$$
+ p_i = \hat{y}_i = P(y_i = 1 \mid \mathbf{x}_i; \theta)
+$$
+
+The probability $p_{i}$ is predicted using the sigmoid function applied to a linear model:
+$$
+\hat{y}_i = \sigma(z_i) = \sigma(\mathbf{w}^\top \mathbf{x}_i + b) = \frac{1}{1 + e^{-z_i}}
+$$
+
+---
+
+The likelihood of observing label $y_{i}$ given the input $X_{i}$ and parameters $\theta$ is:
+$$
+P(y_i \mid \mathbf{x}_i; \theta) = \hat{y}_i^{y_i} (1 - \hat{y}_i)^{1 - y_i}
+$$
+
+Because if $y_{i}=1$ it becomes $\hat{y}_{i}$, whereas if $y_{i}=0$ it becomes $1-\hat{y}_{i}$. As you can see,
+the compact expression above fits both cases.
+
+For $n$ independent and identically distributed data points, the joint likelihood is:
+$$
+L(\theta) = \prod_{i=1}^{n} \hat{y}_i^{y_i} (1 - \hat{y}_i)^{1 - y_i}
+$$
+
+However, computing that equation is quite difficult for computers due to the risk of underflow. Thankfully, we can exploit the properties of logarithm to compute the log-likelihood instead.
+$$
+\log L(\theta) = \sum_{i=1}^{n} \left[ y_i \log(\hat{y}_i) + (1 - y_i) \log(1 - \hat{y}_i) \right]
+$$
+
+MLE says that we need to choose parameters $\theta$ that maximises that log-likelihood.
+$$
+\hat{\theta}_{\text{MLE}} = \arg\max_{\theta} \log L(\theta)
+$$
+
+In practice, though, we almost never maximise. Optimisers are minimisers, as such we minimise the negative log-likelihood.
+$$
+\mathcal{L}(\theta) = - \log L(\theta)
+$$
+
+$$
+\mathcal{L}(\theta) = - \sum_{i=1}^{n} \left[ y_i \log(\hat{y}_i) + (1 - y_i) \log(1 - \hat{y}_i) \right]
+$$
+
+---
+
+### Loss Function
+
+In practice, we usually call the loss function derived above with its popular name: **Binary Cross-Entropy (BCE)**.
+
+$$
+\mathcal{J}(\mathbf{w}) = -\frac{1}{m}\sum_{i=1}^{m}\left[y_i\log(\hat{y}_i)+(1-y_i)\log(1-\hat{y}_i)\right]
+$$
+
+This function is a convex function, making its global minima easy to obtain using gradient descent. What is a convex function, you may ask?
+
+<ConvexNonconvexViz client:load />
+
+Notice how, in a convex function (left), gradient descent always reaches the global minimum regardless of the starting point. Meanwhile, in a non-convex function (right), the algorithm can get stuck in a suboptimal local minimum.
+
+
+We will prove that the Binary Cross Entropy (BCE) loss in logistic regression is **convex with respect to the weights** $w$.
+
+---
+
+We define:
+
+- $x \in \mathbb{R}^n$: input feature  
+- $w \in \mathbb{R}^n$: weights  
+- $b \in \mathbb{R}$: bias  
+- $y \in \{0, 1\}$: true label  
+- $z = w^T x + b$: logit (linear output)  
+- $\sigma(z) = \frac{1}{1 + e^{-z}}$: sigmoid  
+- $\hat{y} = \sigma(z)$: predicted probability  
+
+The loss for one sample is:
+
+$$
+L(w, b) = -y \log(\sigma(z)) - (1 - y) \log(1 - \sigma(z))
+$$
+
+Substitute $z = w^T x + b$:
+
+$$
+L(w, b) = -y \log(\sigma(w^T x + b)) - (1 - y) \log(1 - \sigma(w^T x + b))
+$$
+
+Using the identity:
+
+$$
+\log(1 - \sigma(z)) = -z - \log(1 + e^{-z})
+$$
+
+And some simplification, we get:
+
+$$
+L(w, b) = \log(1 + e^{-y(w^T x + b)})
+$$
+
+This is the most common compact form of BCE.
+
+---
+This loss is a composition of two functions:
+
+- $a(w) = -y(w^T x + b)$: an affine function  
+- $f(a) = \log(1 + e^a)$: a convex and increasing function  
+
+There is a known rule:
+
+> The composition of a convex, increasing function with an affine function is convex.
+
+Therefore, the BCE loss is convex in \( w \).
+
+---
+
+However, we might want to prove it more formally.
+
+Let $z = w^T x + b$. The derivative of the loss is:
+
+$$
+\nabla_w L = \frac{dL}{dz} \cdot \frac{dz}{dw}
+$$
+
+We know:
+
+- $\frac{dL}{dz} = -y \cdot \sigma(-y z)$  
+- $\frac{dz}{dw} = x$
+
+So:
+
+$$
+\nabla_w L = -y \cdot \sigma(-y z) \cdot x
+$$
+
+---
+
+Take the derivative again to get the Hessian:
+
+$$
+\nabla^2_w L = \frac{d}{dw}(-y \cdot \sigma(-y z) \cdot x)
+$$
+
+This becomes:
+
+$$
+\nabla^2_w L = \sigma(y z) \cdot (1 - \sigma(y z)) \cdot x x^T
+$$
+
+This is a scalar times an outer product:
+
+- $\sigma(y z)(1 - \sigma(y z)) > 0$ 
+- $ x x^T$ is positive semi-definite  
+
+Since the hessian is positive semi-definite:
+
+> **The BCE loss in logistic regression is convex in** $w$
+
+**We need to differentiate between convex and strictly convex.** To put it simply, a strictly convex function has a single unique minimum, whereas a merely convex function may have multiple points that minimise the function.
+To understand it better, take a look at the visualisation below.
+
+<ConvexNotStrict client:load />
+
+Strict convexity may not hold in cases of perfect separation or redundant features, but is generally satisfied in real-world data with enough variability.
+
+---
+
+
+---
+
+### See Logistic Regression in Action
+
+Before doing another deep dive into the math, let's tinker for a while with logistic regression. See it, feel it, and build a good mental model along the way as to how the training process works.
+<LogisticRegressionLearning client:load />
+
+Observe how the decision boundary (black line) evolves from a random starting point toward an optimal separation between classes. The loss curve consistently decreases, thanks to the convex nature of the loss function. At the same time, accuracy improves as the model learns to better distinguish between the two classes.
+
+---
+### How does the training process actually work?
+After seeing the interactive example above, I hope you can already have some intuition to how the training process work.
+However, we still need to understand how it actually work mathematically.
+
+Interestingly enough, the training process of LR isn't that different compared to deep learning. Fundamentally, they both try to minimise loss using backpropagation to modify weights and biases. The only difference being that in LR, the loss function is convex and we only use a single layer. Let's recap what we have so far.
+
+We already defined that LR uses a linear function followed by a sigmoid:
+$$
+z = \mathbf{w}^\top \mathbf{x} + b
+$$
+
+$$
+\hat{y} = \sigma(z) = \frac{1}{1 + e^{-z}}
+$$
+
+We have also defined BCE as our loss function:
+$$
+\mathcal{L} = -\left[ y \log(\hat{y}) + (1 - y)\log(1 - \hat{y}) \right]
+$$
+
+Now, the gradient for a single sample can be calculated with:
+$$
+\frac{\partial \mathcal{L}}{\partial \mathbf{w}} = (\hat{y} - y)\mathbf{x}
+$$
+
+$$
+\frac{\partial \mathcal{L}}{\partial b} = \hat{y} - y
+$$
+
+Update the weights and biases by scaling the gradient with our learning rate:
+$$
+\mathbf{w} \leftarrow \mathbf{w} - \eta \cdot \frac{\partial \mathcal{L}}{\partial \mathbf{w}}
+$$
+
+$$
+b \leftarrow b - \eta \cdot \frac{\partial \mathcal{L}}{\partial b}
+$$
+
+---
+
+Those may not make any sense, perhaps. So, let's try it with real numbers.
+
+Assume that we have a learning rate $(\eta)$ of 0.1 with initial $\mathbf{w}=[0, 0]$ and $b=0$.
+
+Our dataset would be:
+$$
+\mathbf{x}_1 = [1, 2],\quad y_1 = 0
+$$
+$$
+\mathbf{x}_2 = [2, 1],\quad y_2 = 1
+$$
+$$
+\mathbf{x}_3 = [1, 1],\quad y_3 = 1
+$$
+
+---
+
+**Epoch 1:**
+
+At first, since our initial weights ($\mathbf{w}$) and bias ($b$) are zero, the sigmoid function will produce a value of 0.5 for every sample:
+$$
+z_1 = \mathbf{w}^\top \mathbf{x}_1 + b = 0,\quad \hat{y}_1 = \sigma(0) = 0.5
+$$
+$$
+z_2 = \mathbf{w}^\top \mathbf{x}_2 + b = 0,\quad \hat{y}_2 = \sigma(0) = 0.5
+$$
+$$
+z_3 = \mathbf{w}^\top \mathbf{x}_3 + b = 0,\quad \hat{y}_3 = \sigma(0) = 0.5
+$$
+
+Compute the gradients for each sample:
+$$
+\nabla_{\mathbf{w}_1} = (0.5 - 0) \cdot [1, 2] = [0.5,\ 1.0]
+$$
+$$
+\nabla_{\mathbf{w}_2} = (0.5 - 1) \cdot [2, 1] = [-1.0,\ -0.5]
+$$
+$$
+\nabla_{\mathbf{w}_3} = (0.5 - 1) \cdot [1, 1] = [-0.5,\ -0.5]
+$$
+
+Average the gradients:
+$$
+\nabla_{\mathbf{w}} = \frac{[0.5,\ 1.0] + [-1.0,\ -0.5] + [-0.5,\ -0.5]}{3} = \frac{[-1.0,\ 0.0]}{3} = [-0.3333,\ 0.0]
+$$
+
+Update the weights:
+$$
+\mathbf{w} \leftarrow \mathbf{w} - \eta \cdot \nabla_{\mathbf{w}} = [0, 0] - 0.1 \cdot [-0.3333,\ 0.0] = [0.0333,\ 0.0]
+$$
+
+Now, compute the bias gradients:
+$$
+\nabla_{b_1} = 0.5 - 0 = 0.5
+$$
+$$
+\nabla_{b_2} = 0.5 - 1 = -0.5
+$$
+$$
+\nabla_{b_3} = 0.5 - 1 = -0.5
+$$
+
+Average the bias gradients:
+$$
+\nabla_b = \frac{0.5 + (-0.5) + (-0.5)}{3} = \frac{-0.5}{3} = -0.1667
+$$
+
+Update the bias:
+$$
+b \leftarrow b - \eta \cdot \nabla_b = 0 - 0.1 \cdot (-0.1667) = 0.0167
+$$
+
+**Epoch 2:**
+
+We continue with the updated weights $\mathbf{w} = [0.0333,\ 0.0]$ and $b = 0.0167$.
+
+Compute the predictions:
+
+$$
+z_1 = 0.0333 \cdot 1 + 0.0 \cdot 2 + 0.0167 = 0.05,\quad \hat{y}_1 = \sigma(0.05) \approx 0.5125
+$$
+$$
+z_2 = 0.0333 \cdot 2 + 0.0 \cdot 1 + 0.0167 = 0.0833,\quad \hat{y}_2 = \sigma(0.0833) \approx 0.5208
+$$
+$$
+z_3 = 0.0333 \cdot 1 + 0.0 \cdot 1 + 0.0167 = 0.05,\quad \hat{y}_3 = \sigma(0.05) \approx 0.5125
+$$
+
+Compute the gradients for each sample:
+
+$$
+\nabla_{\mathbf{w}_1} = (0.5125 - 0) \cdot [1, 2] = [0.5125,\ 1.025]
+$$
+$$
+\nabla_{\mathbf{w}_2} = (0.5208 - 1) \cdot [2, 1] = [-0.9584,\ -0.4792]
+$$
+$$
+\nabla_{\mathbf{w}_3} = (0.5125 - 1) \cdot [1, 1] = [-0.4875,\ -0.4875]
+$$
+
+Average the gradients:
+$$
+\nabla_{\mathbf{w}} = \frac{[0.5125,\ 1.025] + [-0.9584,\ -0.4792] + [-0.4875,\ -0.4875]}{3} = \frac{[-0.9334,\ 0.0583]}{3} \approx [-0.3111,\ 0.0194]
+$$
+
+Update the weights:
+$$
+\mathbf{w} \leftarrow \mathbf{w} - \eta \cdot \nabla_{\mathbf{w}} = [0.0333,\ 0.0] - 0.1 \cdot [-0.3111,\ 0.0194] = [0.0644,\ -0.0019]
+$$
+
+Now for the bias:
+
+$$
+\nabla_{b_1} = 0.5125 - 0 = 0.5125
+$$
+$$
+\nabla_{b_2} = 0.5208 - 1 = -0.4792
+$$
+$$
+\nabla_{b_3} = 0.5125 - 1 = -0.4875
+$$
+
+Average the bias gradients:
+$$
+\nabla_b = \frac{0.5125 + (-0.4792) + (-0.4875)}{3} = \frac{-0.4542}{3} = -0.1514
+$$
+
+Update the bias:
+$$
+b \leftarrow b - \eta \cdot \nabla_b = 0.0167 - 0.1 \cdot (-0.1514) = 0.0167 + 0.0151 = 0.0318
+$$
+
+You can continue with further epoch, but hopefully the example above has given you enough intuition on how to do it yourself.
+
+---
+
+### Evaluating Model Performance with AUC-ROC Analysis
+
+Once we've trained our logistic regression model, how do we know how good it is? There are many metrics that one can use for classification tasks. However, one of the most powerful tools for evaluating binary classification models is the **Receiver Operating Characteristic curve** (ROC). This visualization shows us the trade-off between sensitivity (true positive rate) and specificity at different classification thresholds.
+
+The interactive visualization below lets you explore how different classification thresholds affect various performance metrics.
+
+<InteractiveROCCurve client:load />
+
+This kind of analysis is crucial in real-world applications where the cost of false positives and false negatives might be very different (e.g., medical diagnosis, fraud detection).
+
+---
+### Regularisation
+In the real world, we want models that don’t just memorise the training data. They should work well on unseen data.
+Overfitting happens when:
+- The model tries too hard to fit every data point
+- Especially in high-dimensional space (many features)
+- So it ends up learning noise instead of patterns
+
+**Regularisation is our way of telling the model:**
+
+> “Please fit the data... but don’t go wild with big weights.”
+
+There are a lot of regularisation techniques to prevent overfit, but we will keep it minimal here, only things that are directly relevant to logistic regression. Regularisation deserves its own dedicated article, which will be published later.
+
+---
+
+Let’s recall our loss function (BCE).
+$$
+\mathcal{J}(\mathbf{w}) = -\frac{1}{m}\sum_{i=1}^{m}\left[y_i\log(\hat{y}_i)+(1-y_i)\log(1-\hat{y}_i)\right]
+$$
+
+We are trying to minimise this loss, i.e., find the weights that make the predicted probabilities close to actual labels. However, sometimes just minimising BCE isn’t enough. It might push some weights to extreme values to get better fit, leading to overfit.
+
+To penalise complexity, we can add a regularisation term to the loss. The two most common types are:
+
+**L1 Regularization (Lasso):**
+$$
+\Omega_{\text{L1}}(\mathbf{w}) = \lambda \sum_{j=1}^d |w_j| = \lambda \|\mathbf{w}\|_1
+$$
+
+**L2 Regularization (Ridge):**
+$$
+\Omega_{\text{L2}}(\mathbf{w}) = \lambda \sum_{j=1}^d w_j^2 = \lambda \|\mathbf{w}\|_2^2
+$$
+
+Regularised loss becomes:
+
+$$
+\mathcal{L}_{\text{reg}}(\mathbf{w}, b) = \mathcal{L}_{\text{BCE}}(\mathbf{w}, b) + \Omega(\mathbf{w})
+$$
+
+This discourages large weights and keeps the model smoother.
+
+### Visualizing Regularization Penalties
+
+Let's explore how different regularization techniques penalize weights. You can toggle between **L1 (Lasso)** and **L2 (Ridge)** regularization to see their different behaviors:
+
+<RegularizationViz client:load />
+
+**Key differences**
+- **L2 (Ridge)**: Penalty grows **quadratically** (λw²) hence large weights get punished much more severely
+- **L1 (Lasso)**: Penalty grows **linearly** (λ|w|) which creates a constant penalty rate regardless of weight magnitude
+
+The quadratic growth of L2 makes it excellent at shrinking large weights toward zero, avoiding exploding weights, whereas L1's linear penalty can actually drive weights to exactly zero, performing some kind of "feature selection". 
+
+---
+
+### Conclusion
+
+Logistic Regression may seem deceptively simple: just a linear model passed through a sigmoid. But beneath that  surface lies a foundational concept in machine learning. While it may not compete with complex models in raw power, its interpretability, theoretical grounding, and mathematical tractability make it an essential tool. Mastering logistic regression also help you build the intuition needed for neural networks. Hopefully this article can help you understand more about logistic regression in depth.
+
+
+
