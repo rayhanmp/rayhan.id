@@ -9,7 +9,6 @@ interface Point {
 const ConvexNonconvexViz: React.FC = () => {
   const svgRef = useRef<SVGSVGElement>(null);
   const [learningRate, setLearningRate] = useState(0.1);
-
   const [animationSpeed, setAnimationSpeed] = useState(100);
 
   // Function definitions
@@ -22,48 +21,39 @@ const ConvexNonconvexViz: React.FC = () => {
     1.2 * x * x * x - 4 * x + 0.5;
 
   useEffect(() => {
-    console.log('ConvexNonconvexViz useEffect running');
-    
     if (!svgRef.current) {
-      console.log('SVG ref is null');
       return;
     }
 
-    console.log('SVG ref exists, starting D3 rendering');
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
 
-    const width = 900; // Increased width
-    const height = 450; // Increased height
-    const margin = { top: 50, right: 50, bottom: 70, left: 90 }; // Increased margins
+    const width = 900;
+    const height = 450;
+    const margin = { top: 50, right: 50, bottom: 70, left: 90 };
     const plotWidth = (width - 2 * margin.left - margin.right) / 2;
     const plotHeight = height - margin.top - margin.bottom;
-
-    console.log('Dimensions:', { width, height, plotWidth, plotHeight });
 
     // Set SVG viewBox to ensure everything fits
     svg.attr("viewBox", `0 0 ${width} ${height}`);
 
     // Create scales with padding
     const xScale = d3.scaleLinear()
-      .domain([-3.2, 3.2]) // Slightly expanded domain
+      .domain([-3.2, 3.2])
       .range([0, plotWidth]);
     
     const yScaleConvex = d3.scaleLinear()
-      .domain([-0.2, 5.2]) // Expanded domain with padding
+      .domain([-0.2, 5.2])
       .range([plotHeight, 0]);
     
     const yScaleNonconvex = d3.scaleLinear()
-      .domain([-1.2, 4.2]) // Expanded domain with padding
+      .domain([-1.2, 4.2])
       .range([plotHeight, 0]);
 
     // Generate data points for curves
-    const xData = d3.range(-3, 3.01, 0.05); // Smaller step for smoother curves
+    const xData = d3.range(-3, 3.01, 0.05);
     const convexData = xData.map(x => ({ x, y: convexFunction(x) }));
     const nonconvexData = xData.map(x => ({ x, y: nonconvexFunction(x) }));
-
-    console.log('Data generated. Convex sample:', convexData.slice(0, 3));
-    console.log('Data generated. Nonconvex sample:', nonconvexData.slice(0, 3));
 
     // Line generators
     const convexLine = d3.line<{x: number, y: number}>()
@@ -83,8 +73,6 @@ const ConvexNonconvexViz: React.FC = () => {
     // Create non-convex plot  
     const nonconvexGroup = svg.append("g")
       .attr("transform", `translate(${margin.left + plotWidth + 60}, ${margin.top})`);
-
-    console.log('Groups created');
 
     // Add plot background rectangles
     convexGroup.append("rect")
@@ -195,25 +183,21 @@ const ConvexNonconvexViz: React.FC = () => {
         .text("Parameter");
     });
 
-    console.log('Axes added');
-
     // Add function curves
     try {
-      const convexPath = convexGroup.append("path")
+      convexGroup.append("path")
         .datum(convexData)
         .attr("fill", "none")
         .attr("stroke", "#2e7d32")
         .attr("stroke-width", 4)
         .attr("d", convexLine);
 
-      const nonconvexPath = nonconvexGroup.append("path")
+      nonconvexGroup.append("path")
         .datum(nonconvexData)
         .attr("fill", "none")
         .attr("stroke", "#c62828")
         .attr("stroke-width", 4)
         .attr("d", nonconvexLine);
-
-      console.log('Function curves added successfully');
     } catch (error) {
       console.error('Error adding function curves:', error);
     }
@@ -222,16 +206,14 @@ const ConvexNonconvexViz: React.FC = () => {
     const runGradientDescent = (group: any, func: (x: number) => number, grad: (x: number) => number, yScale: any, startX: number, color: string) => {
       // Use a local flag instead of React state to avoid re-renders
       if (group.attr('data-animating') === 'true') {
-        console.log('Animation already in progress, ignoring click');
         return;
       }
       
-      console.log('Starting gradient descent from:', startX);
       group.attr('data-animating', 'true');
       
       let currentX = startX;
       const path: Point[] = [];
-      const maxIterations = 80; // Increased for better visualization
+      const maxIterations = 80;
       
       // Pre-calculate the entire path
       for (let i = 0; i < maxIterations; i++) {
@@ -245,14 +227,12 @@ const ConvexNonconvexViz: React.FC = () => {
         if (currentX < -3.2 || currentX > 3.2) break;
       }
       
-      console.log('Generated descent path with', path.length, 'points');
-      
       // Clear previous paths
       group.selectAll(".descent-path").remove();
       group.selectAll(".descent-point").remove();
       
-      // Add starting point immediately with debugging
-      const startPoint = group.append("circle")
+      // Add starting point immediately
+      group.append("circle")
         .attr("class", "descent-point start-point")
         .attr("cx", xScale(path[0].x))
         .attr("cy", yScale(path[0].y))
@@ -262,28 +242,15 @@ const ConvexNonconvexViz: React.FC = () => {
         .style("stroke-width", 3)
         .style("opacity", 1);
       
-      console.log('Starting point created:', {
-        x: path[0].x,
-        y: path[0].y,
-        screenX: xScale(path[0].x),
-        screenY: yScale(path[0].y),
-        element: startPoint.node()
-      });
-      
       // Animate the descent step by step
       const animateStep = (index: number) => {
-        console.log(`Animating step ${index}/${path.length}`);
-        
         if (index >= path.length) {
-          console.log('Animation complete');
           group.attr('data-animating', 'false');
           return;
         }
         
         const point = path[index];
         const isLastPoint = index === path.length - 1;
-        
-        console.log(`Step ${index}: point (${point.x.toFixed(2)}, ${point.y.toFixed(2)})`);
         
         // Skip the first point since we already added it
         if (index === 0) {
@@ -296,7 +263,7 @@ const ConvexNonconvexViz: React.FC = () => {
           .attr("class", "descent-point")
           .attr("cx", xScale(point.x))
           .attr("cy", yScale(point.y))
-          .attr("r", 2) // Start with small but visible size
+          .attr("r", 2)
           .style("fill", color)
           .style("stroke", "white")
           .style("stroke-width", isLastPoint ? 2 : 1)
@@ -314,7 +281,7 @@ const ConvexNonconvexViz: React.FC = () => {
           .attr("class", "descent-path")
           .attr("x1", xScale(prevPoint.x))
           .attr("y1", yScale(prevPoint.y))
-          .attr("x2", xScale(prevPoint.x)) // Start at previous point
+          .attr("x2", xScale(prevPoint.x))
           .attr("y2", yScale(prevPoint.y))
           .style("stroke", color)
           .style("stroke-width", 2)
@@ -327,10 +294,9 @@ const ConvexNonconvexViz: React.FC = () => {
           .attr("x2", xScale(point.x))
           .attr("y2", yScale(point.y));
         
-        // Add floating loss value indicator (simplified)
-        if (index % 10 === 0 || isLastPoint) { // Show every 10th step or final step
+        // Add floating loss value indicator
+        if (index % 10 === 0 || isLastPoint) {
           const lossValue = func(point.x);
-          console.log(`Loss at step ${index}: ${lossValue.toFixed(3)}`);
           
           const lossText = group.append("text")
             .attr("class", "descent-point loss-indicator")
@@ -361,69 +327,48 @@ const ConvexNonconvexViz: React.FC = () => {
       animateStep(0);
     };
 
-    // Add click handlers with better debugging
-    console.log('Adding click handlers...');
-    
-    const convexClickRect = convexGroup.append("rect")
+    // Add click handlers
+    convexGroup.append("rect")
       .attr("x", 0)
       .attr("y", 0)
       .attr("width", plotWidth)
       .attr("height", plotHeight)
-      .style("fill", "rgba(46, 125, 50, 0.1)") // Slightly visible for debugging
+      .style("fill", "rgba(46, 125, 50, 0.1)")
       .style("cursor", "crosshair")
       .style("pointer-events", "all")
       .on("click", function(event) {
-        console.log('Convex plot clicked!');
-        
         const [mouseX, mouseY] = d3.pointer(event);
         const x = xScale.invert(mouseX);
-        console.log('Clicked convex at x:', x, 'mouseX:', mouseX, 'mouseY:', mouseY);
         
         if (x < -3.2 || x > 3.2) {
-          console.log('Click outside valid range, ignoring');
           return;
         }
         
         runGradientDescent(convexGroup, convexFunction, convexGradient, yScaleConvex, x, "#1b5e20");
-      })
-      .on("mouseover", function() {
-        console.log('Mouse over convex plot');
       });
 
-    const nonconvexClickRect = nonconvexGroup.append("rect")
+    nonconvexGroup.append("rect")
       .attr("x", 0)
       .attr("y", 0)
       .attr("width", plotWidth)
       .attr("height", plotHeight)
-      .style("fill", "rgba(198, 40, 40, 0.1)") // Slightly visible for debugging
+      .style("fill", "rgba(198, 40, 40, 0.1)")
       .style("cursor", "crosshair")
       .style("pointer-events", "all")
       .on("click", function(event) {
-        console.log('Non-convex plot clicked!');
-        
         const [mouseX, mouseY] = d3.pointer(event);
         const x = xScale.invert(mouseX);
-        console.log('Clicked nonconvex at x:', x, 'mouseX:', mouseX, 'mouseY:', mouseY);
         
         if (x < -3.2 || x > 3.2) {
-          console.log('Click outside valid range, ignoring');
           return;
         }
         
         runGradientDescent(nonconvexGroup, nonconvexFunction, nonconvexGradient, yScaleNonconvex, x, "#b71c1c");
-      })
-      .on("mouseover", function() {
-        console.log('Mouse over non-convex plot');
       });
-
-    console.log('Click handlers added. Convex rect:', convexClickRect.node(), 'Nonconvex rect:', nonconvexClickRect.node());
-
-    console.log('D3 rendering complete');
 
   }, [learningRate, animationSpeed]);
 
   const resetVisualization = () => {
-    console.log('Resetting visualization');
     if (!svgRef.current) return;
     const svg = d3.select(svgRef.current);
     svg.selectAll(".descent-path").remove();
