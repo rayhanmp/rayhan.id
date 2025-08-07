@@ -3,7 +3,7 @@ title: About This Site
 description: How this site came to be and why I made it.
 date: 2025-04-04  
 isPublished: true
-tags: ["personal"]
+tags: ["Personal"]
 ---
 
 **I initially built this website around 2024**. Nothing fancy, just your standard showcase, but it quickly became another forgotten side project, buried beneath a mountain of lab reports, code commits, and other stuff in my life. Months later, during one of those midnight group chats, I had an epiphany. You know the type: someone randomly mentions how important a personal site is and everyone just agrees. Suddenly, I realised I was exactly in that boat. GitHub repos are nice, but they're kind of like a messy room—good luck finding the cool stuff buried deep. And don't even get me started on CVs. They're stiff, cramped, and they barely show anything interesting about who you are or what you actually *do*.
