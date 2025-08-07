@@ -9,6 +9,10 @@ const posts = allPosts
 const allTags = Array.from(
   new Set(posts.flatMap(post => post.data.tags || []))
 );
+
+// Featured post - logistic regression article
+const featuredPost = posts.find(post => post.slug === 'a-gentle-introduction-to-logistic-regression-with-visualisations');
+const regularPosts = posts; // Show all posts including the featured one
 ---
 
 <BaseLayout title="Blog – Rayhan M" currentPage="/blog">
@@ -41,13 +45,35 @@ const allTags = Array.from(
     }
 
     .blog-header {
-      text-align: center;
-      margin: 9rem 0 3rem 0;
+      text-align: left;
+      margin: 8rem 0 4rem 0;
     }
 
     .blog-header h1 {
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
+      font-size: 5.5rem;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+      font-weight: 300;
+      color: #9b9b9b;
+    }
+
+    .blog-header .highlight {
+      font-weight: 700;
+      color: #000;
+    }
+
+    .blog-header p {
+      font-size: 1.8rem;
+      color: #666;
+      margin-bottom: 2rem;
+      line-height: 1.4;
+    }
+
+    .blog-divider {
+      width: 100%;
+      height: 1px;
+      background: #ddd;
+      margin: 3rem 0;
     }
 
     .back-home {
@@ -203,19 +229,145 @@ const allTags = Array.from(
       opacity: 0.9;
     }
 
-    .search-box {
+    .search-filter-container {
+      width: 100%;
+      margin: 3rem 0;
       display: flex;
-      justify-content: center;
-      margin-top: 2rem;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .search-box {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
     }
 
     .search-box input {
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+      padding: 1.2rem 1.5rem 1.2rem 3.5rem;
+      font-size: 1.3rem;
+      border: 2px solid #e5e5e5;
+      border-radius: 8px;
       width: 100%;
-      max-width: 300px;
+      background: #fafafa;
+      transition: all 0.3s ease;
+      outline: none;
+      margin: 0;
+      box-sizing: border-box;
+    }
+
+    .search-box input:focus {
+      border-color: #333;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-box input::placeholder {
+      color: #999;
+      font-weight: 400;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1.2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999;
+      font-size: 1.1rem;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .filter-dropdown {
+      position: relative;
+    }
+
+    .filter-button {
+      padding: 1.2rem;
+      font-size: 1.3rem;
+      border: 2px solid #e5e5e5;
+      border-radius: 8px;
+      background: #fafafa;
+      color: #333;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 3.6rem;
+      width: 3.6rem;
+    }
+
+    .filter-button:hover,
+    .filter-button.active {
+      border-color: #333;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .filter-dropdown-content {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: white;
+      border: 2px solid #e5e5e5;
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      z-index: 1000;
+      min-width: 200px;
+      max-height: 300px;
+      overflow-y: auto;
+      display: none;
+    }
+
+    .filter-dropdown-content.show {
+      display: block;
+    }
+
+    .filter-option {
+      padding: 0.8rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .filter-option:hover {
+      background: #f5f5f5;
+    }
+
+    .filter-option input[type="checkbox"] {
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .filter-option label {
+      cursor: pointer;
+      font-size: 1rem;
+      color: #333;
+      flex: 1;
+    }
+
+    .filter-count {
+      font-size: 0.9rem;
+      color: #666;
+      background: #f0f0f0;
+      padding: 0.2rem 0.5rem;
+      border-radius: 12px;
+    }
+
+    @media (max-width: 768px) {
+      .search-filter-container {
+        gap: 1rem;
+      }
+      
+      .filter-dropdown-content {
+        right: 0;
+        left: auto;
+        min-width: 250px;
+      }
     }
 
     footer {
@@ -229,20 +381,232 @@ const allTags = Array.from(
       max-width: calc(3 * 350px + 2 * 2rem);
       margin: 0 auto;
     }
+
+    /* Featured Post Styles - Prominent & Bold */
+    .featured-section {
+      margin: 4rem 0;
+      position: relative;
+    }
+
+
+
+    .featured-post {
+      width: 100%;
+      background: #fff;
+      border: 2px solid #3A5D44;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: block;
+      position: relative;
+      z-index: 1;
+    }
+
+    .featured-post::before {
+      content: '⭐ FEATURED ARTICLE';
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: linear-gradient(135deg, #238a33, #3A5D44);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-bottom-left-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      box-shadow: 0 3px 12px rgba(35, 138, 51, 0.4);
+      z-index: 2;
+    }
+
+    .featured-post:hover {
+      border-color: #238a33;
+      transform: translateY(-4px);
+    }
+
+    .featured-content {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      align-items: stretch;
+      background: #fff;
+    }
+
+    .featured-text {
+      padding: 2rem 2rem 2rem 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .featured-title {
+      font-size: 2.4rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+      color: #111;
+      letter-spacing: -0.02em;
+    }
+
+    .featured-description {
+      font-size: 1.4rem;
+      line-height: 1.5;
+      color: #4b5563;
+      margin-bottom: 1.5rem;
+      font-weight: 400;
+    }
+
+    .featured-meta {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      font-size: 1.3rem;
+      color: #6b7280;
+      font-weight: 500;
+    }
+
+    .featured-image {
+      overflow: hidden;
+      background: #f9fafb;
+      height: 100%;
+      min-height: 200px;
+    }
+
+    .featured-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+    .featured-tags {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .featured-tag {
+      background: #f0f7f0;
+      color: #3A5D44;
+      border: 1px solid #d4e8d4;
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .featured-content {
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
+
+      .featured-text {
+        padding: 1.5rem;
+      }
+
+      .featured-title {
+        font-size: 2rem;
+      }
+
+      .featured-description {
+        font-size: 1.1rem;
+      }
+
+      .featured-meta {
+        font-size: 0.95rem;
+        gap: 1.2rem;
+      }
+
+      .featured-image {
+        height: auto;
+        min-height: 160px;
+        order: -1;
+      }
+
+      .featured-image img {
+        height: auto;
+        min-height: 160px;
+      }
+
+      .featured-post::before {
+        top: 1.5rem;
+        right: 1.5rem;
+        font-size: 0.7rem;
+        padding: 0.4rem 0.8rem;
+      }
+    }
   </style>
 
   <div class="container">
     <div class="blog-header">
-      <h1>📚 Blog</h1>
-      <p>Thoughts, notes, and everything in-between.</p>
+      <h1>My <span class="highlight">blog</span> & <span class="highlight">writings</span>.</h1>
+      <p>Thoughts, technical insights, and explorations across technology, machine learning, and everything in between.</p>
+      <div class="blog-divider"></div>
     </div>
 
-    <div class="search-box">
-      <input id="search" type="text" placeholder="Search posts..." />
+    <!-- Featured Post Section -->
+    {featuredPost && (
+      <div class="featured-section">
+        <a href={`/blog/${featuredPost.slug}`} class="featured-post">
+          <div class="featured-content">
+            <div class="featured-text">
+              <h3 class="featured-title">{featuredPost.data.title}</h3>
+              <p class="featured-description">{featuredPost.data.description}</p>
+              
+              <div class="featured-meta">
+                <span>{new Date(featuredPost.data.date).toLocaleDateString()}</span>
+                <span>15 min read</span>
+              </div>
+            </div>
+            
+            <div class="featured-image">
+              {featuredPost.data.heroImage ? (
+                <img src={featuredPost.data.heroImage} alt={featuredPost.data.title} loading="lazy" />
+              ) : (
+                <div style="height: 100%; display: flex; align-items: center; justify-content: center; color: #9ca3af; font-size: 2rem;">📊</div>
+              )}
+            </div>
+          </div>
+        </a>
+      </div>
+    )}
+
+    <div class="search-filter-container">
+      <div class="search-box">
+        <i class="fas fa-search search-icon"></i>
+        <input id="search" type="text" placeholder="Search posts..." />
+      </div>
+      
+      <div class="filter-dropdown">
+        <button class="filter-button" id="filterButton" title="Filter by tags">
+          <i class="fas fa-filter"></i>
+        </button>
+        <div class="filter-dropdown-content" id="filterDropdown">
+          <div class="filter-option">
+            <input type="checkbox" id="all-tags" checked />
+            <label for="all-tags">All posts</label>
+            <span class="filter-count">{posts.length}</span>
+          </div>
+          {allTags.map(tag => {
+            const tagCount = posts.filter(post => post.data.tags?.includes(tag)).length;
+            return (
+              <div class="filter-option">
+                <input type="checkbox" id={`tag-${tag}`} data-tag={tag} />
+                <label for={`tag-${tag}`}>{tag}</label>
+                <span class="filter-count">{tagCount}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
 
     <div class="blog-grid">
-      {posts.map(({ slug, data }) => (
+      {regularPosts.map(({ slug, data }) => (
         <a 
           href={`/blog/${slug}`}
           class="blog-card" 
@@ -315,6 +679,7 @@ const allTags = Array.from(
     // Search post with Fuse.js
     let searchData = [];
     let fuse = null;
+    let selectedTags = new Set();
     
     async function setupSearch() {
       try {
@@ -332,24 +697,32 @@ const allTags = Array.from(
       }
     }
     
-    function doSearch(query) {
+    function filterPosts() {
+      const query = document.getElementById('search')?.value || '';
       const cards = document.querySelectorAll('.blog-card');
-      
-      // If no search, show everything
-      if (!query.trim()) {
-        cards.forEach(card => card.style.display = '');
-        return;
-      }
-      
-      if (!fuse) return;
-      
-      const results = fuse.search(query);
-      const matchedSlugs = results.map(result => result.item.slug);
       
       cards.forEach(card => {
         const href = card.getAttribute('href');
         const slug = href ? href.split('/').pop() : '';
-        card.style.display = matchedSlugs.includes(slug) ? '' : 'none';
+        const cardTags = card.getAttribute('data-tags');
+        const postTags = cardTags ? cardTags.split(',').filter(tag => tag.trim()) : [];
+        
+        let showCard = true;
+        
+        // Filter by search query
+        if (query.trim() && fuse) {
+          const results = fuse.search(query);
+          const matchedSlugs = results.map(result => result.item.slug);
+          showCard = showCard && matchedSlugs.includes(slug);
+        }
+        
+        // Filter by selected tags
+        if (selectedTags.size > 0) {
+          const hasSelectedTag = postTags.some(tag => selectedTags.has(tag.trim()));
+          showCard = showCard && hasSelectedTag;
+        }
+        
+        card.style.display = showCard ? '' : 'none';
       });
     }
     
@@ -357,9 +730,70 @@ const allTags = Array.from(
       const searchBox = document.getElementById('search');
       if (!searchBox) return;
       
-      searchBox.addEventListener('input', (e) => doSearch(e.target.value));
+      searchBox.addEventListener('input', () => filterPosts());
       searchBox.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') doSearch(e.target.value);
+        if (e.key === 'Enter') filterPosts();
+      });
+    }
+    
+    function setupFilter() {
+      const filterButton = document.getElementById('filterButton');
+      const filterDropdown = document.getElementById('filterDropdown');
+      const allTagsCheckbox = document.getElementById('all-tags');
+      
+      if (!filterButton || !filterDropdown) return;
+      
+      // Toggle dropdown
+      filterButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        filterDropdown.classList.toggle('show');
+        filterButton.classList.toggle('active');
+      });
+      
+      // Close dropdown when clicking outside
+      document.addEventListener('click', () => {
+        filterDropdown.classList.remove('show');
+        filterButton.classList.remove('active');
+      });
+      
+      // Prevent dropdown from closing when clicking inside
+      filterDropdown.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+      
+      // Handle "All posts" checkbox
+      if (allTagsCheckbox) {
+        allTagsCheckbox.addEventListener('change', (e) => {
+          if (e.target.checked) {
+            selectedTags.clear();
+            // Uncheck all tag checkboxes
+            document.querySelectorAll('[data-tag]').forEach(checkbox => {
+              checkbox.checked = false;
+            });
+          }
+          filterPosts();
+        });
+      }
+      
+      // Handle individual tag checkboxes
+      document.querySelectorAll('[data-tag]').forEach(checkbox => {
+        checkbox.addEventListener('change', (e) => {
+          const tag = e.target.dataset.tag;
+          
+          if (e.target.checked) {
+            selectedTags.add(tag);
+            // Uncheck "All posts"
+            if (allTagsCheckbox) allTagsCheckbox.checked = false;
+          } else {
+            selectedTags.delete(tag);
+            // If no tags selected, check "All posts"
+            if (selectedTags.size === 0 && allTagsCheckbox) {
+              allTagsCheckbox.checked = true;
+            }
+          }
+          
+          filterPosts();
+        });
       });
     }
     
@@ -378,6 +812,7 @@ const allTags = Array.from(
     
     setupSearch();
     connectSearchBox();
+    setupFilter();
     animateCards();
   </script>
 </BaseLayout>
