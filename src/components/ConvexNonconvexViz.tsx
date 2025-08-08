@@ -11,7 +11,6 @@ const ConvexNonconvexViz: React.FC = () => {
   const [learningRate, setLearningRate] = useState(0.1);
   const [animationSpeed, setAnimationSpeed] = useState(100);
 
-  // Function definitions
   const convexFunction = (x: number) => 0.5 * x * x + 0.1 * x + 0.5;
   const convexGradient = (x: number) => x + 0.1;
   
@@ -34,10 +33,8 @@ const ConvexNonconvexViz: React.FC = () => {
     const plotWidth = (width - 2 * margin.left - margin.right) / 2;
     const plotHeight = height - margin.top - margin.bottom;
 
-    // Set SVG viewBox to ensure everything fits
     svg.attr("viewBox", `0 0 ${width} ${height}`);
 
-    // Create scales with padding
     const xScale = d3.scaleLinear()
       .domain([-3.2, 3.2])
       .range([0, plotWidth]);
@@ -50,12 +47,10 @@ const ConvexNonconvexViz: React.FC = () => {
       .domain([-1.2, 4.2])
       .range([plotHeight, 0]);
 
-    // Generate data points for curves
     const xData = d3.range(-3, 3.01, 0.05);
     const convexData = xData.map(x => ({ x, y: convexFunction(x) }));
     const nonconvexData = xData.map(x => ({ x, y: nonconvexFunction(x) }));
 
-    // Line generators
     const convexLine = d3.line<{x: number, y: number}>()
       .x(d => xScale(d.x))
       .y(d => yScaleConvex(d.y))
@@ -66,15 +61,12 @@ const ConvexNonconvexViz: React.FC = () => {
       .y(d => yScaleNonconvex(d.y))
       .curve(d3.curveCardinal);
 
-    // Create convex plot
     const convexGroup = svg.append("g")
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-    // Create non-convex plot  
     const nonconvexGroup = svg.append("g")
       .attr("transform", `translate(${margin.left + plotWidth + 60}, ${margin.top})`);
 
-    // Add plot background rectangles
     convexGroup.append("rect")
       .attr("x", -5)
       .attr("y", -5)
@@ -95,7 +87,6 @@ const ConvexNonconvexViz: React.FC = () => {
       .style("stroke-width", 1)
       .style("stroke-dasharray", "2,2");
 
-    // Add titles
     convexGroup.append("text")
       .attr("x", plotWidth / 2)
       .attr("y", -20)
@@ -114,11 +105,9 @@ const ConvexNonconvexViz: React.FC = () => {
       .style("fill", "#c62828")
       .text("Non-convex Function");
 
-    // Add grid lines
     [convexGroup, nonconvexGroup].forEach((group, i) => {
       const yScale = i === 0 ? yScaleConvex : yScaleNonconvex;
       
-      // Vertical grid lines
       group.selectAll(".grid-vertical")
         .data(xScale.ticks(6))
         .enter()
@@ -132,7 +121,6 @@ const ConvexNonconvexViz: React.FC = () => {
         .style("stroke-width", 0.5)
         .style("opacity", 0.7);
 
-      // Horizontal grid lines
       group.selectAll(".grid-horizontal")
         .data(yScale.ticks(5))
         .enter()
@@ -147,22 +135,18 @@ const ConvexNonconvexViz: React.FC = () => {
         .style("opacity", 0.7);
     });
 
-    // Add axes
     [convexGroup, nonconvexGroup].forEach((group, i) => {
       const yScale = i === 0 ? yScaleConvex : yScaleNonconvex;
       
-      // X axis
       group.append("g")
         .attr("transform", `translate(0, ${plotHeight})`)
         .call(d3.axisBottom(xScale).ticks(6))
         .style("font-size", "11px");
       
-      // Y axis
       group.append("g")
         .call(d3.axisLeft(yScale).ticks(5))
         .style("font-size", "11px");
       
-      // Axis labels
       group.append("text")
         .attr("transform", "rotate(-90)")
         .attr("y", -60)

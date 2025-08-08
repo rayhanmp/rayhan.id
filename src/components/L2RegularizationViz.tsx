@@ -2,10 +2,38 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 
 const RegularizationViz: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const [weights, setWeights] = useState([0.5, -0.3, 1.2, -0.8, 0.9]);
   const [lambda, setLambda] = useState(0.1);
   const [regularizationType, setRegularizationType] = useState<'L1' | 'L2'>('L2');
+  const [containerWidth, setContainerWidth] = useState<number>(700);
+
+  // Observe container size and update width reactively
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const updateWidth = () => {
+      if (containerRef.current) {
+        const width = containerRef.current.clientWidth;
+        if (width > 0) setContainerWidth(width);
+      }
+    };
+
+    updateWidth();
+
+    // Guard for environments without ResizeObserver (should be fine on client)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const ResizeObs: any = (window as unknown as { ResizeObserver?: typeof ResizeObserver }).ResizeObserver;
+    if (!ResizeObs) {
+      window.addEventListener('resize', updateWidth);
+      return () => window.removeEventListener('resize', updateWidth);
+    }
+
+    const observer = new ResizeObs(() => updateWidth());
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     if (!svgRef.current) return;
@@ -14,10 +42,19 @@ const RegularizationViz: React.FC = () => {
     svg.selectAll("*").remove();
 
     const margin = { top: 40, right: 20, bottom: 120, left: 60 };
-    const width = 700; // Match article text width
-    const height = 560; // More height for summary box
-    const plotWidth = (width - margin.left - margin.right - 80) / 2; // More horizontal gap
-    const plotHeight = height - margin.bottom - margin.top;
+    const width = Math.max(320, containerWidth);
+    const isStacked = width < 700;
+    const horizontalGap = isStacked ? 0 : 80;
+    const verticalGap = isStacked ? 80 : 0;
+    const height = isStacked ? 860 : 580;
+    const plotWidth = isStacked
+      ? width - margin.left - margin.right
+      : (width - margin.left - margin.right - horizontalGap) / 2;
+    const plotHeight = isStacked
+      ? (height - margin.top - margin.bottom - verticalGap) / 2
+      : height - margin.bottom - margin.top;
+
+    svg.attr('width', width).attr('height', height).attr('viewBox', `0 0 ${width} ${height+20}`);
 
     // Calculate penalties for each weight based on regularization type
     const penalties = weights.map(w => 
@@ -49,7 +86,10 @@ const RegularizationViz: React.FC = () => {
 
     // Create weights plot
     const weightsG = svg.append("g")
-      .attr("transform", `translate(${margin.left},${margin.top})`);
+      .attr("transform", isStacked
+        ? `translate(${margin.left},${margin.top})`
+        : `translate(${margin.left},${margin.top})`
+      );
 
     // Add axes for weights plot
     weightsG.append("g")
@@ -208,7 +248,10 @@ const RegularizationViz: React.FC = () => {
 
     // Create penalties plot
     const penaltiesG = svg.append("g")
-      .attr("transform", `translate(${margin.left + plotWidth + 80},${margin.top})`);
+      .attr("transform", isStacked
+        ? `translate(${margin.left},${margin.top + plotHeight + verticalGap})`
+        : `translate(${margin.left + plotWidth + horizontalGap},${margin.top})`
+      );
 
     // Add axes for penalties plot
     penaltiesG.append("g")
@@ -356,8 +399,9 @@ const RegularizationViz: React.FC = () => {
       .text("Penalty Value");
 
     // Add combined legend at bottom with more clearance
+    const legendY = height - (isStacked ? 90 : 80);
     const legend = svg.append("g")
-      .attr("transform", `translate(${width / 2 - 180}, ${height - 80})`);
+      .attr("transform", `translate(${Math.max(16, width / 2 - 160)}, ${legendY})`);
 
     // Positive weights
     legend.append("rect")
@@ -399,8 +443,9 @@ const RegularizationViz: React.FC = () => {
       .text(`${regularizationType} Penalties`);
 
     // Add total penalty display below legend - make it stand out with more padding
+    const summaryY = height - (isStacked ? 60 : 45);
     const penaltyDisplay = svg.append("g")
-      .attr("transform", `translate(${width / 2 - 200}, ${height - 45})`);
+      .attr("transform", `translate(${Math.max(16, width / 2 - 200)}, ${summaryY})`);
 
     penaltyDisplay.append("rect")
       .attr("width", 400)
@@ -429,7 +474,7 @@ const RegularizationViz: React.FC = () => {
       .style("fill", "#333")
       .text(`λ = ${lambda.toFixed(2)} | Total ${regularizationType} Penalty = ${totalPenalty.toFixed(4)} (= λ Σ ${regularizationType === 'L2' ? 'w²' : '|w|'})`);
 
-  }, [weights, lambda, regularizationType]);
+  }, [weights, lambda, regularizationType, containerWidth]);
 
   const handleWeightChange = (index: number, value: number) => {
     const newWeights = [...weights];
@@ -438,8 +483,7 @@ const RegularizationViz: React.FC = () => {
   };
 
   return (
-    <div className="regularization-viz" style={{ textAlign: 'center', margin: '20px 0' }}>      
-      {/* Compact control panel */}
+    <div ref={containerRef} className="regularization-viz" style={{ textAlign: 'center', margin: '20px 0', width: '100%' }}>      
       <div style={{ 
         display: 'flex', 
         flexDirection: 'column', 
@@ -450,7 +494,6 @@ const RegularizationViz: React.FC = () => {
         borderRadius: '8px',
         border: '1px solid #e9ecef'
       }}>
-        {/* Top row: Type and Lambda */}
         <div style={{ 
           display: 'flex', 
           justifyContent: 'center', 
@@ -504,7 +547,6 @@ const RegularizationViz: React.FC = () => {
           </div>
         </div>
         
-        {/* Bottom row: Weight sliders */}
         <div style={{ 
           display: 'flex', 
           justifyContent: 'center', 

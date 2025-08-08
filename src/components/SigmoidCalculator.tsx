@@ -4,37 +4,54 @@ import * as d3 from "d3";
 const SigmoidCalculator: React.FC = () => {
   const [zValue, setZValue] = useState<number>(0);
   const [sigmaValue, setSigmaValue] = useState<number>(0.5);
-  const precision = 20; // Fixed at 20 decimals
+  const precision = 20;
   const svgRef = useRef<SVGSVGElement | null>(null);
+  const graphContainerRef = useRef<HTMLDivElement | null>(null);
+  const [graphContainerWidth, setGraphContainerWidth] = useState<number>(600);
 
-  // Calculate sigmoid function with high precision
   const calculateSigmoid = (z: number): number => {
-    // Handle extreme values to prevent overflow/underflow
     if (z > 500) return 1;
     if (z < -500) return 0;
     return 1 / (1 + Math.exp(-z));
   };
 
-  // Update sigma value when z changes
   useEffect(() => {
     setSigmaValue(calculateSigmoid(zValue));
   }, [zValue]);
 
-  // D3.js visualization
+  useEffect(() => {
+    if (!graphContainerRef.current) return;
+    const update = () => {
+      if (graphContainerRef.current) {
+        const w = graphContainerRef.current.clientWidth;
+        if (w > 0) setGraphContainerWidth(w);
+      }
+    };
+    update();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const ResizeObs: any = (window as unknown as { ResizeObserver?: typeof ResizeObserver }).ResizeObserver;
+    if (!ResizeObs) {
+      window.addEventListener("resize", update);
+      return () => window.removeEventListener("resize", update);
+    }
+    const observer = new ResizeObs(() => update());
+    observer.observe(graphContainerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   useEffect(() => {
     if (!svgRef.current) return;
 
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
 
-    const width = 600;
-    const height = 400;
+    const paddingInside = 0;
+    const width = Math.max(320, graphContainerWidth - paddingInside);
+    const height = Math.round(width * (400 / 600));
     const margin = { top: 50, right: 50, bottom: 70, left: 80 };
 
-    // Set viewBox for proper scaling
-    svg.attr("viewBox", `0 0 ${width} ${height}`);
+    svg.attr("viewBox", `0 0 ${width} ${height}`).attr("preserveAspectRatio", "xMidYMid meet");
 
-    // Scales
     const xScale = d3
       .scaleLinear()
       .domain([-20, 20])
@@ -45,20 +62,17 @@ const SigmoidCalculator: React.FC = () => {
       .domain([0, 1])
       .range([height - margin.bottom, margin.top]);
 
-    // Generate sigmoid curve data
     const curveData: [number, number][] = [];
     for (let z = -20; z <= 20; z += 0.1) {
       curveData.push([z, calculateSigmoid(z)]);
     }
 
-    // Create line generator
     const line = d3
       .line<[number, number]>()
       .x(d => xScale(d[0]))
       .y(d => yScale(d[1]))
       .curve(d3.curveBasis);
 
-    // Add grid lines with improved styling
     const xGridLines = d3.axisBottom(xScale)
       .tickSize(-(height - margin.top - margin.bottom))
       .tickFormat(() => "")
@@ -87,7 +101,6 @@ const SigmoidCalculator: React.FC = () => {
       .style("stroke-width", "1px")
       .style("opacity", 0.8);
 
-    // Draw sigmoid curve with enhanced styling
     svg
       .append("path")
       .datum(curveData)
@@ -97,12 +110,10 @@ const SigmoidCalculator: React.FC = () => {
       .attr("stroke-width", 4)
       .style("filter", "drop-shadow(0px 0px 6px rgba(59, 130, 246, 0.4))");
 
-    // Add current point
     const currentPoint = svg
       .append("g")
       .attr("class", "current-point");
 
-    // Glow effect for current point
     currentPoint
       .append("circle")
       .attr("cx", xScale(zValue))
@@ -111,7 +122,6 @@ const SigmoidCalculator: React.FC = () => {
       .attr("fill", "#ff3366")
       .attr("opacity", 0.3);
 
-    // Main current point
     currentPoint
       .append("circle")
       .attr("cx", xScale(zValue))
@@ -122,7 +132,6 @@ const SigmoidCalculator: React.FC = () => {
       .attr("stroke-width", 2)
       .style("filter", "drop-shadow(0px 2px 4px rgba(255, 51, 102, 0.5))");
 
-    // Add vertical line from point to x-axis
     svg
       .append("line")
       .attr("x1", xScale(zValue))
@@ -134,7 +143,6 @@ const SigmoidCalculator: React.FC = () => {
       .attr("stroke-dasharray", "4,2")
       .attr("opacity", 0.7);
 
-    // Add horizontal line from point to y-axis
     svg
       .append("line")
       .attr("x1", margin.left)
@@ -146,7 +154,6 @@ const SigmoidCalculator: React.FC = () => {
       .attr("stroke-dasharray", "4,2")
       .attr("opacity", 0.7);
 
-    // Axes with improved styling
     const xAxis = d3.axisBottom(xScale).ticks(10);
     const yAxis = d3.axisLeft(yScale).ticks(5);
 
@@ -166,7 +173,6 @@ const SigmoidCalculator: React.FC = () => {
       .style("font-size", "12px")
       .style("fill", "#374151");
 
-    // Style axis lines
     svg.selectAll(".domain")
       .style("stroke", "#6b7280")
       .style("stroke-width", "1.5px");
@@ -175,7 +181,6 @@ const SigmoidCalculator: React.FC = () => {
       .style("stroke", "#6b7280")
       .style("stroke-width", "1px");
 
-    // Axis labels with better positioning
     svg
       .append("text")
       .attr("x", width / 2)
@@ -197,7 +202,6 @@ const SigmoidCalculator: React.FC = () => {
       .style("fill", "#374151")
       .text("σ(z)");
 
-    // Interactive clicking on the curve
     svg
       .append("rect")
       .attr("x", margin.left)
@@ -214,7 +218,7 @@ const SigmoidCalculator: React.FC = () => {
         setZValue(Number(clampedZ.toFixed(2)));
       });
 
-  }, [zValue, sigmaValue]);
+  }, [zValue, sigmaValue, graphContainerWidth]);
 
   return (
     <div style={{
@@ -225,16 +229,12 @@ const SigmoidCalculator: React.FC = () => {
       backgroundColor: "#fff",
       borderRadius: "12px",
     }}>
-      {/* Main Calculator */}
       <div style={{
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        width: "100%",
-        maxWidth: "500px"
+        width: "100%"
       }}>
-        
-        {/* Input Section */}
         <div style={{
           display: "flex",
           alignItems: "center",
@@ -321,26 +321,28 @@ const SigmoidCalculator: React.FC = () => {
           </div>
         </div>
 
-                {/* D3.js Graph */}
         <div style={{
           width: "100%",
           display: "flex",
           justifyContent: "center"
         }}>
-          <div style={{
+          <div ref={graphContainerRef} style={{
             backgroundColor: "#fff",
-            padding: "15px",
+            padding: 0,
             borderRadius: "10px",
+            width: "100%"
           }}>
             <svg 
-               ref={svgRef} 
-               width={600} 
-               height={400}
-               style={{ 
-                 borderRadius: "8px",
-                 backgroundColor: "#fff"
-               }} 
-             />
+              ref={svgRef}
+              style={{ 
+                width: "100%",
+                height: "auto",
+                aspectRatio: "3 / 2",
+                borderRadius: "8px",
+                backgroundColor: "#fff",
+                display: "block"
+              }} 
+            />
             <div style={{
               textAlign: "center",
               fontSize: "12px",

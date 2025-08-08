@@ -5,10 +5,11 @@ const OddsVsLogitComparison: React.FC = () => {
   const [probability, setProbability] = useState<number>(0.5);
   const [useLogScale, setUseLogScale] = useState<boolean>(false);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [containerWidth, setContainerWidth] = useState<number>(900);
   const leftSvgRef = useRef<SVGSVGElement | null>(null);
   const rightSvgRef = useRef<SVGSVGElement | null>(null);
 
-  // Calculate odds and logit
   const calculateOdds = (p: number): number => {
     if (p >= 1) return Infinity;
     if (p <= 0) return 0;
@@ -24,51 +25,70 @@ const OddsVsLogitComparison: React.FC = () => {
   const currentOdds = calculateOdds(probability);
   const currentLogit = calculateLogit(probability);
 
-  // Visualization update function
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const update = () => {
+      if (containerRef.current) {
+        const width = containerRef.current.clientWidth;
+        if (width > 0) setContainerWidth(width);
+      }
+    };
+    update();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const ResizeObs: any = (window as unknown as { ResizeObserver?: typeof ResizeObserver }).ResizeObserver;
+    if (!ResizeObs) {
+      window.addEventListener("resize", update);
+      return () => window.removeEventListener("resize", update);
+    }
+    const observer = new ResizeObs(() => update());
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   const updateVisualization = (currentLogScale: boolean) => {
     if (!leftSvgRef.current || !rightSvgRef.current) return;
 
-    const width = 400;
-    const height = 350;
+    const outerPaddingX = 60; // matches container paddings (30 left + 30 right)
+    const graphGap = 20;
+    const isStacked = containerWidth < 900;
+    const width = isStacked
+      ? Math.max(320, containerWidth - outerPaddingX)
+      : Math.max(320, Math.floor((containerWidth - outerPaddingX - graphGap) / 2));
+    const height = 360;
     const margin = { top: 40, right: 40, bottom: 60, left: 70 };
 
-    // Clear both SVGs
     const leftSvg = d3.select(leftSvgRef.current);
     const rightSvg = d3.select(rightSvgRef.current);
     leftSvg.selectAll("*").remove();
     rightSvg.selectAll("*").remove();
 
-    // Set viewBox for both
-    leftSvg.attr("viewBox", `0 0 ${width} ${height}`);
-    rightSvg.attr("viewBox", `0 0 ${width} ${height}`);
+    leftSvg.attr("viewBox", `0 0 ${width} ${height}`).attr("width", width).attr("height", height);
+    rightSvg.attr("viewBox", `0 0 ${width} ${height}`).attr("width", width).attr("height", height);
 
-    // Generate data for curves - force extension well beyond boundaries
     const curveData: [number, number, number][] = [];
     
-    // Generate comprehensive data with ultra-fine resolution
     for (let p = 0.00001; p <= 0.99999; p += 0.00005) {
       const odds = calculateOdds(p);
       const logit = calculateLogit(p);
       curveData.push([p, odds, logit]);
     }
     
-    // Add many extreme points to guarantee curve extends beyond plot
     const manyExtremePoints = [
-      0.000001,   // Very close to 0
-      0.91,       // odds = 10.11 (just above y=10)
-      0.92,       // odds ≈ 11.5 
-      0.93,       // odds ≈ 13.3
-      0.94,       // odds ≈ 15.7
-      0.95,       // odds = 19
-      0.96,       // odds = 24
-      0.97,       // odds ≈ 32
-      0.98,       // odds = 49
-      0.99,       // odds = 99
-      0.995,      // odds = 199
-      0.999,      // odds = 999
-      0.9999,     // odds = 9999
-      0.99999,    // odds = 99999
-      0.999999    // Very close to 1
+      0.000001,
+      0.91,
+      0.92,
+      0.93,
+      0.94,
+      0.95,
+      0.96,
+      0.97,
+      0.98,
+      0.99,
+      0.995,
+      0.999,
+      0.9999,
+      0.99999,
+      0.999999
     ];
     
     for (const p of manyExtremePoints) {
@@ -77,12 +97,10 @@ const OddsVsLogitComparison: React.FC = () => {
       curveData.push([p, odds, logit]);
     }
     
-    // Sort by probability to maintain proper curve order
     curveData.sort((a, b) => a[0] - b[0]);
 
-    // Filter data to avoid numerical instability with huge numbers
     const leftCurveData = currentLogScale 
-      ? curveData.filter(d => d[1] > 0 && d[1] <= 100) // For log scale, exclude 0 and extend range
+      ? curveData.filter(d => d[1] > 0 && d[1] <= 100)
       : curveData.filter(d => d[1] <= 15);
     const rightCurveData = curveData.filter(d => d[2] >= -10 && d[2] <= 10);
 
@@ -471,10 +489,10 @@ const OddsVsLogitComparison: React.FC = () => {
     if (!isAnimating) {
       updateVisualization(useLogScale);
     }
-  }, [probability, currentOdds, currentLogit, useLogScale, isAnimating]);
+  }, [probability, currentOdds, currentLogit, useLogScale, isAnimating, containerWidth]);
 
   return (
-    <div style={{
+    <div ref={containerRef} style={{
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
@@ -541,10 +559,13 @@ const OddsVsLogitComparison: React.FC = () => {
         gap: "20px",
         justifyContent: "center",
         marginBottom: "25px",
-        flexWrap: "nowrap"
+        flexWrap: "nowrap",
+        width: "100%",
+        flexDirection: containerWidth < 900 ? "column" : "row",
+        alignItems: "center"
       }}>
         {/* Left Graph - Odds */}
-        <div>
+        <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
           <svg 
             ref={leftSvgRef}
             width={400}
@@ -561,7 +582,7 @@ const OddsVsLogitComparison: React.FC = () => {
         </div>
 
         {/* Right Graph - Logit */}
-        <div>
+        <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
           <svg 
             ref={rightSvgRef}
             width={400}

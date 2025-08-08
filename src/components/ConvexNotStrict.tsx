@@ -1,27 +1,47 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 
-/**
- * Interactive visualization of convex vs strictly convex functions.
- * Shows heat-map, contour lines, and gradient descent animations.
- */
 const ConvexNotStrict: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
   const [functionType, setFunctionType] = useState<'not-strict' | 'strict'>('not-strict');
   const [isAnimating, setIsAnimating] = useState(false);
-  const width = 600;
-  const height = 450;
+  const [containerWidth, setContainerWidth] = useState<number>(600);
+  const width = Math.max(320, containerWidth - 40); // subtract container paddings (~20px each side)
+  const height = Math.round(width * 0.75); // preserve 4:3 aspect ratio
   const margin = { top: 20, right: 20, bottom: 60, left: 70 };
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const update = () => {
+      if (containerRef.current) {
+        const w = containerRef.current.clientWidth;
+        if (w > 0) setContainerWidth(w);
+      }
+    };
+    update();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const ResizeObs: any = (window as unknown as { ResizeObserver?: typeof ResizeObserver }).ResizeObserver;
+    if (!ResizeObs) {
+      window.addEventListener('resize', update);
+      return () => window.removeEventListener('resize', update);
+    }
+    const observer = new ResizeObs(() => update());
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   // Function definitions
   const functions = {
     'not-strict': {
       name: 'f(w₁,w₂) = w₁²',
+      description: 'Convex but not strictly convex: flat directions exist (along w₂), multiple minima along a line.',
       func: (w1: number, w2: number) => w1 * w1,
       grad: (w1: number, w2: number) => [2 * w1, 0], // gradient
     },
     'strict': {
       name: 'f(w₁,w₂) = w₁² + w₂²',
+      description: 'Strictly convex: unique minimum; curvature in all directions (both w₁ and w₂).',
       func: (w1: number, w2: number) => w1 * w1 + w2 * w2,
       grad: (w1: number, w2: number) => [2 * w1, 2 * w2], // gradient  
     }
@@ -30,11 +50,11 @@ const ConvexNotStrict: React.FC = () => {
   useEffect(() => {
     if (!svgRef.current) return;
     const svg = d3.select(svgRef.current);
-    svg.selectAll("*").remove(); // clear on re-render
+    svg.selectAll("*").remove();
+    svg.attr("viewBox", `0 0 ${width} ${height}`).attr("width", width).attr("height", height);
 
     const currentFunc = functions[functionType];
 
-    // --- 1. Scales -----------------------------------------------------------
     const xScale = d3
       .scaleLinear()
       .domain([-3, 3])
@@ -45,7 +65,6 @@ const ConvexNotStrict: React.FC = () => {
       .domain([-3, 3])
       .range([height - margin.bottom, margin.top]); // invert y for SVG
 
-    // --- 2. Generate a grid of f values -------------------------------------
     const gridSize = 80;                // resolution (80×80)
     const values: number[] = [];
     const xs: number[] = [];
@@ -65,7 +84,6 @@ const ConvexNotStrict: React.FC = () => {
       .scaleSequential(d3.interpolateViridis)
       .domain(d3.extent(values) as [number, number]);
 
-    // --- 3. Draw heat-map as rects ------------------------------------------
     const cellWidth = (xScale(3) - xScale(-3)) / (gridSize - 1);
     const cellHeight = (yScale(-3) - yScale(3)) / (gridSize - 1);
 
@@ -82,7 +100,6 @@ const ConvexNotStrict: React.FC = () => {
       .attr("fill", d => color(d))
       .attr("stroke-width", 0);
 
-    // --- 4. Overlay contour lines ------------------------------------------
     const contours = d3
       .contours()
       .size([gridSize, gridSize])
@@ -113,7 +130,6 @@ const ConvexNotStrict: React.FC = () => {
       .attr("stroke-width", 1)
       .attr("opacity", 0.8);
 
-    // --- 5. Interactive click area ------------------------------------------
     const clickGroup = svg.append("g").attr("class", "click-area");
     
     clickGroup
@@ -132,7 +148,6 @@ const ConvexNotStrict: React.FC = () => {
         const w1 = xScale.invert(mouseX);
         const w2 = yScale.invert(mouseY);
         
-        // Run gradient descent from this point
         runGradientDescent(w1, w2, svg, xScale, yScale, currentFunc);
       })
       .on("mouseover", function() {
@@ -141,7 +156,6 @@ const ConvexNotStrict: React.FC = () => {
         }
       });
 
-    // --- 6. Axes -------------------------------------------------------------
     const xAxis = d3.axisBottom(xScale);
     const yAxis = d3.axisLeft(yScale);
 
@@ -172,7 +186,6 @@ const ConvexNotStrict: React.FC = () => {
       .style("font-size", "14px")
       .text("w₂");
 
-    // --- 7. Instructions -----------------------------------------------------
     svg
       .append("text")
       .attr("x", width / 2)
@@ -399,7 +412,7 @@ const ConvexNotStrict: React.FC = () => {
   }, []);
 
   return (
-    <div style={{ 
+    <div ref={containerRef} style={{ 
       display: "flex", 
       flexDirection: "column",
       alignItems: "center",
@@ -468,7 +481,12 @@ const ConvexNotStrict: React.FC = () => {
       </div>
 
       {/* Visualization */}
-      <svg ref={svgRef} width={width} height={height} style={{ border: "1px solid #ddd" }} />
+      <svg
+        ref={svgRef}
+        width={width}
+        height={height}
+        style={{ border: "1px solid #ddd", maxWidth: "100%", height: "auto" }}
+      />
       
       {/* Legend */}
       <div style={{ 
