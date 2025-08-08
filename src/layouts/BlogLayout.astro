@@ -1,5 +1,6 @@
 ---
 import FloatingNav from '../components/FloatingNav.astro';
+import TableOfContents from '../components/TableOfContents.astro';
 import '../styles/about.css';
 
 export interface Props {
@@ -432,6 +433,8 @@ const author = "Rayhan M";
       </footer>
 
     </div>
+    
+    <TableOfContents />
     
     <script is:inline>
       window.addEventListener('scroll', () => {

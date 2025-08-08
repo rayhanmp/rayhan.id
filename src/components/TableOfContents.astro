@@ -1,0 +1,689 @@
+<div id="toc-container" class="toc-container">
+  <div class="toc-header">
+    <button id="toc-toggle" class="toc-toggle" aria-label="Toggle table of contents">
+      <div class="toc-toggle-content">
+        <svg class="toc-kebab-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="12" cy="5" r="2"/>
+          <circle cx="12" cy="12" r="2"/>
+          <circle cx="12" cy="19" r="2"/>
+        </svg>
+        <span class="toc-toggle-text">Contents</span>
+      </div>
+      <div class="toc-toggle-arrow">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </button>
+  </div>
+  
+  <nav id="toc-nav" class="toc-nav" aria-label="Table of contents">
+    <div class="toc-nav-content">
+      <ul id="toc-list" class="toc-list">
+      </ul>
+    </div>
+  </nav>
+</div>
+
+<div id="toc-mobile-overlay" class="toc-mobile-overlay" aria-hidden="true">
+  <div class="toc-mobile-header">
+    <span class="toc-mobile-title">Contents</span>
+    <button id="toc-mobile-close" class="toc-mobile-close" aria-label="Close contents">&times;</button>
+  </div>
+  <nav class="toc-mobile-nav" aria-label="Table of contents (mobile)">
+    <ul id="toc-mobile-list" class="toc-mobile-list"></ul>
+  </nav>
+  <div class="toc-mobile-backdrop"></div>
+  
+</div>
+
+<style>
+  .toc-container {
+    position: absolute;
+    width: 260px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    z-index: 100;
+    transition: box-shadow 0.2s ease;
+    overflow: hidden;
+    font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+ 
+
+      .toc-container.collapsed {
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+      display: block;
+    }
+
+  .toc-container.collapsed .toc-toggle-text,
+  .toc-container.collapsed .toc-nav {
+    display: none;
+  }
+
+  .toc-kebab-icon {
+    display: none;
+    color: #3A5D44;
+  }
+
+  .toc-container.collapsed .toc-header {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border-bottom: 0;
+    background: transparent;
+  }
+  .toc-container.collapsed .toc-toggle {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    line-height: 0;
+    box-sizing: border-box;
+  }
+  .toc-container.collapsed .toc-toggle-content {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    gap: 0;
+  }
+  .toc-container.collapsed .toc-kebab-icon {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+  }
+  .toc-container.collapsed .toc-toggle-arrow {
+    display: none;
+  }
+
+  .toc-header {
+    padding: 14px 24px 2px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    position: relative;
+  }
+
+  .toc-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(58, 93, 68, 0.2) 50%, transparent 100%);
+  }
+
+  .toc-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    padding: 0;
+    transition: all 0.3s ease;
+  }
+
+  .toc-toggle-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .toc-toggle-icon {
+    color: #3A5D44;
+    transition: transform 0.3s ease;
+  }
+
+  .toc-toggle-text {
+    font-size: 12px;
+    font-weight: 600;
+    color: #2c3e50;
+    letter-spacing: 0.3px;
+    transition: all 0.3s ease;
+  }
+
+  .toc-toggle-arrow {
+    display: none;
+  }
+
+
+  .toc-toggle:hover .toc-toggle-icon {
+    transform: scale(1.1);
+  }
+
+  .toc-toggle:hover .toc-toggle-text {
+    color: #3A5D44;
+  }
+
+  .toc-nav {
+    max-height: calc(100vh - 240px);
+    overflow-y: auto;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .toc-list {
+    list-style: none;
+    margin: 0;
+    padding: 20px;
+    font-size: 13px;
+  }
+
+  .toc-item {
+    margin: 0;
+  }
+
+  .toc-link {
+    display: block;
+    padding: 14px 24px;
+    color: #5a6c7d;
+    text-decoration: none;
+    font-size: 11px;
+    line-height: 1.4;
+    font-weight: 400;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-left: 3px solid transparent;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .toc-link::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, #3A5D44 0%, #4a7c59 100%);
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+  }
+
+  .toc-link:hover {
+    color: #3A5D44;
+    background: linear-gradient(90deg, rgba(58, 93, 68, 0.05) 0%, transparent 100%);
+    padding-left: 24px;
+  }
+
+  .toc-link:hover::before {
+    transform: scaleY(1);
+  }
+
+  .toc-link.active {
+    color: #3A5D44;
+    background: linear-gradient(90deg, rgba(58, 93, 68, 0.08) 0%, rgba(58, 93, 68, 0.02) 100%);
+    font-weight: 500;
+    padding-left: 24px;
+  }
+
+  .toc-link.active::before {
+    transform: scaleY(1);
+  }
+
+  .toc-link.h2 {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 12px;
+  }
+
+  .toc-link.h3 {
+    padding-left: 32px;
+    font-size: 11px;
+    color: #4a5568;
+  }
+
+  .toc-link.h4 {
+    padding-left: 44px;
+    font-size: 10px;
+    color: #718096;
+  }
+
+  .toc-nav::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .toc-nav::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 4px;
+    margin: 8px 0;
+  }
+
+  .toc-nav::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(58, 93, 68, 0.3) 0%, rgba(58, 93, 68, 0.2) 100%);
+    border-radius: 4px;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+  }
+
+  .toc-nav::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, rgba(58, 93, 68, 0.5) 0%, rgba(58, 93, 68, 0.4) 100%);
+  }
+
+  .toc-mobile-overlay {
+    position: fixed;
+    top: 0;
+    left: 100%;
+    width: 100%;
+    height: 100%;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    transition: left 0.35s ease;
+    z-index: 1002;
+  }
+  .toc-mobile-overlay.show {
+    left: 0;
+  }
+  .toc-mobile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #eee;
+  }
+  .toc-mobile-title {
+    font-size: 2rem;
+    padding-left: 2rem;
+    font-weight: 600;
+  }
+  .toc-mobile-close {
+    background: transparent;
+    border: none;
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .toc-mobile-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem 0.75rem 2rem;
+  }
+  .toc-mobile-list {
+    list-style: none;
+    margin: 0;
+    padding: 1.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .toc-mobile-list a {
+    text-decoration: none;
+    color: #2c3e50;
+    display: block;
+    padding: 0.75rem 0.5rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+  }
+  .toc-mobile-list a.h3 { padding-left: 1.25rem; font-size: 1rem; color: #4a5568; }
+  .toc-mobile-list a.h4 { padding-left: 2rem; font-size: 0.95rem; color: #718096; }
+
+  @media (max-width: 1200px) {
+    .toc-container {
+      position: fixed;
+      top: 50%;
+      bottom: auto;
+      right: -4px;
+      transform: translateY(-50%);
+      max-width: none;
+      border-radius: 12px;
+    }
+
+    .toc-container.collapsed {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+    }
+
+    .toc-header {
+      padding: 16px 20px 12px;
+    }
+
+    .toc-toggle-text {
+      font-size: 14px;
+    }
+
+    .toc-link {
+      padding: 10px 20px;
+      font-size: 13px;
+    }
+
+    .toc-link.h3 {
+      padding-left: 32px;
+    }
+
+    .toc-link.h4 {
+      padding-left: 44px;
+    }
+
+    /* Show kebab on mobile */
+    .toc-kebab-icon { display: block; }
+
+    .toc-nav { max-height: 300px; }
+  }
+
+  @keyframes slideInFromRight {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .toc-item {
+    animation: slideInFromRight 0.3s ease forwards;
+  }
+
+  .toc-item:nth-child(1) { animation-delay: 0.1s; }
+  .toc-item:nth-child(2) { animation-delay: 0.15s; }
+  .toc-item:nth-child(3) { animation-delay: 0.2s; }
+  .toc-item:nth-child(4) { animation-delay: 0.25s; }
+  .toc-item:nth-child(5) { animation-delay: 0.3s; }
+  .toc-item:nth-child(6) { animation-delay: 0.35s; }
+  .toc-item:nth-child(7) { animation-delay: 0.4s; }
+  .toc-item:nth-child(8) { animation-delay: 0.45s; }
+  .toc-item:nth-child(9) { animation-delay: 0.5s; }
+  .toc-item:nth-child(10) { animation-delay: 0.55s; }
+</style>
+
+<script>
+  // @ts-nocheck
+  class TableOfContents {
+    constructor() {
+      this.container = document.getElementById('toc-container');
+      this.toggle = document.getElementById('toc-toggle');
+      this.nav = document.getElementById('toc-nav');
+      this.list = document.getElementById('toc-list');
+      this.mobileOverlay = document.getElementById('toc-mobile-overlay');
+      this.mobileClose = document.getElementById('toc-mobile-close');
+      this.mobileList = document.getElementById('toc-mobile-list');
+      this.blogContainer = document.querySelector('.blog-container');
+      this.heroContainer = document.querySelector('.hero-image-container');
+      this.headings = [];
+      this.observer = null;
+      this.isCollapsed = false;
+      this.thresholdMultiplier = 1.0;
+      this.threshold = Math.max(0, Math.floor(window.innerHeight * this.thresholdMultiplier));
+      this.userOverride = false;
+      this.lastZone = 'top';
+      
+      this.init();
+    }
+
+    isMobile() {
+      return window.matchMedia('(max-width: 1200px)').matches;
+    }
+
+    isAtTop() {
+      return window.scrollY <= this.threshold;
+    }
+
+    recomputeThreshold() {
+      this.threshold = Math.max(0, Math.floor(window.innerHeight * this.thresholdMultiplier));
+    }
+
+    setCollapsed(shouldCollapse, { fromUser = false } = {}) {
+      this.isCollapsed = shouldCollapse;
+      this.container.classList.toggle('collapsed', this.isCollapsed);
+      if (fromUser) this.userOverride = true;
+    }
+
+    positionDesktopTOC() {
+      if (!this.container || this.isMobile()) return;
+      const containerRect = this.blogContainer?.getBoundingClientRect();
+      const heroRect = this.heroContainer?.getBoundingClientRect();
+      if (!containerRect) return;
+      const gap = 24; // space between ToC and article
+      const tocWidth = this.container.offsetWidth || 260;
+      const left = Math.max(16, containerRect.left + window.scrollX - tocWidth - gap);
+      const topTarget = (heroRect ? heroRect.top : containerRect.top) + window.scrollY;
+      this.container.style.left = `${left}px`;
+      this.container.style.top = `${Math.max(0, Math.floor(topTarget))}px`;
+    }
+
+    init() {
+      this.extractHeadings();
+      this.buildTOC();
+      this.buildMobileTOC();
+      this.applyInitialCollapse();
+      this.setupToggle();
+      this.setupScrollSpy();
+      this.setupSmoothScrolling();
+      this.setupResponsiveThreshold();
+      this.setupAutoCollapse();
+      this.setupMobileOverlay();
+      this.positionDesktopTOC();
+      window.addEventListener('resize', () => this.positionDesktopTOC(), { passive: true });
+      window.addEventListener('load', () => this.positionDesktopTOC());
+    }
+
+    extractHeadings() {
+      const blogPost = document.querySelector('.blog-post');
+      if (!blogPost) return;
+
+      this.headings = Array.from(blogPost.querySelectorAll('h2, h3'))
+        .filter(heading => {
+          const isInComponent = heading.closest('[data-component]') || 
+                               heading.closest('.academic-footnotes');
+          return !isInComponent;
+        })
+        .map((heading, index) => {
+          if (!heading.id) {
+            heading.id = `heading-${index}`;
+          }
+          
+          return {
+            element: heading,
+            id: heading.id,
+            text: heading.textContent.trim(),
+            level: parseInt(heading.tagName.charAt(1)),
+            top: heading.offsetTop
+          };
+        });
+    }
+
+    buildTOC() {
+      if (this.headings.length === 0) {
+        this.container.style.display = 'none';
+        return;
+      }
+
+      this.list.innerHTML = '';
+      
+      this.headings.forEach(heading => {
+        const li = document.createElement('li');
+        li.className = 'toc-item';
+        
+        const link = document.createElement('a');
+        link.href = `#${heading.id}`;
+        link.textContent = heading.text;
+        link.className = `toc-link h${heading.level}`;
+        link.dataset.headingId = heading.id;
+        
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          this.scrollToHeading(heading.id);
+        });
+        
+        li.appendChild(link);
+        this.list.appendChild(li);
+      });
+    }
+
+    buildMobileTOC() {
+      if (!this.mobileList) return;
+      this.mobileList.innerHTML = '';
+      this.headings.forEach(heading => {
+        const li = document.createElement('li');
+        const link = document.createElement('a');
+        link.href = `#${heading.id}`;
+        link.textContent = heading.text;
+        link.className = `h${heading.level}`;
+        link.dataset.headingId = heading.id;
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          this.scrollToHeading(heading.id);
+          this.closeMobileOverlay();
+        });
+        li.appendChild(link);
+        this.mobileList.appendChild(li);
+      });
+    }
+
+    setupToggle() {
+      this.toggle.addEventListener('click', () => {
+        if (this.isMobile()) {
+          this.openMobileOverlay();
+          return;
+        }
+        return;
+      });
+    }
+
+    setupScrollSpy() {
+      if (this.headings.length === 0) return;
+
+      this.observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach(entry => {
+            const headingId = entry.target.id;
+            const link = this.list.querySelector(`[data-heading-id="${headingId}"]`);
+            
+            if (entry.isIntersecting) {
+              this.list.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+              if (link) link.classList.add('active');
+            }
+          });
+        },
+        {
+          rootMargin: '-20% 0px -70% 0px',
+          threshold: 0
+        }
+      );
+
+      // Observe all headings
+      this.headings.forEach(heading => {
+        this.observer.observe(heading.element);
+      });
+    }
+
+    setupSmoothScrolling() {
+      document.documentElement.style.scrollBehavior = 'smooth';
+    }
+
+    setupResponsiveThreshold() {
+      window.addEventListener(
+        'resize',
+        () => {
+          this.recomputeThreshold();
+          if (this.isMobile()) {
+            this.userOverride = false;
+            this.setCollapsed(true);
+            this.lastZone = 'scrolled';
+            if (this.container) {
+              this.container.style.left = '';
+              this.container.style.top = '';
+            }
+            return;
+          }
+
+          if (this.isCollapsed) this.setCollapsed(false);
+          this.lastZone = 'top';
+          this.positionDesktopTOC();
+        },
+        { passive: true }
+      );
+    }
+
+    applyInitialCollapse() {
+      if (this.isMobile()) {
+        this.setCollapsed(true);
+        this.lastZone = 'scrolled';
+        if (this.container) {
+          this.container.style.left = '';
+          this.container.style.top = '';
+        }
+        return;
+      }
+
+      this.setCollapsed(false);
+      this.lastZone = 'top';
+      this.positionDesktopTOC();
+    }
+
+    setupAutoCollapse() {
+      return;
+    }
+
+    setupMobileOverlay() {
+      if (!this.mobileOverlay) return;
+      const backdrop = this.mobileOverlay.querySelector('.toc-mobile-backdrop');
+      if (this.mobileClose) {
+        this.mobileClose.addEventListener('click', () => this.closeMobileOverlay());
+      }
+      this.mobileOverlay.addEventListener('click', (e) => {
+        if (e.target === this.mobileOverlay || e.target === backdrop) {
+          this.closeMobileOverlay();
+        }
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && this.mobileOverlay.classList.contains('show')) {
+          this.closeMobileOverlay();
+        }
+      });
+      window.addEventListener('resize', () => {
+        if (!this.isMobile() && this.mobileOverlay.classList.contains('show')) {
+          this.closeMobileOverlay();
+        }
+      }, { passive: true });
+    }
+
+    openMobileOverlay() {
+      if (!this.mobileOverlay) return;
+      this.mobileOverlay.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+
+    closeMobileOverlay() {
+      if (!this.mobileOverlay) return;
+      this.mobileOverlay.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    scrollToHeading(headingId) {
+      const heading = document.getElementById(headingId);
+      if (heading) {
+        const offset = 100;
+        const elementPosition = heading.offsetTop - offset;
+        
+        window.scrollTo({
+          top: elementPosition,
+          behavior: 'smooth'
+        });
+      }
+    }
+
+    destroy() {
+      if (this.observer) {
+        this.observer.disconnect();
+      }
+    }
+  }
+
+  // Initialize when DOM is loaded
+  document.addEventListener('DOMContentLoaded', () => {
+    new TableOfContents();
+  });
+</script> 
