@@ -350,7 +350,7 @@ Strict convexity may not hold in cases of perfect separation or redundant featur
 
 ### See Logistic Regression in Action
 
-Before doing another deep dive into the math, let's tinker for a while with logistic regression. See it, feel it, and build a good mental model along the way as to how the training process works.
+Before doing another deep dive into the math, let's tinker for a while with logistic regression. See it, feel it, and build a good mental model along the way as to how the training process works<sup><a href="#footnote-1" id="footnote-ref-1" className="footnote-ref" aria-label="Jump to footnote 1">[1]</a></sup>.
 <LogisticRegressionLearning client:load />
 
 Observe how the decision boundary (black line) evolves from a random starting point toward an optimal separation between classes. The loss curve consistently decreases, thanks to the convex nature of the loss function. At the same time, accuracy improves as the model learns to better distinguish between the two classes.
@@ -358,7 +358,7 @@ Observe how the decision boundary (black line) evolves from a random starting po
 ---
 ### How does the training process actually work?
 After seeing the interactive example above, I hope you can already have some intuition to how the training process work.
-However, we still need to understand how it actually work mathematically.
+However, we still need to understand how it actually work mathematically<sup><a href="#footnote-2" id="footnote-ref-2" className="footnote-ref-2" aria-label="Jump to footnote 2">[2]</a></sup>.
 
 Interestingly enough, the training process of LR isn't that different compared to deep learning. Fundamentally, they both try to minimise loss using backpropagation to modify weights and biases. The only difference being that in LR, the loss function is convex and we only use a single layer. Let's recap what we have so far.
 
@@ -605,6 +605,12 @@ Logistic Regression may seem deceptively simple: just a linear model passed thro
 
 
 <div className="academic-footnotes">
+### Footnotes
+    <span id="footnote-1"><strong>[1]</strong></span> In the worked example, we average gradients over the whole dataset (batch gradient descent) and, for classification, a default decision threshold of 0.5 is assumed when converting probabilities to labels. In online or streaming training you’d typically use stochastic (or mini‑batch) gradient descent, and the decision threshold is a tunable choice—use the AUC‑ROC analysis above to pick a threshold that matches your precision–recall trade‑offs.
+    <a href="#footnote-ref-1" className="footnote-backref" aria-label="Back to content"> ↩</a>
+
+    <span id="footnote-2"><strong>[2]</strong></span> In classical statistics, logistic regression was fitted with Newton–Raphson (IRLS), and many statistical libraries still do so. Modern general-purpose optimisers often use quasi-Newton methods like BFGS or its limited-memory variant L-BFGS, which converge faster than plain gradient descent on smaller datasets. For very large datasets, we usually switch to first-order methods (SGD) that scale more easily.
+    <a href="#footnote-ref-2" className="footnote-backref" aria-label="Back to content"> ↩</a>
 
 ### Acknowledgments
 
