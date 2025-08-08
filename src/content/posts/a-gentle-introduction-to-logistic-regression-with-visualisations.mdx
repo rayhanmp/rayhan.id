@@ -15,7 +15,7 @@ import OddsVsLogitComparison from '../../components/OddsVsLogitComparison.tsx';
 import InteractiveROCCurve from '../../components/InteractiveROCCurve.tsx';
 import RegularizationViz from '../../components/L2RegularizationViz.tsx';
 
-In the early 1900s, the use of linear regression has started to become much more common. Everyone uses it to try to gauge the correlation between two variables, allowing them to predict a continuous value, such as the relation between age and height.
+Linear regression, formalised in the late 19th century by Francis Galton and Karl Pearson, became widely used in the early 20th century for modelling continuous relationships between variables. Everyone uses it to try to gauge the correlation between two variables, allowing them to predict a continuous value, such as the relation between age and height.
 
 **However, a new question appears:**
 
@@ -73,7 +73,7 @@ Let's try plugging in some numbers:
 
 So, the variance depends on the predicted value itself. This means that the spread of the errors is not constant!
 
-Last but not least, the loss function in linear regression, Mean Squared Error (MSE), is also not suitable for classification tasks. MSE punishes error linearly, whereas in classification tasks we want to punish confident but wrong prediction heavily.
+Last but not least, the loss function in linear regression, Mean Squared Error (MSE), squares the error, which doesn’t align well with classification. Cross-entropy penalises confident-but-wrong predictions much more appropriately.
 
 ---
 
@@ -115,22 +115,22 @@ $$
 \text{logit}(p) = \log\left(\frac{p}{1-p}\right)
 $$
 
-As opposed to odds that grow sharply as probability approaching 1, logit behaves more linearly. Moreover, it also scales from $-\infty$ to $\infty$ making it easier to interpret and work with.
+As opposed to odds that grow sharply as probability approaching 1, logit is approximately linear over mid-range probabilities. Moreover, it also scales from $-\infty$ to $\infty$ making it easier to interpret and work with.
 
 However, you should **try it yourself** by playing with the interactive sliders below.
 <OddsVsLogitComparison client:load />
 
-As you can see, logits behave more nicely when being plotted on a linear scale, while still preserving the information behind. This very property allows us to model probability to a linear function, that is:
+As you can see, logits behave more nicely when plotted on a linear scale, while still preserving the information behind. This very property allows us to model log-odds as a linear function, that is:
 $$
 z = W^{T}X + b
 $$
 
-Now, the next question is: how do we inverse it back to probability? Congratulations, you just asked the million dollar questions.
+Now, the next question is: how do we invert it back to probability? Congratulations, you just asked the million-dollar question.
 
 ---
 ### Introducing the sigmoid function
 
-In the nineteenth century, Pierre François Verhulst introduced a function to model population growth: **logistic function** (sometimes called as sigmoid due to its S shape).
+In the nineteenth century, Pierre François Verhulst introduced a function to model population growth: **logistic function** (sometimes called the sigmoid due to its S shape).
 $$
 \sigma(z) = \frac{1}{1 + e^{-z}}
 $$
@@ -141,7 +141,7 @@ Now, you might ask, what's so special about it? Well, the interesting thing is t
 
 <SigmoidCalculator client:load />
 
-Please note that while I capped the value between {-20, 20} due to precision issue, in reality, the value of $z$ can be anything, meaning $z \in \mathbb{R}$. The sigmoid function produces **asymptotes** in 0 and 1, meaning they will approach it, but never truly reach them.
+Please note that while I capped the value between {-20, 20} due to precision issues, in reality, the value of $z$ can be anything, meaning $z \in \mathbb{R}$. The sigmoid function produces **asymptotes** in 0 and 1, meaning they will approach it, but never truly reach them.
 
 If it's not obvious to you, yet, the sigmoid curve resembles the logits curve, quite well, isn't it? In fact, we can inverse the value of logits to probability with sigmoid function! Not convinced? Let's prove it together.
 
@@ -228,12 +228,12 @@ $$
 \log L(\theta) = \sum_{i=1}^{n} \left[ y_i \log(\hat{y}_i) + (1 - y_i) \log(1 - \hat{y}_i) \right]
 $$
 
-MLE says that we need to choose parameters $\theta$ that maximises that log-likelihood.
+MLE says that we need to choose parameters $\theta$ that maximise that log-likelihood.
 $$
 \hat{\theta}_{\text{MLE}} = \arg\max_{\theta} \log L(\theta)
 $$
 
-In practice, though, we almost never maximise. Optimisers are minimisers, as such we minimise the negative log-likelihood.
+In modern ML libraries, optimisers typically minimise objectives, so we minimise the negative log-likelihood instead of directly maximising the log-likelihood.
 $$
 \mathcal{L}(\theta) = - \log L(\theta)
 $$
@@ -249,7 +249,7 @@ $$
 In practice, we usually call the loss function derived above with its popular name: **Binary Cross-Entropy (BCE)**.
 
 $$
-\mathcal{J}(\mathbf{w}) = -\frac{1}{m}\sum_{i=1}^{m}\left[y_i\log(\hat{y}_i)+(1-y_i)\log(1-\hat{y}_i)\right]
+\mathcal{J}(\mathbf{w}) = -\frac{1}{n}\sum_{i=1}^{m}\left[y_i\log(\hat{y}_i)+(1-y_i)\log(1-\hat{y}_i)\right]
 $$
 
 This function is a convex function, making its global minima easy to obtain using gradient descent. What is a convex function, you may ask?
@@ -279,77 +279,58 @@ $$
 L(w, b) = -y \log(\sigma(z)) - (1 - y) \log(1 - \sigma(z))
 $$
 
-Substitute $z = w^T x + b$:
+Substitute $z = w^T x + b$ and use the identities:
 
 $$
-L(w, b) = -y \log(\sigma(w^T x + b)) - (1 - y) \log(1 - \sigma(w^T x + b))
+\log\sigma(z) = -\log(1+e^{-z}),\quad \log(1-\sigma(z)) = -z - \log(1+e^{-z})
 $$
 
-Using the identity:
+With some simplification, we get the compact **{0,1}** form:
 
 $$
-\log(1 - \sigma(z)) = -z - \log(1 + e^{-z})
+L(w,b) = \log(1+e^{z}) - y\,z,\quad \text{where } z=w^T x + b
 $$
-
-And some simplification, we get:
-
-$$
-L(w, b) = \log(1 + e^{-y(w^T x + b)})
-$$
-
-This is the most common compact form of BCE.
 
 ---
-This loss is a composition of two functions:
+This loss is a composition of two functions plus a linear term:
 
-- $a(w) = -y(w^T x + b)$: an affine function  
-- $f(a) = \log(1 + e^a)$: a convex and increasing function  
+- $g(w) = z = w^T x + b$: an affine function  
+- $f(z) = \log(1 + e^{z})$: a convex and increasing function  
+- $-y\,z$: linear (does not affect convexity)
 
-There is a known rule:
+By the standard composition rule:
 
-> The composition of a convex, increasing function with an affine function is convex.
+> The composition of a convex, increasing function with an affine function is convex. Adding a linear function preserves convexity.
 
-Therefore, the BCE loss is convex in \( w \).
+Therefore, the BCE loss is convex in $w$.
 
 ---
 
 However, we might want to prove it more formally.
 
-Let $z = w^T x + b$. The derivative of the loss is:
+Let $z = w^T x + b$. The derivative of the loss w.r.t. $z$ is:
 
 $$
-\nabla_w L = \frac{dL}{dz} \cdot \frac{dz}{dw}
+\frac{\partial L}{\partial z} = \sigma(z) - y
 $$
 
-We know:
-
-- $\frac{dL}{dz} = -y \cdot \sigma(-y z)$  
-- $\frac{dz}{dw} = x$
-
-So:
+Using $\frac{dz}{dw}=x$ and $\frac{dz}{db}=1$ we obtain the gradients:
 
 $$
-\nabla_w L = -y \cdot \sigma(-y z) \cdot x
+\nabla_w L = (\sigma(z) - y)\,x,\qquad \frac{\partial L}{\partial b} = \sigma(z) - y
 $$
-
 ---
 
 Take the derivative again to get the Hessian:
 
 $$
-\nabla^2_w L = \frac{d}{dw}(-y \cdot \sigma(-y z) \cdot x)
-$$
-
-This becomes:
-
-$$
-\nabla^2_w L = \sigma(y z) \cdot (1 - \sigma(y z)) \cdot x x^T
+\nabla^2_w L = \sigma(z)\big(1-\sigma(z)\big)\, x x^T
 $$
 
 This is a scalar times an outer product:
 
-- $\sigma(y z)(1 - \sigma(y z)) > 0$ 
-- $ x x^T$ is positive semi-definite  
+- $\sigma(z)(1 - \sigma(z)) > 0$ 
+- $x x^T$ is positive semi-definite  
 
 Since the hessian is positive semi-definite:
 
@@ -547,7 +528,7 @@ $$
 b \leftarrow b - \eta \cdot \nabla_b = 0.0167 - 0.1 \cdot (-0.1514) = 0.0167 + 0.0151 = 0.0318
 $$
 
-You can continue with further epoch, but hopefully the example above has given you enough intuition on how to do it yourself.
+You can continue with further epochs, but hopefully the example above has given you enough intuition on how to do it yourself.
 
 ---
 
@@ -620,7 +601,7 @@ The quadratic growth of L2 makes it excellent at shrinking large weights toward 
 
 ### Conclusion
 
-Logistic Regression may seem deceptively simple: just a linear model passed through a sigmoid. But beneath that  surface lies a foundational concept in machine learning. While it may not compete with complex models in raw power, its interpretability, theoretical grounding, and mathematical tractability make it an essential tool. Mastering logistic regression also help you build the intuition needed for neural networks. Hopefully this article can help you understand more about logistic regression in depth.
+Logistic Regression may seem deceptively simple: just a linear model passed through a sigmoid. But beneath that  surface lies a foundational concept in machine learning. While it may not compete with complex models in raw power, its interpretability, theoretical grounding, and mathematical tractability make it an essential tool. Mastering logistic regression also helps you build the intuition needed for neural networks. Hopefully this article can help you understand more about logistic regression in depth.
 
 
 <div className="academic-footnotes">
