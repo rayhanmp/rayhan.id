@@ -1,0 +1,201 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const pageTitle = "Contact - Rayhan M";
+const pageDescription = "Get in touch with Rayhan Maheswara Pramanda via email or social links.";
+const emailAddress = "mail@rayhan.id";
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} currentPage="/contact">
+  <style>
+    .contact-hero {
+      padding: 8rem 0 3rem 0;
+      text-align: left;
+    }
+
+    .contact-title {
+      font-size: 5rem;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+      font-weight: 300;
+      color: #9b9b9b;
+    }
+
+    .contact-title .highlight { font-weight: 700; color: #000; }
+
+    .contact-subtitle {
+      font-size: 1.7rem;
+      color: #555;
+      margin-bottom: 3rem;
+    }
+
+    .contact-section { padding: 2rem 0 6rem 0; }
+
+    .contact-card {
+      background: #fff;
+      border-left: 4px solid #000;
+      border-radius: 0 8px 8px 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      padding: 2rem;
+    }
+
+    .form-row { display: grid; gap: 1.5rem; grid-template-columns: 1fr; }
+    @media (min-width: 750px) { .form-row { grid-template-columns: 1fr 1fr; } }
+
+    .helper-text { font-size: 1.2rem; color: #777; margin-top: -0.5rem; }
+    .error-text { font-size: 1.2rem; color: #b00020; display: none; }
+
+    .actions { display: flex; gap: 1rem; align-items: center; margin-top: 2rem; }
+    .note { font-size: 1.3rem; color: #666; }
+
+    .alt-contact {
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid #eee;
+      font-size: 1.5rem;
+    }
+
+    .alt-contact a { text-decoration: underline; }
+
+    .success-banner, .error-banner {
+      display: none;
+      padding: 1rem 1.2rem;
+      border-radius: 6px;
+      margin-bottom: 1.5rem;
+      font-size: 1.4rem;
+    }
+    .success-banner { background: #e8f5e9; color: #1b5e20; border: 1px solid #c8e6c9; }
+    .error-banner { background: #ffebee; color: #b71c1c; border: 1px solid #ffcdd2; }
+
+    @media (max-width: 768px) {
+      .contact-title { font-size: 3.4rem; }
+      .contact-subtitle { font-size: 1.5rem; }
+    }
+  </style>
+
+  <section class="contact-hero">
+    <div class="container">
+      <h1 class="contact-title">Let's <span class="highlight">Connect</span></h1>
+      <p class="contact-subtitle">Have a question, opportunity, or idea? Send me a message and I’ll get back to you. You can also reach me on <a href="https://linkedin.com/in/rayhanmp" target="_blank" rel="noopener">LinkedIn</a>.</p>
+      <div class="blog-divider" style="width:100%; height:1px; background:#ddd;"></div>
+    </div>
+  </section>
+
+  <section class="contact-section">
+    <div class="container">
+      <div class="contact-card">
+        <div id="successBanner" class="success-banner">
+          Your email client should open shortly. If it doesn't, you can email me directly at {emailAddress}.
+        </div>
+        <div id="errorBanner" class="error-banner">
+          Please complete the required fields correctly.
+        </div>
+
+        <form id="contactForm" novalidate>
+          <div class="form-row">
+            <div>
+              <label for="name">Name</label>
+              <input id="name" name="name" type="text" placeholder="Your name" required class="u-full-width" />
+              <div id="nameError" class="error-text">Name is required.</div>
+            </div>
+            <div>
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" placeholder="you@example.com" required class="u-full-width" />
+              <div id="emailError" class="error-text">Enter a valid email address.</div>
+            </div>
+          </div>
+
+          <div>
+            <label for="subject">Subject</label>
+            <input id="subject" name="subject" type="text" placeholder="What’s this about?" required class="u-full-width" />
+            <div id="subjectError" class="error-text">Subject is required.</div>
+          </div>
+
+          <div>
+            <label for="message">Message</label>
+            <textarea id="message" name="message" placeholder="Write your message here..." required class="u-full-width" rows="6"></textarea>
+            <div id="messageError" class="error-text">Message is required.</div>
+            <div class="helper-text">This form opens your email app using a mailto link.</div>
+          </div>
+
+          <div class="actions">
+            <button id="submitBtn" type="submit" class="button">Send Message</button>
+          </div>
+
+          <div class="alt-contact">
+            Prefer your own email client? Email me at <a href={`mailto:${emailAddress}`}>{emailAddress}</a> or message me on <a href="https://linkedin.com/in/rayhanmp" target="_blank" rel="noopener">LinkedIn</a>.
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <script define:vars={{ emailAddress }}>
+    const form = document.getElementById('contactForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const successBanner = document.getElementById('successBanner');
+    const errorBanner = document.getElementById('errorBanner');
+
+    function setVisible(el, visible) {
+      if (!el) return;
+      el.style.display = visible ? 'block' : 'none';
+    }
+
+    function validateEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    form && form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const nameInput = document.getElementById('name');
+      const emailInput = document.getElementById('email');
+      const subjectInput = document.getElementById('subject');
+      const messageInput = document.getElementById('message');
+
+      const nameError = document.getElementById('nameError');
+      const emailError = document.getElementById('emailError');
+      const subjectError = document.getElementById('subjectError');
+      const messageError = document.getElementById('messageError');
+
+      const nameVal = nameInput && nameInput.value ? nameInput.value.trim() : '';
+      const emailVal = emailInput && emailInput.value ? emailInput.value.trim() : '';
+      const subjectVal = subjectInput && subjectInput.value ? subjectInput.value.trim() : '';
+      const messageVal = messageInput && messageInput.value ? messageInput.value.trim() : '';
+
+      let isValid = true;
+      if (!nameVal) { setVisible(nameError, true); isValid = false; } else { setVisible(nameError, false); }
+      if (!emailVal || !validateEmail(emailVal)) { setVisible(emailError, true); isValid = false; } else { setVisible(emailError, false); }
+      if (!subjectVal) { setVisible(subjectError, true); isValid = false; } else { setVisible(subjectError, false); }
+      if (!messageVal) { setVisible(messageError, true); isValid = false; } else { setVisible(messageError, false); }
+
+      if (!isValid) {
+        setVisible(errorBanner, true);
+        setVisible(successBanner, false);
+        return;
+      }
+
+      const bodyLines = [
+        `Name: ${nameVal}`,
+        `Email: ${emailVal}`,
+        '',
+        messageVal,
+      ];
+      const subject = encodeURIComponent(subjectVal);
+      const body = encodeURIComponent(bodyLines.join('\n'));
+      const mailto = `mailto:${emailAddress}?subject=${subject}&body=${body}`;
+
+      setVisible(errorBanner, false);
+      setVisible(successBanner, true);
+      submitBtn && submitBtn.setAttribute('disabled', 'true');
+      submitBtn && submitBtn.classList.add('button-primary');
+
+      setTimeout(() => {
+        window.location.href = mailto;
+        setTimeout(() => submitBtn && submitBtn.removeAttribute('disabled'), 1500);
+      }, 200);
+    });
+  </script>
+</BaseLayout>
+
+
