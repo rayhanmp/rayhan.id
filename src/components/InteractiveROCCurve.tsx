@@ -590,6 +590,7 @@ const InteractiveROCCurve: React.FC = () => {
             e.currentTarget.style.backgroundColor = "#2e7d32";
             e.currentTarget.style.transform = "translateY(0)";
           }}
+          data-umami-event="Randomize Data"
         >
           Randomize Data
         </button>

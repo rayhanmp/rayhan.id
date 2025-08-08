@@ -548,6 +548,7 @@ const LogisticRegressionLearning: React.FC = () => {
             cursor: isTraining ? "not-allowed" : "pointer",
             margin: "0 0 0 0"
           }}
+          data-umami-event="LR Training Demo"
         >
           {isTraining ? "Training..." : "Start Training"}
         </button>
