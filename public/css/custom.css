@@ -292,9 +292,6 @@ pre button.copy.copied .ready {
 }
 
 /* Footnotes ordered list - uses existing ol styling from above */
-.academic-footnotes ol:last-of-type {
-  /* This will inherit the existing ol styles we already defined */
-}
 
 /* Style footnote links within the academic section */
 .academic-footnotes a {
@@ -372,3 +369,4 @@ pre button.copy.copied .ready {
     font-size: inherit !important;
   }
 }
+
