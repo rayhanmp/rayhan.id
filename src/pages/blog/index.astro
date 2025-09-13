@@ -547,12 +547,21 @@ const regularPosts = posts; // Show all posts including the featured one
         max-width: 100%;
       }
       }
+
+      @media (max-width: 550px) {
+      .blog-grid {
+        grid-template-columns: 1fr;
+      }
+      .blog-card {
+        max-width: 100%;
+      }
+      }
   </style>
 
   <div class="container">
     <div class="blog-header">
       <h1>My <span class="highlight">blog</span> & <span class="highlight">writings</span>.</h1>
-      <p>Thoughts, technical insights, and explorations across technology, machine learning, and everything in between.</p>
+      <p>Thoughts, technical insights, and explorations across technology, biology, machine learning, and everything in between. Can be opinionated sometimes.</p>
       <div class="blog-divider"></div>
     </div>
 
