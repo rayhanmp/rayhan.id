@@ -195,7 +195,7 @@ const regularPosts = posts; // Show all posts including the featured one
       color: white;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 550px) {
       .blog-grid {
         grid-template-columns: 1fr;
       }
@@ -528,6 +528,20 @@ const regularPosts = posts; // Show all posts including the featured one
       .featured-post::before {
         font-size: 1rem;
         padding: 0.8rem 1rem;
+      }
+      .blog-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .blog-card {
+        max-width: 100%;
+      }
+      @media (max-width: 550px) {
+        .blog-grid {
+          grid-template-columns: 1fr;
+        }
+        .blog-card {
+          max-width: 100%;
+        }
       }
     }
   </style>
