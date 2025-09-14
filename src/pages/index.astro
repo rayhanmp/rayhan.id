@@ -1,6 +1,13 @@
 ---
 import profile from '../assets/rayv2.webp';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('posts');
+const latestPosts = allPosts
+  .filter((post) => post.data.isPublished)
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+  .slice(0, 3);
 ---
 
 <BaseLayout title="Rayhan M" currentPage="/">
@@ -53,6 +60,125 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       width: 100% !important;
       margin: 0 !important;
       padding: 0 !important;
+    }
+
+    /* Latest posts - extra subtle */
+    .latest-posts-section {
+      margin: 1rem 0 1.25rem;
+    }
+
+    .latest-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .latest-header h3 {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #777;
+      letter-spacing: 0.02em;
+    }
+
+    .latest-view-all {
+      font-size: 1.1rem;
+      color: #888;
+      text-decoration: none;
+      border-bottom: 1px dotted #bbb;
+    }
+
+    .latest-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.5rem 1rem;
+      justify-items: start;
+      align-items: start;
+      min-width: 0; /* allow children to shrink for ellipsis */
+    }
+
+    .latest-item {
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      padding: 0;
+      text-decoration: none;
+      color: inherit;
+      display: flex; /* ensure child can flex and truncate */
+      min-width: 0; /* allow child ellipsis in grid */
+      max-width: 100%;
+      overflow: hidden; /* ensure children don't overflow grid cell */
+    }
+
+    .latest-item:hover .latest-title {
+      text-decoration: underline;
+    }
+
+    .latest-title {
+      flex: 1 1 auto;
+      min-width: 0;
+      font-weight: 500;
+      font-size: 1.15rem;
+      line-height: 1.2;
+      margin: 0;
+      color: #333;
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .latest-meta {
+      font-size: 1rem;
+      color: #999;
+      margin-left: 0.4rem;
+    }
+
+    .latest-meta::before {
+      content: ' — ';
+      color: #ccc;
+    }
+
+    /* Separator not needed for grid layout */
+    .latest-list a + a::before {
+      content: none;
+    }
+
+    /* Bottom inline variant (ultra subtle) */
+    .latest-inline {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.25rem;
+      color: #9b9b9b;
+      font-size: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .latest-inline a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .latest-inline a:hover {
+      text-decoration: underline;
+    }
+
+    .latest-inline a + a::before {
+      content: '·';
+      color: #cfcfcf;
+      margin: 0 0.5rem;
+    }
+    
+    @media (max-width: 768px) {
+      .latest-title { font-size: 1.1rem; }
+      .latest-meta { font-size: 0.95rem; }
+      .latest-list { grid-template-columns: 1fr; justify-items: start; }
+      .latest-item { text-align: left; }
     }
   </style>
 
@@ -226,6 +352,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
            </div>
     </header>
     <hr>
+    
+    <section class="section latest-posts-section" id="latest-posts">
+      <div class="latest-header">
+        <h3>Latest blog post</h3>
+        <a href="/blog" class="latest-view-all">View all</a>
+      </div>
+      <div class="latest-list">
+        {latestPosts.map(({ slug, data }) => (
+          <a href={`/blog/${slug}`} class="latest-item">
+            <span class="latest-title">{data.title}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+    
     <section class="section" id="certificate"> 
       <h3>Certificate & Awards</h3>
       <div class="row">
