@@ -710,7 +710,7 @@ const regularPosts = posts; // Show all posts including the featured one
           ignoreLocation: true
         });
       } catch (error) {
-        console.log('Search failed to load');
+        console.error('Search failed to load:', error);
       }
     }
     
@@ -827,9 +827,62 @@ const regularPosts = posts; // Show all posts including the featured one
       }
     }
     
-    setupSearch();
-    connectSearchBox();
-    setupFilter();
-    animateCards();
+    // Initialize everything when DOM and external scripts are ready
+    async function initializeBlogPage() {
+      try {
+        await new Promise((resolve) => {
+          const checkFontAwesome = () => {
+            // Check if FontAwesome has loaded by looking for the search icon specifically
+            const searchIcon = document.querySelector('.search-icon');
+            if (searchIcon) {
+              const computedStyle = window.getComputedStyle(searchIcon, ':before');
+              const content = computedStyle.getPropertyValue('content');
+              // FontAwesome icons have specific content values when loaded
+              if (content && content !== 'none' && content !== '""') {
+                resolve();
+                return true;
+              }
+            }
+            return false;
+          };
+
+          if (checkFontAwesome()) {
+            return;
+          }
+
+          const intervalId = setInterval(() => {
+            if (checkFontAwesome()) {
+              clearInterval(intervalId);
+            }
+          }, 100);
+          
+          // Fallback timeout after 2 seconds
+          setTimeout(() => {
+            clearInterval(intervalId);
+            resolve();
+          }, 1000);
+        });
+
+        // Initialize search functionality
+        await setupSearch();
+        connectSearchBox();
+        setupFilter();
+        
+        setTimeout(animateCards, 100);
+        
+      } catch (error) {
+        console.error('Failed to initialize blog page:', error);
+        connectSearchBox();
+        setupFilter();
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeBlogPage);
+    } else {
+      initializeBlogPage();
+    }
+
+    document.addEventListener('astro:page-load', initializeBlogPage);
   </script>
 </BaseLayout>

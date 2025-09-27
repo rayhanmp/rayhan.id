@@ -52,6 +52,8 @@ const author = "Rayhan M";
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/8c35c08da0.js" crossorigin="anonymous" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" defer></script>
@@ -69,7 +71,7 @@ const author = "Rayhan M";
       }
       .blog-container {
         max-width: 720px;
-        margin: 4rem auto;
+        margin: 0 auto;
         padding: 0 1rem;
         line-height: 1.7;
         font-size: 1.85rem;
@@ -104,18 +106,121 @@ const author = "Rayhan M";
       }
 
       .back-button {
-        margin-bottom: 2rem;
-        display: inline-block;
-        background-color: #f5f5f5;
+        position: fixed;
+        top: 2rem;
+        left: 2rem;
+        z-index: 1000;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
         color: #333;
-        padding: 0.5rem 1rem;
-        border-radius: 8px;
+        padding: 0.8rem 1.2rem;
+        border-radius: 25px;
         text-decoration: none;
-        transition: background-color 0.2s ease;
+        font-size: 1.4rem;
+        font-weight: 500;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.2s ease;
       }
 
       .back-button:hover {
-        background-color: #eaeaea;
+        background: rgba(255, 255, 255, 1);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      /* Hero Section */
+      .hero-section {
+        position: relative;
+        height: 50vh;
+        min-height: 350px;
+        max-height: 500px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        overflow: hidden;
+        margin-bottom: 4rem;
+        padding-top: 80px;
+      }
+
+      .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.3) 100%);
+        z-index: 1;
+      }
+
+      .hero-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        color: white;
+        max-width: 800px;
+        padding: 0 2rem;
+      }
+
+      .hero-title {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(2.5rem, 5vw, 4.5rem);
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 1rem;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+      }
+
+      .hero-description {
+        font-family: 'Inter', sans-serif;
+        font-size: 1.8rem;
+        font-weight: 400;
+        line-height: 1.5;
+        margin-bottom: 1.5rem;
+        opacity: 0.95;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .hero-author {
+        font-family: 'Inter', sans-serif;
+        font-size: 1.6rem;
+        font-weight: 400;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+        letter-spacing: 0.5px;
+      }
+
+      .hero-badges {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+      }
+
+      .hero-badge {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 0.6rem 1.2rem;
+        border-radius: 20px;
+        font-size: 1.3rem;
+        font-weight: 500;
+        font-family: 'Inter', sans-serif;
+      }
+
+      .content-wrapper {
+        margin-top: 2rem;
       }
 
       .blog-post {
@@ -274,6 +379,54 @@ const author = "Rayhan M";
         .next-post {
           text-align: left;
         }
+
+        .hero-section {
+          height: 45vh;
+          min-height: 280px;
+          background-attachment: scroll;
+          margin-bottom: 3rem;
+          padding: 40px 50px;
+        }
+
+        .hero-content {
+          padding: 0 1rem;
+        }
+
+        .hero-title {
+          font-size: clamp(2rem, 8vw, 3rem);
+        }
+
+        .hero-description {
+          font-size: 1.6rem;
+        }
+
+        .hero-author {
+          font-size: 1.4rem;
+        }
+
+        .back-button {
+          top: 1rem;
+          left: 1rem;
+          padding: 0.6rem 1rem;
+          font-size: 1.3rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .hero-section {
+          height: 35vh;
+          min-height: 220px;
+          margin-bottom: 2rem;
+        }
+
+        .hero-badges {
+          gap: 0.5rem;
+        }
+
+        .hero-badge {
+          font-size: 1.2rem;
+          padding: 0.5rem 1rem;
+        }
       }
     </style>
     <style is:global>
@@ -348,30 +501,25 @@ const author = "Rayhan M";
     
     <div id="reading-progress"></div>
     
-    <div class="container blog-container">
-    
-      <a href="/blog" class="back-button">← Back</a>
-      <h1 class="blog-title">{title}</h1>
-      {description && (
-        <p class="blog-description">{description}</p>
-      )}
-      <div class="post-meta">
-        <a href="/about-me"> {author}</a> · {date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })} · {readingTime ?? '??'} min read
-      </div>
-      {tags && tags.length > 0 && (
-        <div class="tag-list">
-          {tags.map(tag => (
-            <a href={`/blog/tag/${tag}`} class="tag-badge">#{tag}</a>
+    <!-- Hero Section -->
+    <section class="hero-section" style={heroImage ? `background-image: url(${heroImage})` : 'background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%)'}>
+      <div class="hero-content">
+        <h1 class="hero-title">{title}</h1>
+        {description && (
+          <p class="hero-description">{description}</p>
+        )}
+        <p class="hero-author">Article by {author}</p>
+        
+        <div class="hero-badges">
+          {tags && tags.map(tag => (
+            <span class="hero-badge">{tag}</span>
           ))}
         </div>
-      )}
-      <div class="blog-divider"></div>
-      <div class="hero-image-container">
-      {heroImage && (
-        <img src={heroImage} alt={title} class="hero-image"/>
-        )}
-        {heroImageCaption && (heroImageCaption)}
-        </div>
+      </div>
+    </section>
+
+    <!-- Content Section -->
+    <div class="container blog-container content-wrapper">
       <main class="blog-post">
         <slot />
       </main>
