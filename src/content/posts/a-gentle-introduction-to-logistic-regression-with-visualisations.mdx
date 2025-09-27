@@ -107,7 +107,7 @@ Look at the examples below:
 
 So, odds can range from 0 to ∞, but probability only goes from 0 to 1.
 
-# Log-odds a.k.a logits
+## Log-odds a.k.a logits
 
 Now that we understand odds, let's take it one step further. **Log-odds** (also called **logits**) are simply the natural logarithm of the odds:
 
@@ -188,7 +188,7 @@ $$
 
 ---
 
-# Maximum Likelihood Estimation (MLE)
+## Maximum Likelihood Estimation (MLE)
 
 In this article, we will assume we are doing binary classification. Usually, we assume our labels follow the Bernoulli distribution.
 So for each data point $x_{i}$, the label $y_{i} \in \{0,1\}$.
@@ -244,7 +244,7 @@ $$
 
 ---
 
-# Loss Function
+## Loss Function
 
 In practice, we usually call the loss function derived above with its popular name: **Binary Cross-Entropy (BCE)**.
 
@@ -348,7 +348,7 @@ Strict convexity may not hold in cases of perfect separation or redundant featur
 
 ---
 
-# See Logistic Regression in Action
+### See Logistic Regression in Action
 
 Before doing another deep dive into the math, let's tinker for a while with logistic regression. See it, feel it, and build a good mental model along the way as to how the training process works<sup><a href="#footnote-1" id="footnote-ref-1" className="footnote-ref" aria-label="Jump to footnote 1">[1]</a></sup>.
 <LogisticRegressionLearning client:load />
@@ -585,7 +585,7 @@ $$
 
 This discourages large weights and keeps the model smoother.
 
-# Visualizing Regularisation Penalties
+## Visualizing Regularisation Penalties
 
 Let's explore how different regularisation techniques penalize weights. You can toggle between **L1 (Lasso)** and **L2 (Ridge)** regularisation to see their different behaviors:
 
