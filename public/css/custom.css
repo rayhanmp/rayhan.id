@@ -370,3 +370,12 @@ pre button.copy.copied .ready {
   }
 }
 
+/* Table of Contents - Desktop h2 indentation */
+.toc-link.h2 {
+  padding-left: 24px;
+  display: block;
+}
+
+.toc-link.h1 {
+  font-weight: 500;
+}

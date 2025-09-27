@@ -231,16 +231,17 @@
     transform: scaleY(1);
   }
 
+  .toc-link.h1 {
+    font-weight: 700;
+    color: #1a202c;
+    font-size: 13px;
+  }
+
   .toc-link.h2 {
+    padding-left: 20px;
     font-weight: 600;
     color: #2c3e50;
     font-size: 12px;
-  }
-
-  .toc-link.h3 {
-    padding-left: 32px;
-    font-size: 11px;
-    color: #4a5568;
   }
 
   .toc-link.h4 {
@@ -324,8 +325,8 @@
     border-radius: 8px;
     font-size: 1.1rem;
   }
-  .toc-mobile-list a.h3 { padding-left: 1.25rem; font-size: 1rem; color: #4a5568; }
-  .toc-mobile-list a.h4 { padding-left: 2rem; font-size: 0.95rem; color: #718096; }
+  .toc-mobile-list a.h1 { font-weight: 700; font-size: 1.1rem; color: #1a202c; }
+  .toc-mobile-list a.h2 { padding-left: 1.25rem; font-size: 1rem; color: #2c3e50; }
 
   @media (max-width: 1200px) {
     .toc-container {
@@ -473,7 +474,7 @@
       const blogPost = document.querySelector('.blog-post');
       if (!blogPost) return;
 
-      this.headings = Array.from(blogPost.querySelectorAll('h2, h3'))
+      this.headings = Array.from(blogPost.querySelectorAll('h1, h2'))
         .filter(heading => {
           const isInComponent = heading.closest('[data-component]') || 
                                heading.closest('.academic-footnotes');

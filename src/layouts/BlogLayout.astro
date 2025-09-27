@@ -455,6 +455,9 @@ const author = "Rayhan M";
     
     <TableOfContents />
     
+    <!-- Back to Top Button -->
+    <button id="jumpToTop" style="padding-bottom:1rem;background-color: #222; position: fixed; z-index: 100; right: 3rem; bottom: 3rem; opacity: 0; transition: opacity 0.3s ease-in-out;"><a href="#"><i class ="fa-solid fa-caret-up fa-2xl" style="color: #fff;"></i></a></button>
+    
     <script is:inline>
       window.addEventListener('scroll', () => {
         const scrollTop = window.scrollY;
@@ -465,6 +468,32 @@ const author = "Rayhan M";
           progressBar.style.width = `${scrollPercent}%`;
         }
       });
+    </script>
+
+    <script is:inline>
+      const jumpToTopButton = document.getElementById('jumpToTop');
+      
+      function handleScroll() {
+        if (!jumpToTopButton) return;
+        
+        if (window.scrollY > 300) {
+          jumpToTopButton.style.opacity = '1';
+        } else {
+          jumpToTopButton.style.opacity = '0';
+        }
+      }
+
+      window.addEventListener('scroll', handleScroll);
+
+      if (jumpToTopButton) {
+        jumpToTopButton.addEventListener('click', function(e) {
+          e.preventDefault();
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        });
+      }
     </script>
   </body>
 </html>

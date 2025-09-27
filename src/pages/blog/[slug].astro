@@ -39,6 +39,6 @@ const { title, description, date, isPublished, tags, heroImage, heroImageCaption
 
 const readingTime = getReadingTime(post.body);
 ---
-<BlogLayout {title} {description} {date} {readingTime} {tags} {heroImage} {heroImageCaption} {prevPost} {nextPost}>
+<BlogLayout {title} {description} {date} {isPublished} {readingTime} {tags} {heroImage} {heroImageCaption} {prevPost} {nextPost}>
   <Content />
 </BlogLayout>
