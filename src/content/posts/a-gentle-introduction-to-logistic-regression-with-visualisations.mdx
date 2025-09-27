@@ -31,7 +31,7 @@ With that in mind, let's get going, shall we? 😋
 
 ---
 
-### Why can't we use linear regression?
+# Why can't we use linear regression?
 
 At first glance, it might seem tempting to use ordinary linear regression to model probabilities. After all, it has been a reliable workhorse in statistics since the early 20th century, used to model continuous relationships like height versus age or income versus education level. So, when faced with a question like “What is the probability that a person will develop diabetes based on their age?”, some researchers naturally tried to apply the same linear approach:
 
@@ -77,7 +77,7 @@ Last but not least, the loss function in linear regression, Mean Squared Error (
 
 ---
 
-### Quick Recap to Probabilities
+# Quick Recap to Probabilities
 
 Before we continue, we need to understand what odds are.
 
@@ -107,7 +107,7 @@ Look at the examples below:
 
 So, odds can range from 0 to ∞, but probability only goes from 0 to 1.
 
-### Log-odds a.k.a logits
+# Log-odds a.k.a logits
 
 Now that we understand odds, let's take it one step further. **Log-odds** (also called **logits**) are simply the natural logarithm of the odds:
 
@@ -128,7 +128,7 @@ $$
 Now, the next question is: how do we invert it back to probability? Congratulations, you just asked the million-dollar question.
 
 ---
-### Introducing the sigmoid function
+# Introducing the sigmoid function
 
 In the nineteenth century, Pierre François Verhulst introduced a function to model population growth: **logistic function** (sometimes called the sigmoid due to its S shape).
 $$
@@ -188,7 +188,7 @@ $$
 
 ---
 
-### Maximum Likelihood Estimation (MLE)
+# Maximum Likelihood Estimation (MLE)
 
 In this article, we will assume we are doing binary classification. Usually, we assume our labels follow the Bernoulli distribution.
 So for each data point $x_{i}$, the label $y_{i} \in \{0,1\}$.
@@ -244,7 +244,7 @@ $$
 
 ---
 
-### Loss Function
+# Loss Function
 
 In practice, we usually call the loss function derived above with its popular name: **Binary Cross-Entropy (BCE)**.
 
@@ -348,7 +348,7 @@ Strict convexity may not hold in cases of perfect separation or redundant featur
 
 ---
 
-### See Logistic Regression in Action
+# See Logistic Regression in Action
 
 Before doing another deep dive into the math, let's tinker for a while with logistic regression. See it, feel it, and build a good mental model along the way as to how the training process works<sup><a href="#footnote-1" id="footnote-ref-1" className="footnote-ref" aria-label="Jump to footnote 1">[1]</a></sup>.
 <LogisticRegressionLearning client:load />
@@ -356,7 +356,7 @@ Before doing another deep dive into the math, let's tinker for a while with logi
 Observe how the decision boundary (black line) evolves from a random starting point toward an optimal separation between classes. The loss curve consistently decreases, thanks to the convex nature of the loss function. At the same time, accuracy improves as the model learns to better distinguish between the two classes.
 
 ---
-### How does the training process actually work?
+# How does the training process actually work?
 After seeing the interactive example above, I hope you can already have some intuition to how the training process work.
 However, we still need to understand how it actually work mathematically<sup><a href="#footnote-2" id="footnote-ref-2" className="footnote-ref-2" aria-label="Jump to footnote 2">[2]</a></sup>.
 
@@ -532,7 +532,7 @@ You can continue with further epochs, but hopefully the example above has given 
 
 ---
 
-### Evaluating Model Performance with AUC-ROC Analysis
+# Evaluating Model Performance with AUC-ROC Analysis
 
 Once we've trained our logistic regression model, how do we know how good it is? There are many metrics that one can use for classification tasks. However, one of the most powerful tools for evaluating binary classification models is the **Receiver Operating Characteristic curve** (ROC). This visualization shows us the trade-off between sensitivity (true positive rate) and specificity at different classification thresholds.
 
@@ -543,7 +543,7 @@ The interactive visualization below lets you explore how different classificatio
 This kind of analysis is crucial in real-world applications where the cost of false positives and false negatives might be very different (e.g., medical diagnosis, fraud detection).
 
 ---
-### Regularisation
+# Regularisation
 In the real world, we want models that don’t just memorise the training data. They should work well on unseen data.
 Overfitting happens when:
 - The model tries too hard to fit every data point
@@ -585,7 +585,7 @@ $$
 
 This discourages large weights and keeps the model smoother.
 
-### Visualizing Regularisation Penalties
+# Visualizing Regularisation Penalties
 
 Let's explore how different regularisation techniques penalize weights. You can toggle between **L1 (Lasso)** and **L2 (Ridge)** regularisation to see their different behaviors:
 
@@ -599,7 +599,7 @@ The quadratic growth of L2 makes it excellent at shrinking large weights toward 
 
 ---
 
-### Conclusion
+# Conclusion
 
 Logistic Regression may seem deceptively simple: just a linear model passed through a sigmoid. But beneath that  surface lies a foundational concept in machine learning. While it may not compete with complex models in raw power, its interpretability, theoretical grounding, and mathematical tractability make it an essential tool. Mastering logistic regression also helps you build the intuition needed for neural networks. Hopefully this article can help you understand more about logistic regression in depth.
 

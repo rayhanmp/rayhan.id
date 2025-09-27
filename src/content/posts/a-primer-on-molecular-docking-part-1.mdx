@@ -1,0 +1,255 @@
+---
+title: "A primer on molecular docking (1/3)"
+description: "Fundamentals on protein structure determination and the mechanism of molecular binding."
+date: 2025-09-24
+isPublished: false
+tags: ["Biophysics", "Biology", "Chemistry", "Series"]
+heroImage: '/images/posts/pexels-googledeepmind-25626590.jpg'
+heroImageCaption: 'Photo by Google Deepmind'
+---
+import { YouTube } from 'astro-embed';
+
+So, I recently finished my undergraduate thesis, where I discussed molecular docking in depth, and I figured I’d write a few things here. Many articles and posts on the internet tend to be misleading, presenting docking as something almost magical: a tool that can directly quantify the binding affinity of a ligand to a receptor. **In reality, despite its usefulness, docking comes with plenty of limitations, assumptions, and caveats that you need to be aware of.** The protocol is also far less straightforward than many tutorials suggest, since they often gloss over crucial details in the preparation steps.
+
+In practice, docking is a fantastic tool, but it operates on a foundation of assumptions and requires careful preparation to yield meaningful results with tons of details that are often glossed over.
+
+This series aims to demystify the process over three focused parts:
+- **Part 1**: The fundamentals of how molecules bind.
+- **Part 2**: A look under the hood at how docking works.
+- **Part 3**: A practical guide to doing it right.
+
+This series is for anyone with a background in molecular biology and biochemistry. Whether you're a curious newcomer or you've already run a few simulations, I promise there will be something interesting here for you. It can be a dense subject, but I'm looking forward to navigating it with you!
+
+---
+# Introduction
+
+Why do we do docking at all? Docking is essentially computational molecular matchmaking. It predicts how a small molecule (commonly referred to as a ligand) might fit and bind to a larger molecule (a receptor, usually a protein). While experimental techniques such as ITC or SPR can measure how tightly two molecules bind, they’re relatively slow and expensive. Docking allows you to screen thousands if not millions of potential lead in silico to find the most promising ones before you ever step into a lab.
+
+Of course, it’s not a magic bullet, as we’ll see when we get to the caveats, but it remains an incredibly useful tool for narrowing down candidates. Instead of testing the whole library, you can focus on a smaller pool of the most promising options. It's a crude estimator, but better than none at all.
+
+---
+
+# Proteins and the magic of determining their structure
+
+Proteins are the workhorses of biology, acting as enzymes, receptors, transporters, and structural components that execute various cellular functions. Many of us probably have seen the illustration of a protein 3D structure somewhere. But, have you ever thought, **how can we know their structure?**
+
+There are many ways we can determine the structure of a given protein, such as x-ray crystallography, nuclear magnetic resonance (NMR), and recently, cryo-EM. As the oldest method amongst the three, **x-ray crystallography** is the dominant method for determining protein structures. It has tons of drawback, sure, but it's the most established method. X-ray crystallography has been the mainstay historically and still represents the majority of PDB entries, though cryo-EM’s share has grown rapidly for large assemblies. As such, we will talk more about it and put aside the other two methods.
+
+We begin by crystallising our protein of interest, since x-ray crystallography works with crystal. A crystal is basically just a solid, repeating, and highly ordered array of something (in our case, it's our protein). We need to purify and concentrate the protein to a desirable concentration. Then, using methods such as vapor diffusion, we can slowly lessen the water content of the solution until the protein reached supersaturation, forming a crystal.
+
+One interesting property of protein crystal is that it behaves different optically, hence **we can use polarised lens to differentiate our crystal from salt crystals**. You can look at Figure 1 to see an example of a bunch of lysozyme crystals.
+
+
+<div style="text-align: center;  margin: 0 auto; width: 90%">
+  ![ Lysozyme crystals observed through polarizing filter in Nikon SMZ800 microscope.](/images/posts/960px-Lüsosüümi_kristallid_pv.jpg)
+  <p style="font-size: 0.8em; margin-top: -2.5rem;"><b>Figure 1</b>: Lysozyme crystals observed through polarizing filter in Nikon SMZ800 microscope. <br/> [By Taavi Ivan, CC BY-SA 3.0, <a href="https://commons.wikimedia.org/w/index.php?curid=22143196">Wikimedia</a>]</p>
+</div>
+
+Once we have our crystal, we will shine x-ray to it, and capture the diffraction patterns produced. You see, when x-ray hits an object, it gets scattered. In our case, we are hitting the electrons of our protein. The detailed physics explanation of it is quite complex, so let's not stray too far. The only thing you need to know is that the pattern will get recorded, then processed using fourier transform algorithm with computer programs.
+
+<div style="text-align: center;  margin: 0 auto; width: 90%">
+  ![General workflow of x-ray crystallography. ](/images/posts/xray-crystallography.jpg)
+  <p style="font-size: 0.8em; margin-top: -2.5rem;"><b>Figure 2</b>: General workflow of x-ray crystallography. <br/> [By Jonathan Gutow, CC BY 4.0, <a href="https://chem.libretexts.org/Courses/University_of_Wisconsin_Oshkosh/Chem_370%3A_Physical_Chemistry_1_-_Thermodynamics_(Gutow)/10%3A_Aggregates_and_Macromolecules/10.02%3A_X-Ray_Crystallography">Chem Libretext</a>]</p>
+</div>
+
+The resulting file is often called structure factor (SF). It contains the processed data of the electron density map. Basically, we can "see" how the electrons of our protein structure is mapped in 3D space. So, we don't directly get the residues or even the atoms, only the distribution of the electrons. One such example can be seen on Figure 3 as visualised with COOT.
+
+<div style="text-align: center;  margin: 0 auto; width: 90%">
+  ![Illustration of the electron density map of 6GLP, visualised with COOT.](/images/posts/electron_density_map.jpg)
+  <p style="font-size: 0.8em; margin-top: -2.5rem;"><b>Figure 3</b>: Illustration of the electron density map of 6GLP, visualised with COOT.<br/> [By Rayhan M, CC BY 4.0]</p>
+</div>
+
+Afterwards, the job of deciding what residue belongs to each site falls upon the crystallographer. They're tasked with "guessing" which residue is producing said electron density map. Of course, it's not totally random, we can make educated guesses by the shape and length of the blob. For example, in Figure 4, we can guess that it's a Tyr since it has a visible shape of a phenol ring.
+
+<div style="text-align: center;  margin: 0 auto; width: 90%">
+  ![Illustration of the electron density map of 6GLP, visualised with COOT.](/images/posts/edm_mapping.jpg)
+  <p style="font-size: 0.8em; margin-top: -2.5rem;"><b>Figure 4</b>: Illustration of the electron density map of 6GLP, visualised with COOT. <br/> [By Rayhan M, CC BY 4.0]</p>
+</div>
+
+### Assessing model quality
+
+<div style="text-align: center;  margin: 0 auto; width: 90%">
+  ![Illustration of the electron density map of 6GLP, visualised with COOT.](/images/posts/resolution-figure.jpg)
+  <p style="font-size: 0.8em; margin-top: -2.5rem;"><b>Figure 5</b>: EDM comparison of various resolutions, visualised with Astex. <br/> [By PDB101, CC BY 4.0, <a href="https://pdb101.rcsb.org/learn/guide-to-understanding-pdb-data/crystallographic-data">PDB-101 RCSB</a>]</p>
+</div>
+
+Resolution is a measure of the quality of the data that has been collected on the crystal containing the protein or nucleic acid. If all of the proteins in the crystal are aligned in an identical way, forming a very perfect crystal, then all of the proteins will scatter X-rays the same way, and the diffraction pattern will show the fine details of crystal. On the other hand, if the proteins in the crystal are all slightly different, due to local flexibility or motion, the diffraction pattern will not contain as much fine information. So resolution is a measure of the level of detail present in the diffraction pattern and the level of detail that will be seen when the electron density map is calculated. High-resolution structures, with resolution values of 1 Å or so, are highly ordered and it is easy to see every atom in the electron density map. Lower resolution structures, with resolution of 3 Å or higher, show only the basic contours of the protein chain, and the atomic structure must be inferred. Most crystallographic-defined structures of proteins fall in between these two extremes. 
+
+Regarding model correctness to the experimental data, we can use computer models to model the electron density map of our model. After going through several refinement process, we can later calculate an $R$ value to determine how similar our model is to the experimental data. The value goes from 0 to 1, with 0 being a perfect match. However, in reality, it's unrealistic to get a perfect match, since the experiment process itself contains a lot of artifacts and noise, matching it to 0 means you will be overfitting to the noise. 
+
+That's why in practice, we use a small holdout set, about 5-10% of the total data gathered. The main data used during the refinement process will produce $R\text{-work}$, while the holdout set will produce $R\text{-free}$. The idea is that if you overfit the data too much to the working set, you will get a bad $R$ value on the holdout set. For a good model, the difference between the two shouldn't be too big, 5% is usually deemed acceptable.
+
+Another critical quality check is for **steric clashes**. This is a simple, but useful concept based on a fundamental physical principle. Think of an atom as having an invisible "personal space" bubble around it. The radius of this bubble is called the van der Waals (vdW) radius. It represents the distance from the atom's nucleus to the point where the attractive forces with a neighboring, non-bonded atom are perfectly balanced by the strong repulsive forces between their electron clouds.
+
+So, why can't this boundary be crossed? The answer lies in the Pauli Exclusion Principle from quantum mechanics, which states that no two electrons can occupy the same quantum state. As two atoms get closer than their combined vdW radii, their electron clouds begin to overlap. This forces electrons into higher energy orbitals, creating an incredibly strong repulsive force that pushes the atoms apart. The energy of this repulsion skyrockets as the distance shortens (it's proportional to $(\frac{1}{r})^{12}$ in the Lennard-Jones potential we'll discuss later). A steric clash in a model represents this physically impossible overlap. High-quality structures will have very few to no steric clashes.
+
+<div style="text-align: center;  margin: 0 auto; width: 90%">
+  ![General Ramachandran plot of 6GLP, visualised with MolProbity](/images/posts/ramachandran_6glp.jpg)
+  <p style="font-size: 0.8em; margin-top: -2.5rem;"><b>Figure 6</b>: Ramachandran plot of 6GLP, visualised with MolProbity. <br/> [By Rayhan M, CC BY 4.0]</p>
+</div>
+
+Finally, we have the Ramachandran plot. This plot is a fundamental tool for checking the stereochemical quality of a protein's backbone. It maps the two main dihedral angles of the polypeptide backbone, phi ($\phi$, the C-N-Cα-C bond) and psi ($\Psi$, the N-Cα-C-N bond), for every amino acid. The rotation around these bonds is restricted because of steric hindrance between atoms in the backbone and the side chain. The Ramachandran plot visualizes these sterically allowed and disallowed combinations.
+
+We can split the regions into three categories:
+
+1. **Most Favorable Regions**: These are areas where the backbone atoms are comfortably far apart. A good structure will have >90-95% of its residues here.
+2. **Allowed Regions**: Conformations that are less common but still physically possible.
+3. **Disallowed Regions**: Conformations where atoms would clash severely. A residue in this region is a major red flag.
+
+The only major exception is Glycine, which lacks a side chain (it just has a hydrogen), giving it far more rotational freedom. Proline is the opposite; its side chain forms a ring with the backbone, making its possible angle far more limited.
+
+"Why do I need to know all this?" Well, by knowing how the general workflow works, you will be able to appreciate and understand the complexity and limitations of the data you have. Every structure, every entry on PDB will have some flaw, either by the experiment or the crystallographer. After all, they're models, a projection of reality.
+
+Even the diffraction experiment itself has a lot of assumptions, for example, in real biological system, the environment is crowded by different proteins, which can alter the conformation of our protein. Crystallising protein is also problematic as proteins are actually almost always surrounded by solvents. You have to understand that we are operating on top of massive assumptions when working with structural data.
+
+### Storing structural data
+
+Every structure that reaches a peer-reviewed paper has already travelled through a chain of file formats, each originally designed to solve a 1970-era problem that refused to go away.  If you want to dock, you will sooner or later open one of these files, trust the numbers inside, and silently inherit every design decision made when The Beatles was still releasing albums.  Knowing how the formats arose, what they can lie about, and why they still coexist is a neccessity.
+
+
+#### PDB
+In 1971 the Brookhaven National Laboratory Protein Data Bank needed a format that could be mailed on magnetic tape and read by FORTRAN code compiled on a CDC 6600. The result was a strictly 80-column ASCII file. Each line is an “ATOM” or “HETATM” record containing:
+
+[insert explanation about SDF and mmCIF]
+
+[insert explanation about SMILES]
+
+### Some refresher on binding
+
+At the heart of many drugs lie a fundamental biological principle: the **interaction between proteins and small molecules**. When proteins go awry, they often become the primary targets for therapeutic intervention.
+
+The mechanism of action for many drugs is quite elegant in concept: a small molecule, known as a ligand, physically binds to a specific site on a target protein, thereby modulating its activity. This binding can inhibit an enzyme essential for a pathogen's survival, block a receptor to halt a pathological signal, or activate a pathway to restore normal function. Of course, there are tons of hand-waving in that explanation, but it will suffice for now. The main goal of structure-based drug design is **designing ligands that are chemically and sterically complementary** to a target protein's binding site. 
+
+<div style="text-align: center;  margin: 0 auto; width: 90%">
+  ![Protein can change shape by induced fit upon substrate binding to form a complex.](/images/posts/Hexokinase_induced_fit.svg.png)
+  <p style="font-size: 0.8em; margin-top: -2.5rem;"><b>Figure 5</b>: Protein can change shape by induced fit upon substrate binding to form a complex. <br/> [By Thomas Shafee, CC BY 4.0, <a href="https://commons.wikimedia.org/w/index.php?curid=45801557">Wikimedia</a>]</p>
+</div>
+
+The **induced fit** model posits that the initial binding event causes conformational changes in both the protein and the ligand to achieve an optimal interaction. **However, modelling the flexibility of a large molecule like proteins is computationally expensive**, so docking programs usually use the old **lock and key** hypothesis instead. In that hypothesis, we model a rigid protein pocket (the lock) and a perfectly shaped ligand (the key). Yes, it's not perfect, but when you're trying to screen millions of potential leads, you have to make compromises.
+
+<div style="text-align: center;  margin: 0 auto; width: 90%">
+  ![Docking is usually done to "holo" structure](/images/posts/images_large_ci-2018-00730p_0001.jpeg)
+  <p style="font-size: 0.8em; margin-top: -2.5rem;"><b>Figure 6</b>: Structural changes of (a, d) BGT, (b, e) RIC, and (c, f) ABP upon binding to their respective ligands UDP, NEO, and ALL. Panels (a–c) highlight the overall conformational shifts of each protein. The apo and holo forms are shown as green and yellow ribbons, respectively. The ligands are represented as stick models coloured by atom type.<br/> J. Chem. Inf. Model. 2019, 59, 4, 1515–1528.</p>
+</div>
+
+Another very important caveat that you have to know, is that **docking is usually done to the holo structure of a protein**. What exactly is a holo structure? Well, you see, when a protein binds to other molecule(s), they can undergo conformational changes. In fact, when almost nothing is actively being done to them, proteins still constantly undergo conformational changes! You can see some examples of how apo and holo structures differ in the Figure 2 above.
+
+<div style="text-align: center;  margin: 0 auto; width: 90%">
+  ![Docking is usually done to "holo" structure](/images/posts/DHFR_methotrexate_inhibitor.svg.png)
+  <p style="font-size: 0.8em; margin-top: -2.5rem;"><b>Figure 7</b>: An enzyme’s active site can bind a competitive inhibitor instead of its substrate, blocking access. Methotrexate inhibits dihydrofolate reductase by preventing folic acid binding. Binding site is blue, inhibitor green, substrate black (PDB: 4QI9).<br/> [By Thomas Shafee, CC BY 4.0, <a href="https://commons.wikimedia.org/w/index.php?curid=45802068">Wikimedia</a>]</p>
+</div>
+
+Since docking can't simulate proteins conformational changes, people tend to use holo structures, since they already have established binding pockets. Curious minds might wonder: "Won't that limit our candidates to candidates that are quite similar to the native ligand?" If thought so, you're spot on. This is a crucial limitations of conventional docking approach. As such, many people have tried other techniques, such as ensemble docking, which combines MD trajectory and molecular docking to fish pockets from apo structures. 
+
+However, that's beyond our scope here. For now, the only thing you need to know, is that **usually it's better to use the holo structures of whatever protein you're studying, unless you absolutely know what you're doing**. Proteins' binding pocket are usually somewhat flexible, as in, they can accept molecules that are similar enough to the native binder, as can be seen on Figure 3. That fact is what we usually try to exploit when we do virtual screening with docking programs.
+
+
+### Defining molecular binding
+
+Consider binding as an equilibrium of a protein $P$ and a ligand $L$ in an aqueous box of volume V at temperature T, which can be stated as
+$$
+P + L \rightleftharpoons PL
+$$
+
+The rate of $P$ and $L$ binding is a constant of $K_A$ which can be described as
+$$
+K_A = \frac{k_{\text{on}}}{k_{\text{off}}} 
+= \frac{[PL]}{[P][L]} 
+= \frac{1}{K_d}
+$$
+
+Following that, we can define the molar-standard Gibbs free energy of binding as
+$$
+\Delta G_{bind} = RTlnK_d = -RTlnK_A
+$$
+
+where $K_A$ is the association constant, $K_d$ the dissociation constant, $R$ the gas constant, and $T$ the temperature in kelvin. We can further decompose it to the thermodynamics part:
+
+$$
+\Delta G_{bind} = E_{gas} + G_{solv} - \Delta TS_{conf}
+$$
+
+where is the interaction of molecules in a vacuum-state, $G_{solv}$ the solvation effect, and $S_{conf}$ the configurational entropy. Now, what are those terms? What do they mean? Don't worry just yet, because they're actually quite intuitive.
+
+$E_{gas}$ and $G_{solv}$ can be categorised into *enthalpy* terms, whereas $S_{conf}$ is the *entropy* term. Let's start with the entropy terms first. **Entropy is the amount of "freedom" lost due to the binding happening**. More concretely, it's usually due to the loss of rotational freedom (rotor) of the molecules. Remember that molecular bonds are not completely rigid, they can flex and rotate. However, when we bind a protein and ligand together, that freedom is gone since they're now interlocked to each other. Since, $G_{bind}$ defines the free energy state of the complex, this reduction to the freedom effectively lessen the entropy of the system, making it an unfavourable interaction.
+
+**Enthalpy is all about the energy of the connections and forces between the protein and the ligand.** It's the sum of the interactions in a vacuum ($E_{gas}$) and the effects of the surrounding environment, which is almost always water ($G_{
+solv}$) in biological systems. We can further decompose $E_{gas}$ to the sum of its parts:
+
+$$
+E_{gas} = E_{bond} + E_{angle} + E_{dihed} + E_{vdw} + E_{coul}
+$$
+
+The terms $E_{bond} + E_{angle} + E_{dihed}$ refer to the **internal energy of the molecules**. Imagine the bonds within a molecule as springs. To fit into a protein's binding pocket, a ligand might have to stretch some of its bonds, bend its angles, or twist its dihedral (rotational) angles into a less-than-ideal shape. This distortion creates internal strain, which is an energy penalty. **A good ligand fits comfortably without having to contort itself too much.** However, in practice, we usually ignore these terms since they don't really change much before and after binding (i.e. they cancel out), so we will focus on the non-bonded interactions instead.
+
+$E_{vdw}$ or van der Waals is a broad range of interactions: ranging from London dispersion, dipole-dipole, and induced-dipole. Without going into the nitty gritty part, what you have to know is that van der Waals interactions are caused by the movement of electrons. Quantum mechanics posits that the energy of electrons are never zero, that is that they constantly move in an atom through the Schrodinger equation and the Heisenberg uncertainty principle. Hence, at any time, the charge of an atom can be distributed in a different manner. Sometimes electrons are distributed asymmetrically, creating two poles—dipoles—that is one side will be more positive/negative than the other. Usually, many programs will calculate vdW using the Lennard-Jones (LJ) equation:
+
+$$
+V_{LJ}(r) = 4\epsilon \left[ \left( \frac{\sigma}{r} \right)^{12} - \left( \frac{\sigma}{r} \right)^6 \right]
+$$
+
+Keep in mind that LJ is an approximation, same goes with Morse potential, or any other equations. However, LJ is good enough for most use cases. A negative value means an attraction, while a positive value signifies a repulsion. We can see that there are several parameters in that equations, $\epsilon$ represents the "depth" of the potential well, that is the maximum strength of the attraction between the two particles. $\sigma$ represents the finite distance at which the potential energy is zero. It can be thought of as the effective "size" of a particle or the collision diameter. Lastly, $r$ is the distance between centre of the two particles.
+
+If we take a closer look, we can divide divide the equation into two parts: the repulsive terms $\left( \frac{\sigma}{r} \right)^{12}$ and the attraction terms $\left( \frac{\sigma}{r} \right)^{6}$. Since the repulsive term has a bigger exponent $(^{12})$, it will grow much faster than the attraction terms, this means our vdw energy will get more positive as the molecules grew further apart. Moreover, if the distance is shorter than the effective size ($\sigma$), the equation will even produce a positive number, indicating that the particles are too close and repelling each other. I recommend watching this video below by NucleusBiology. Oh also, **hydrogen-bond is a specific type of electrostatic interaction**, if you're wondering.
+
+<YouTube id="x8PpLlKI2yo" />
+
+Now, let's continue with the other term: $E_{coul}$. This term basically quantify the effect of electrostatic interaction, which is governed by the Coulomb's law:
+
+$$
+F = k\frac{q_1q_2}{r^2}
+$$
+
+with $k = 1/4\pi\varepsilon_0$ in a vacuum, $q_1q_2$ the partial charge of the particles, and $r$ the distance between the particles. The value of $\varepsilon_0$ is approximately $\varepsilon_0 = 8.8541878128\times10^{-12}\ \mathrm{F\,m^{-1}}$. If we plug in some numbers, you will notice that the energy produced by this term is *massive*. Let's try calculate an example with a distance of $3 \AA$, $q_1$ of 1, and $q_2$ of -1.
+
+$$
+U = \frac{1}{4\cdot\pi\cdot8.8541878128\times10^{-12}}\frac{-1 \cdot 1}{3} = −7.68 \cdot 10^{19} J \approx -110.7\ kcal/mol
+$$
+
+Whoops! That's not realistic at all, right? And that's just between two pair of atoms. Why is this the case? Well, you see, coulomb force is a strong force overall. So that shouldn't be too surprising. Moreover, this interaction decays very slowly, since the denominator is a power-law, hence we often call it as the long-range interaction.
+
+To tell you the truth, there is nothing wrong with our calculation above. In real biological system, molecules doesn't exist in a vacuum though, they're almost always surrounded by solvents. That's why we need to take $G_{solv}$ into account. The impact of solvent can be quite complex, but overall we can decompose it to:
+
+$$
+G_{solv} = G_{polar\_solv} + G_{hydrophobic}
+$$
+
+There are many ways to account for this solvation effect, the easiest option is to include a relative dielectric constant $\varepsilon_r$ to the $E_{coul}$ equation, usually set to 1 for vacuum, 2-4 for protein interior, and 78.5 for water. Hence, our equation can be written as:
+
+$$
+U = \frac{1}{4\pi\varepsilon_0\varepsilon_r} \frac{q_1q_2}{r}
+$$
+
+If we redo our initial calculation with the $\varepsilon_r$ set to 78.5, our $E_{coul}$ becomes **-1.41 kcal/mol**, which is way more realistic! However, this simplicity comes at a cost, the descreening effect of solvent is not homogenous. For example, the interior of a protein is quite isolated from water, so their descreening effect is way less. One approximation commonly used by docking programs is **distance-dependent dielectric**, that is that the descreening scales up as the distance between the particles grow (i.e. $\varepsilon_r = 4r$).
+
+$$
+-\nabla\!\cdot\!\big(\varepsilon(\mathbf{r})\,\nabla\psi(\mathbf{r})\big)
+\;+\;\sum_i z_i e\, c_i^\infty \Big(e^{-\beta z_i e \psi(\mathbf{r})}-e^{\beta z_i e \psi(\mathbf{r})}\Big)
+\;=\;\rho_f(\mathbf{r})
+$$
+
+$$
+-\nabla\!\cdot\!\big(\varepsilon(\mathbf{r})\,\nabla\psi(\mathbf{r})\big)
+\;+\;\varepsilon(\mathbf{r})\,\kappa^2(\mathbf{r})\,\psi(\mathbf{r})
+\;=\;\rho_f(\mathbf{r})
+$$
+
+$$
+\Delta G_{\mathrm{elec}}^{\mathrm{GB}}
+\;=\; -\dfrac{1}{2}\!\left(1-\dfrac{1}{\varepsilon_s}\right)
+\sum_{i=1}^N\sum_{j=1}^N \dfrac{q_i q_j}{f_{ij}}
+$$
+
+$$
+f_{ij} \;=\; \sqrt{ r_{ij}^2 + R_i R_j \exp\!\Big(-\dfrac{r_{ij}^2}{4 R_i R_j}\Big)\, }
+$$
+### Measuring binding experimentally
+
+[explain ITC and SPR here]
+
+### Conclusion
+
+This brings us to the end of Part 1. We've journeyed from the intricate process of determining a protein's 3D structure to the fundamental thermodynamic forces that govern how a small molecule binds to it. Understanding these concepts--the importance of model quality, the file formats that store structural data, and the enthalpic and entropic contributions to binding energy--lays the essential groundwork for everything that follows. In the next part, we'll peel back the layers of the docking process itself. We'll explore the algorithms that search for the best binding poses and the scoring functions that attempt to predict binding affinity.
+
+Stay tuned!
+
