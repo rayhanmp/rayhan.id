@@ -9,11 +9,15 @@ const posts = allPosts
   .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 const allTags = Array.from(
   new Set(posts.flatMap(post => post.data.tags || []))
-);
+).sort((a, b) => {
+  const countA = posts.filter(post => post.data.tags?.includes(a)).length;
+  const countB = posts.filter(post => post.data.tags?.includes(b)).length;
+  return countB - countA; 
+});
 
 // Featured post - logistic regression article
 const featuredPost = posts.find(post => post.slug === 'a-gentle-introduction-to-logistic-regression-with-visualisations');
-const regularPosts = posts; // Show all posts including the featured one
+const regularPosts = posts; 
 ---
 
 <BaseLayout title="Blog – Rayhan M" currentPage="/blog">
@@ -349,6 +353,8 @@ const regularPosts = posts; // Show all posts including the featured one
     .filter-option input[type="checkbox"] {
       margin: 0;
       cursor: pointer;
+      accent-color: #6b8e6b;
+      transform: scale(1.1);
     }
 
     .filter-option label {
@@ -789,17 +795,23 @@ const regularPosts = posts; // Show all posts including the featured one
       
       if (!filterButton || !filterDropdown) return;
       
-      // Toggle dropdown
-      filterButton.addEventListener('click', (e) => {
+      // Remove any existing event listeners by cloning and replacing the button
+      const newFilterButton = filterButton.cloneNode(true);
+      filterButton.parentNode.replaceChild(newFilterButton, filterButton);
+      
+      // Toggle dropdown - attach to the new button
+      newFilterButton.addEventListener('click', (e) => {
         e.stopPropagation();
         filterDropdown.classList.toggle('show');
-        filterButton.classList.toggle('active');
+        newFilterButton.classList.toggle('active');
       });
       
       // Close dropdown when clicking outside
-      document.addEventListener('click', () => {
-        filterDropdown.classList.remove('show');
-        filterButton.classList.remove('active');
+      document.addEventListener('click', (e) => {
+        if (!filterDropdown.contains(e.target) && !newFilterButton.contains(e.target)) {
+          filterDropdown.classList.remove('show');
+          newFilterButton.classList.remove('active');
+        }
       });
       
       // Prevent dropdown from closing when clicking inside
