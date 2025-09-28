@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getReadingTime } from '../../utils/readingTime';
 
 const allPosts = await getCollection('posts');
 const posts = allPosts
@@ -156,10 +157,28 @@ const regularPosts = posts; // Show all posts including the featured one
       color: #555;
     }
 
-    .blog-date {
-      font-size: 0.95rem;
+    .blog-meta {
+      font-size: 1.35rem;
       color: #666;
       margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .blog-date {
+      font-size: 1.35rem;
+      color: #666;
+    }
+
+    .blog-reading-time {
+      font-size: 1.35rem;
+      color: #666;
+    }
+
+    .meta-separator {
+      color: #999;
+      font-weight: bold;
     }
 
     .blog-description {
@@ -358,11 +377,15 @@ const regularPosts = posts; // Show all posts including the featured one
         left: auto;
         min-width: 250px;
       }
-      .blog-date {
-      font-size: 1.2rem;
-      color: #666;
-      margin-bottom: 0.75rem;
-    }
+      .blog-meta {
+        font-size: 1.4rem;
+      }
+
+      .blog-date,
+      .blog-reading-time {
+        font-size: 1.4rem;
+        color: #666;
+      }
     }
 
     footer {
@@ -576,7 +599,7 @@ const regularPosts = posts; // Show all posts including the featured one
               
               <div class="featured-meta">
                 <span>{new Date(featuredPost.data.date).toLocaleDateString()}</span>
-                <span>15 min read</span>
+                <span>{getReadingTime(featuredPost.body)} min read</span>
               </div>
             </div>
             
@@ -623,7 +646,7 @@ const regularPosts = posts; // Show all posts including the featured one
     </div>
 
     <div class="blog-grid">
-      {regularPosts.map(({ slug, data }) => (
+      {regularPosts.map(({ slug, data, body }) => (
         <a 
           href={`/blog/${slug}`}
           class="blog-card" 
@@ -638,8 +661,14 @@ const regularPosts = posts; // Show all posts including the featured one
           </div>
           <div class="blog-content">
             <h3 class="blog-title">{data.title}</h3>
-            <div class="blog-date">
-              {new Date(data.date).toLocaleDateString()}
+            <div class="blog-meta">
+              <span class="blog-date">
+                {new Date(data.date).toLocaleDateString()}
+              </span>
+              <span class="meta-separator">•</span>
+              <span class="blog-reading-time">
+                {getReadingTime(body)} min read
+              </span>
             </div>
             <p class="blog-description">{data.description ?? "No description provided."}</p>
 
