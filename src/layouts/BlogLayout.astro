@@ -194,9 +194,29 @@ const author = "Rayhan M";
         font-family: 'Inter', sans-serif;
         font-size: 1.6rem;
         font-weight: 400;
-        margin-bottom: 2rem;
+        margin-bottom: 0.5rem;
         opacity: 0.9;
         letter-spacing: 0.5px;
+      }
+
+      .hero-meta {
+        display: flex;
+        gap: 0.35rem;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 2rem;
+        font-size: 1.3rem;
+        color: rgba(255, 255, 255, 0.6);
+        font-family: 'Inter', sans-serif;
+      }
+
+      .hero-date, .hero-reading-time {
+        font-weight: 400;
+        letter-spacing: 0.2px;
+      }
+
+      .meta-separator {
+        opacity: 0.5;
       }
 
       .hero-badges {
@@ -404,6 +424,11 @@ const author = "Rayhan M";
           font-size: 1.4rem;
         }
 
+        .hero-meta {
+          font-size: 1.2rem;
+          gap: 0.3rem;
+        }
+
         .back-button {
           top: 1rem;
           left: 1rem;
@@ -510,6 +535,15 @@ const author = "Rayhan M";
           <p class="hero-description">{description}</p>
         )}
         <p class="hero-author">Article by {author}</p>
+        <div class="hero-meta">
+          <span class="hero-date">{date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+          {readingTime && (
+            <>
+              <span class="meta-separator">•</span>
+              <span class="hero-reading-time">{readingTime} min read</span>
+            </>
+          )}
+        </div>
         
         <div class="hero-badges">
           {tags && tags.map(tag => (
