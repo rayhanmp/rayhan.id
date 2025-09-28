@@ -47,7 +47,14 @@ const regularPosts = posts;
 
     .blog-header {
       text-align: left;
-      margin: 8rem 0 4rem 0;
+      margin: 10rem 0 4rem 0;
+    }
+
+
+    @media (max-width: 1024px) {
+      .blog-header {
+        margin: 8rem 0 4rem 0;
+      }
     }
 
     .blog-header h1 {
@@ -680,7 +687,7 @@ const regularPosts = posts;
 
             <div class="tag-list">
               {data.tags && data.tags.length > 0 ? (
-                data.tags.map(tag => (
+                data.tags.sort().map(tag => (
                   <span class="tag-badge">#{tag}</span>
                 ))
               ) : null}

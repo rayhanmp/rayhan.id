@@ -546,7 +546,7 @@ const author = "Rayhan M";
         </div>
         
         <div class="hero-badges">
-          {tags && tags.map(tag => (
+          {tags && tags.sort().map(tag => (
             <span class="hero-badge">{tag}</span>
           ))}
         </div>
