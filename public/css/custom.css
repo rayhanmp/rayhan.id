@@ -1,3 +1,8 @@
+/* B-factor details arrow animation */
+details[open] summary .arrow {
+    transform: rotate(180deg);
+}
+
 .loader {
     position: fixed;
     width: 100vw;
@@ -309,6 +314,21 @@ pre button.copy.copied .ready {
   font-style: italic !important;
   font-size: 10px !important;
   color: #777 !important;
+}
+
+/* Inline citation links - superscript style */
+.footnote-ref {
+  font-size: 0.75em !important;
+  vertical-align: super !important;
+  line-height: 0 !important;
+  text-decoration: none !important;
+  color: #3A5D44 !important;
+  margin-left: 1px !important;
+}
+
+.footnote-ref:hover {
+  text-decoration: underline !important;
+  background-color: rgba(58, 93, 68, 0.1) !important;
 }
 
 /* Mobile responsive */
