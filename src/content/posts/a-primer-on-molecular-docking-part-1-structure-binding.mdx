@@ -1,7 +1,7 @@
 ---
 title: "A Primer on Molecular Docking (Part 1): Structure & Binding"
 description: "Discover how proteins structures are determined, how to evaluate them, and the physics of molecular binding."
-date: 2025-09-30
+date: 2025-10-06
 isPublished: true
 tags: ["Long Reads", "Biophysics", "Biology", "Chemistry"]
 heroImage: 'https://assets.rayhan.id/pexels-googledeepmind-17497303.jpg'
@@ -108,7 +108,7 @@ If somehow, by divine benevolence, you manage to crystallise your protein of int
   <p style="font-size: 0.8em; margin-top: -2.5rem;"><b>Figure 7</b>: Illustration of the electron density map of 6GLP, visualised with COOT.<br/> [By Rayhan M, CC BY 4.0]</p>
 </div>
 
-Having done our diffraction experiment, the result is a bunch of intensity data. However, intensity alone is not enough to perform an inverse Fourier transform. We need to know the phase too. To know more about it, open the toggle about phase problem below. Once we have our phase, we now have an electron density map. Basically, we can "see" how the electrons of our protein is mapped in 3D space. So, we don't directly get the residues or even the atoms, only the distribution of the electrons. One such example can be seen on Figure 7 as visualised with COOT. Afterwards, the job of deciding what residue belongs to each site falls upon the crystallographer. They're tasked with "guessing" which residue is producing said electron density map. Of course, it's not totally random, we can make educated guesses by the shape and length of the blob. For example, in Figure 10, we can guess that it's a Tyr since it has a visible shape of a phenol ring.
+Having done our diffraction experiment, the result is a bunch of intensity data. However, intensity alone is not enough to perform an inverse Fourier transform. We need to know the phase too. To know more about it, open the toggle about phase problem below. Once we have our phase, we now have an electron density map. Basically, we can "see" how the electrons of our protein is mapped in 3D space. So, we don't directly get the residues or even the atoms, only the distribution of the electrons. One such example can be seen on Figure 7 as visualised with COOT. Afterwards, the job of deciding what residue belongs to each site falls upon the crystallographer. They're tasked with "guessing" which residue is producing said electron density map. Of course, it's not totally random, we can make educated guesses by the shape and length of the blob. For example, in Figure 10, we can guess that it's a Tyr since it has a visible shape of a phenol ring. For proteins that have been solved before or have similar homology, we can also use molecular replacement to get the initial model.
 
 <details style="margin: 1rem 0; border: 1px solid #e1e5e9; border-radius: 6px; margin-bottom: 2rem;">
 <summary style="cursor: pointer; font-weight: 600; color: #1a1a1a; font-size: 1.6rem; list-style: none; display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem 1rem 1rem; position: relative; background: #f8f9fa;" title="Click to expand phase discussion details">
