@@ -373,6 +373,10 @@
     gap: 1rem;
   }
 
+  .doi-input {
+    width: 100%;
+  }
+
   .doi-submit-button {
     width: 100%;
   }
