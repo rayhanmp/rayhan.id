@@ -1,0 +1,422 @@
+.citation-generator {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.doi-form {
+  margin-bottom: 3rem;
+}
+
+.doi-input-container {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.doi-input {
+  flex: 1;
+  padding: 0 1.5rem;
+  font-size: 1.3rem;
+  border: 2px solid #e5e5e5;
+  border-radius: 8px;
+  background: #fafafa;
+  transition: all 0.3s ease;
+  outline: none;
+  margin: 0;
+  box-sizing: border-box;
+  height: 48px;
+  line-height: 44px;
+}
+
+.doi-input:focus {
+  border-color: #3A5D44;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(58, 93, 68, 0.1);
+}
+
+.doi-input::placeholder {
+  color: #999;
+  font-weight: 400;
+}
+
+.doi-submit-button {
+  background: #3A5D44;
+  color: white;
+  border: 2px solid #3A5D44;
+  padding: 0 3rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.doi-submit-button:hover:not(:disabled) {
+  background: #238a33;
+  transform: translateY(-1px);
+}
+
+.doi-submit-button:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.error-message {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 1rem;
+  border-radius: 4px;
+  border: 1px solid #f5c6cb;
+  margin-bottom: 1rem;
+}
+
+.citation-results {
+  margin-top: 3rem;
+}
+
+.citation-meta {
+  background: #f8f9fa;
+  padding: 2rem;
+  border-radius: 12px;
+  margin-bottom: 3rem;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.citation-meta h4 {
+  margin-top: 0;
+  color: #333;
+  line-height: 1.4;
+}
+
+.citation-meta p {
+  margin: 0.5rem 0;
+  color: #666;
+}
+
+.citation-meta a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.citation-meta a:hover {
+  text-decoration: underline;
+}
+
+.citation-formats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.citation-format {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.citation-format:hover {
+  transform: translateY(-2px);
+}
+
+.citation-format h4 {
+  background: #f8f9fa;
+  margin: 0;
+  padding: 1rem;
+  border-bottom: 1px solid #e9ecef;
+  color: #333;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.citation-text {
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.citation-text p {
+  margin: 0;
+  flex: 1;
+  line-height: 1.6;
+  color: #333;
+}
+
+.copy-button {
+  background: #3A5D44;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  position: relative;
+  width: 80px;
+}
+
+.copy-button .ready,
+.copy-button .success {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+}
+
+.copy-button .ready {
+  display: block;
+}
+
+.copy-button .success {
+  display: none;
+}
+
+.copy-button.copied .ready {
+  display: none;
+}
+
+.copy-button.copied .success {
+  display: block;
+}
+
+.copy-button:hover {
+  background: #238a33;
+  transform: translateY(-1px);
+}
+
+/* Citation History Styles */
+.citation-history-section {
+  margin-top: 4rem;
+  border-top: 1px solid #e9ecef;
+  padding-top: 3rem;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.history-title-section {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.history-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.hint-button {
+  background: none;
+  border: 1px solid #ddd;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+  padding: 0;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+}
+
+.hint-button:hover {
+  background: #f8f9fa;
+  border-color: #999;
+  color: #333;
+}
+
+.history-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.format-selector {
+  background: white;
+  border: 2px solid #e5e5e5;
+  border-radius: 6px;
+  padding: 0.4rem 2rem 0.4rem 1rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 100px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.6rem center;
+  background-size: 0.8rem;
+}
+
+.format-selector:focus {
+  border-color: #3A5D44;
+  outline: none;
+}
+
+.toggle-history-button {
+  background: #3A5D44;
+  color: white;
+  border: none;
+  padding: 0 1.2rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clear-history-button {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 0 1.2rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggle-history-button:hover,
+.toggle-history-button:active {
+  background: #238a33;
+  transform: translateY(-1px);
+  color: white;
+}
+
+.clear-history-button:hover,
+.clear-history-button:active {
+  background: #c82333;
+  transform: translateY(-1px);
+  color: white;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.history-item {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.history-citation-text {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.history-citation-text .copy-button {
+  width: 80px;
+  min-height: 36px;
+  font-size: 0.9rem;
+  padding: 0.6rem 1.2rem;
+}
+
+.history-citation-text p {
+  margin: 0;
+  flex: 1;
+  line-height: 1.6;
+  color: #333;
+  font-size: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .doi-input-container {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .doi-submit-button {
+    width: 100%;
+  }
+
+  .citation-formats {
+    grid-template-columns: 1fr;
+  }
+
+  .citation-text {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .copy-button {
+    align-self: flex-end;
+  }
+
+  .history-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .history-title-section {
+    justify-content: center;
+  }
+
+  .history-controls {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .format-selector {
+    width: 100%;
+  }
+
+  .history-citation-text {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .history-citation-text .copy-button {
+    align-self: flex-end;
+  }
+}

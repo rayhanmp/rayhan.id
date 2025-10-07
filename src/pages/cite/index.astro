@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CitationGenerator from '../../components/CitationGenerator.tsx';
+---
+
+<BaseLayout title="Citation Generator - Rayhan M" currentPage="/citation">
+  <div class="container">
+    <!-- Header Section -->
+    <div class="blog-header">
+      <h1>DOI <span class="highlight">Citation Generator</span></h1>
+      <p>Generate properly formatted academic citations from DOI numbers in APA, IEEE, Chicago, and Harvard styles.</p>
+      <div class="blog-divider"></div>
+    </div>
+
+    <!-- Citation Tool Section -->
+    <div class="citation-tool-section">
+      <CitationGenerator client:load />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .blog-header {
+    text-align: left;
+    margin: 10rem 0 4rem 0;
+  }
+
+  @media (max-width: 1024px) {
+    .blog-header {
+      margin: 8rem 0 4rem 0;
+    }
+  }
+
+  .blog-header h1 {
+    font-size: 5.5rem;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+    font-weight: 300;
+    color: #9b9b9b;
+  }
+
+  .blog-header .highlight {
+    font-weight: 700;
+    color: #000;
+  }
+
+  .blog-header p {
+    font-size: 1.8rem;
+    color: #666;
+    margin-bottom: 2rem;
+    line-height: 1.4;
+  }
+
+  .blog-divider {
+    width: 100%;
+    height: 1px;
+    background: #ddd;
+    margin: 3rem 0;
+  }
+
+  .citation-tool-section {
+    margin-bottom: 8rem;
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      padding: 0 1rem;
+    }
+
+    .blog-header h1 {
+      font-size: 4rem;
+    }
+
+    .blog-header p {
+      font-size: 1.6rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .blog-header h1 {
+      font-size: 3rem;
+    }
+
+    .blog-header p {
+      font-size: 1.4rem;
+    }
+  }
+</style>
