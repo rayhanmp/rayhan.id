@@ -248,6 +248,27 @@ const author = "Rayhan M";
         font-weight: 400;
       }
 
+      :global(main.blog-post a:not([class*="footnote"])) {
+        color: #3A5D44 !important;
+        text-decoration: none;
+      }
+
+      :global(main.blog-post a:hover:not([class*="footnote"])) {
+        color: #238a33 !important;
+        text-decoration: underline;
+      }
+      
+      /* Also target footnote links */
+      :global(main.blog-post a[class*="footnote"]) {
+        color: #3A5D44 !important;
+        text-decoration: none;
+      }
+
+      :global(main.blog-post a[class*="footnote"]:hover) {
+        color: #238a33 !important;
+        text-decoration: underline;
+      }
+
       .blog-post h2, .blog-post h3 {
         margin-top: 2rem;
         font-weight: 600;

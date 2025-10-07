@@ -9,7 +9,7 @@ heroImageCaption: 'Photo by Google Deepmind'
 ---
 import { YouTube } from 'astro-embed';
 import BeforeAfterSlider from '../../components/BeforeAfterSlider.tsx';
-// import Quiz from '../../components/Quiz.tsx';
+import Quiz from '../../components/Quiz.tsx';
 
 Molecular docking is often presented with a touch of magic. However, having spent some time in my undergraduate thesis on protein-ligand interactions, I've found this perception to be largely misleading. While docking is undeniably a fascinating technique, the reality of docking is much more nuanced.
 
@@ -188,7 +188,7 @@ Since we are modelling based on the electron density map, the resolution of the 
   <p style="font-size: 0.8em; margin-top: 0.5rem;"><b>Figure 11</b>: EDM comparison of various resolutions from 1.0 to 6.0 $\AA$, visualised with ChimeraX. The EDM is generated from the model, hence it doesn't have noises that exist in real experimental EDM.<br/> [By Rayhan M, CC BY 4.0]</p>
 </div>
 
-It's also important to note that most protein structure data don't include hydrogen atoms, due to their size. Remember that hydrogen only has 1 electron, as opposed to other atoms such as carbon, which has 6 electrons, or oxygen, which has 8 electrons. Therefore, the electron density of hydrogen is very low, making it hard to resolve with X-ray crystallography. Sub-angstrom resolution has been achieved with various techniques, hence allowing us to resolve hydrogen atoms<a href="#footnote-ref-12" id="footnote-12" className="footnote-ref" aria-describedby="footnote-label" title="Jump to footnote">[12]</a>. , but it's still relatively rare.
+It's also important to note that most protein structure data don't include hydrogen atoms, due to their size. Remember that hydrogen only has 1 electron, as opposed to other atoms such as carbon, which has 6 electrons, or oxygen, which has 8 electrons. Therefore, the electron density of hydrogen is very low, making it hard to resolve with X-ray crystallography. Sub-angstrom resolution has been achieved with various techniques, hence allowing us to resolve hydrogen atoms<a href="#footnote-ref-12" id="footnote-12" className="footnote-ref" aria-describedby="footnote-label" title="Jump to footnote">[12]</a>, but it's still relatively rare.
 
 For this reason, we usually need to add hydrogen atoms to our model explicitly, often called protonation. Protonation is a tricky process. There are a lot of nuances that can break your model. For example, histidine is famous for its pKa of 6.0, which is very close to physiological pH. Because of this proximity, small fluctuations in the local pH can shift the equilibrium of its side chain (an imidazole ring). It has two tautomers at neutral condition, called HIE where the proton is on the epsilon nitrogen and HID where the proton is on the delta nitrogen. When both are protonated, histidine will be positively charge, called HIP. You can't just ignore histidine as they're very important for biological processes. They're famous as a master of catalyst by acting as a proton shuttle. They're also good as a metal coordinator, like in hemoglobin. As such, we can't just blindly add hydrogens to our model, more elaborate tools like PROPKA<a href="#footnote-ref-13" id="footnote-13" className="footnote-ref" aria-describedby="footnote-label" title="Jump to footnote">[13]</a><a href="#footnote-ref-14" id="footnote-14" className="footnote-ref" aria-describedby="footnote-label" title="Jump to footnote">[14]</a> might be needed to handle His properly.
 
@@ -248,7 +248,7 @@ One common misconception is that the resolution stated in crystallographic table
 
 B-factor is a value assigned to each atom in the crystal structure that quantifies its degree of thermal motion or static disorder. In simpler terms, it measures how much an atom "wobbles" or deviates from its average position within the crystal lattice. A low B-factor means an atom is well-ordered and its position is precisely defined in the EDM. Modelling B-factor allows us to make our model calculated EDM closer to the experimental data, which makes crystallographer happy. These are typically atoms in the core of a protein. In contrast, a high B-factor indicates that an atom is more mobile or exists in multiple conformations, which is common for flexible loops.
 
-**Regions of a protein with high B-factors inherently correspond to areas of lower local resolution.** In these flexible regions, the electron density is smeared out, making the precise placement of atoms more ambiguous. Conversely, parts of the structure with low B-factors are well-ordered and contribute to the high-resolution features of the electron density map. Therefore, while a single resolution value is often assigned to an entire structure, the B-factors reveal the underlying heterogeneity. Moreover, if an atom wobbles too much, a crystallographer might even mark the atom or even the whole residue as missing, which you should fix before docking. To better illustrate how local resolution can differ, consider the picture below in Figure 14. Some objects in the photo are sharp, while others are blurry due to their movement when the photo is taken. The sharpness of the object is analogous to the local resolution of the atom.
+**Regions of a protein with high B-factors inherently correspond to areas of lower local resolution.** In these flexible regions, the electron density is smeared out, making the precise placement of atoms more ambiguous. Conversely, parts of the structure with low B-factors are well-ordered and contribute to the high-resolution features of the electron density map. Therefore, while a single resolution value is often assigned to an entire structure, the B-factors reveal the underlying heterogeneity. Moreover, if an atom wobbles too much, a crystallographer might even mark the atom or even the whole residue as missing, which you should fix before docking. To better illustrate how local resolution can differ, consider the picture below in Figure 14. Some objects in the photo are sharp, while others are blurry due to their movement when the photo is taken. The sharpness of the object is analogous to the local resolution of the atom. If your binding pocket has a high B-factor, that means the structure there is not well-resolved, and you might need to interpret your docking result with a grain of salt.
 
 <BeforeAfterSlider 
   beforeImage="https://assets.rayhan.id/pexels-nguyendesigner-12392816.jpg"
@@ -466,7 +466,7 @@ Well, there is no specific reason for it. However, remember that RSCC is basical
 
 <div style="text-align: center;  margin: 0 auto; width: 90%">
   ![A snippet of the Fo-Fc map of 2B3P, visualised with PyMOL.](https://assets.rayhan.id/2B3P_fo-fc_map.jpg)
-  <p style="font-size: 0.8em; margin-top: -2.5rem;"><b>Figure 21</b>: A snippet of the Fo-Fc map of 2B3P, visualised with PyMOL. <br/> [By The Bumbling Chemist, CC BY 4.0, [the bumbling biochemist](https://thebumblingbiochemist.com)]</p>
+  <p style="font-size: 0.8em; margin-top: -2.5rem;"><b>Figure 21</b>: A snippet of the Fo-Fc map of 2B3P, visualised with PyMOL. <br/> [By The Bumbling Biochemist, CC BY 4.0, [the bumbling biochemist](https://thebumblingbiochemist.com)]</p>
 </div>
 
 While RSCC provides a single value for a region, the Fo-Fc map offers a visual and quantitative way to identify discrepancies between the current atomic model and the experimental electron density data. It's calculated by subtracting the electron density derived from the current model (Fc) from the electron density observed experimentally (Fo), effectively creating a map of the unexplained density.
@@ -668,7 +668,7 @@ In the previous section, we have discussed about how ligands and proteins intera
 
 ## Measuring binding experimentally
 
-Before going deep into the physics of binding, it's important to understand how molecular binding is experimentally measured, as these methods provide the experimental data for validating computational predictions. **Isothermal Titration Calorimetry** (ITC) is widely considered the "gold standard" because it offers a complete thermodynamic profile of molecular interaction in a single, in-solution experiment. ITC directly quantifies the heat released or absorbed during molecular binding <a href="#footnote-ref-17" id="footnote-17" className="footnote-ref" aria-describedby="footnote-label" title="Jump to footnote">[17]</a>. The process involves injecting small aliquots of a ligand from a computer-controlled syringe into a protein solution, maintained at a constant temperature in a sample cell. Each injection generates a heat burst; initially, a large signal indicates abundant free protein binding, which diminishes as binding sites become saturated, eventually reflecting only ligand dilution. The resulting binding isotherm allows for direct determination of binding affinity ($K_A$ or $K_d$), enthalpy ($\DeltaH$), and stoichiometry ($n$). From those metrics, the Gibbs free energy and entropy can then be calculated.
+Before going deep into the physics of binding, it's important to understand how molecular binding is experimentally measured, as these methods provide the experimental data for validating computational predictions. **Isothermal Titration Calorimetry** (ITC) is widely considered the "gold standard" because it offers a complete thermodynamic profile of molecular interaction in a single, in-solution experiment. ITC directly quantifies the heat released or absorbed during molecular binding <a href="#footnote-ref-17" id="footnote-17" className="footnote-ref" aria-describedby="footnote-label" title="Jump to footnote">[17]</a>. The process involves injecting small aliquots of a ligand from a computer-controlled syringe into a protein solution, maintained at a constant temperature in a sample cell. Each injection generates a heat burst; initially, a large signal indicates abundant free protein binding, which diminishes as binding sites become saturated, eventually reflecting only ligand dilution. The resulting binding isotherm allows for direct determination of binding affinity ($K_A$ or $K_d$), enthalpy ($\Delta H$), and stoichiometry ($n$). From those metrics, the Gibbs free energy and entropy can then be calculated.
 
 Complementing ITC, **Surface Plasmon Resonance** (SPR) is an optical method designed to measure binding kinetics <a href="#footnote-ref-18" id="footnote-18" className="footnote-ref" aria-describedby="footnote-label" title="Jump to footnote">[18]</a>. In an SPR setup, one binding partner is immobilized on a gold-plated sensor chip. As a solution containing the other molecule flows over the surface, binding increases the mass on the chip. This mass change alters the refractive index, causing a shift in the angle of reflected polarized light, measured in Resonance Units (RU). Subsequently, a buffer without the analyte flows to measure the dissociation rate. The resulting sensorgram allows for the extraction of kinetic rate constants: the association rate constant ($k_{on}$ or $k_A$) and the dissociation rate constant ($k_{off}$ or $k_d$). In the modern drug design paradigm, SPR is particularly useful thanks to its capability of measuring binding kinetics, hence allowing us to study the residence time<a href="#footnote-ref-19" id="footnote-19" className="footnote-ref" aria-describedby="footnote-label" title="Jump to footnote">[19]</a> of our ligands.
 
@@ -816,89 +816,168 @@ This part of our journey has finally come to an end. This is the longest article
 
 I hope you enjoyed reading this article, or at the very least, found it helpful. See you in the next one.
 
-{/* 
-### Fun Quiz
+# Further Reading
 
-Here's a fun quiz to test your understanding, have fun.
+If you want to learn more about the topic, here are some further reading that you might find useful:
 
+- Bernhard Rupp's book on [biomolecular crystallography](https://www.taylorfrancis.com/books/mono/10.1201/9780429258756/biomolecular-crystallography-bernhard-rupp)
+- RCSB [documentation](https://www.rcsb.org/docs/)
+- Brianna Bibel's [blog](https://thebumblingbiochemist.com/) and [YouTube channel](https://www.youtube.com/@thebumblingbiochemist)
+- Owl Posting's blog on [molecular dnamics](https://www.owlposting.com/p/a-primer-on-molecular-dynamics)
+
+---
+
+Anyways, here's a fun quiz to test your understanding, have fun.
 <Quiz 
-  title=""
+  title="Molecular Docking Fundamentals Quiz"
   client:load
   questions={[
     {
       id: 1,
-      question: "What does a high B-factor indicate about an atom in a protein structure?",
+      question: "In X-ray crystallography, what is the 'phase problem' and why is it a significant challenge in determining protein structures?",
       options: [
-        "The atom is well-ordered and precisely positioned",
-        "The atom is mobile or exists in multiple conformations",
-        "The atom has a high electron density",
-        "The atom is missing from the structure"
+        "It's the difficulty in growing protein crystals with a uniform phase.",
+        "It refers to the inability to measure the phase of diffracted X-rays, which is needed for reconstructing the electron density maps.",
+        "It's the challenge of aligning protein molecules in the same phase within a crystal lattice.",
+        "It describes the phase shift observed in X-rays after they pass through a protein crystal."
       ],
       correctAnswer: 1,
-      explanation: "A high B-factor indicates that an atom is more mobile or exists in multiple conformations, which is common for flexible loops and side chains. Low B-factors indicate well-ordered atoms with precisely defined positions."
+      explanation: "The phase problem arises because experimental X-ray diffraction only measures the intensity (amplitude) of scattered beams, but the phase information, which is essential for performing an inverse Fourier transform to reconstruct the electron density map, is lost. Crystallographers must overcome this by indirect methods like Multiple Isomorphous Replacement (MIR), Molecular Replacement (MR), or Anomalous Scattering techniques."
     },
     {
       id: 2,
-      question: "Which resolution value would you prefer for a protein structure used in docking?",
+      question: "A crystallographer determines a protein structure with a resolution of 4.0 Å. What does this resolution imply about the level of detail observable in the electron density map?",
       options: [
-        "3.5 Å",
-        "2.8 Å", 
-        "1.2 Å",
-        "4.0 Å"
+        "Individual atoms are clearly visible, and their positions are precisely defined.",
+        "Only the general outline of the molecular backbone can be observed.",
+        "Hydrogen atoms can be accurately resolved.",
+        "It represents a high-quality structure suitable for detailed atomic analysis."
       ],
-      correctAnswer: 2,
-      explanation: "1.2 Å represents high-resolution structure where atomic positions are well-defined and individual atoms can be clearly observed. Lower values (like 1.2 Å) indicate better resolution than higher values (like 3.5 Å)."
+      correctAnswer: 1,
+      explanation: "A resolution of 4.0 Å is considered low resolution. At this level, the electron density map will be fuzzy, and only the general outline of the protein's molecular backbone can be observed. High-resolution structures typically have values like 1.5 Å or lower, allowing for precise atomic placement."
     },
     {
       id: 3,
-      question: "What does the R-free value measure in crystallography?",
+      question: "When assessing the quality of a protein structure, you notice a region with unusually high B-factors. What is the most appropriate interpretation of this observation in the context of molecular docking?",
       options: [
-        "The overall quality of the crystal",
-        "How well the model fits the experimental data using a holdout set",
-        "The resolution limit of the structure",
-        "The number of atoms in the structure"
+        "The atoms in this region are exceptionally stable and well-ordered, indicating a rigid binding site.",
+        "This region likely represents a flexible part of the protein or exhibits static/dynamic disorder, making precise atomic placement ambiguous.",
+        "The high B-factor suggests a strong binding interaction with a ligand in this area.",
+        "It indicates that the electron density map was overfitted during refinement in this specific region."
       ],
       correctAnswer: 1,
-      explanation: "R-free measures how well the model fits the experimental data using a small holdout set (5-10% of data) that wasn't used during refinement. This prevents overfitting and provides an unbiased assessment of model quality."
+      explanation: "High B-factors indicate that atoms are more mobile or exist in multiple conformations due to thermal motion or static disorder. In docking, this means the precise placement of atoms in such flexible regions is ambiguous, requiring careful interpretation of docking results, especially if it's part of the binding pocket."
     },
     {
       id: 4,
-      question: "Which file format is the modern standard for storing protein structures?",
+      question: "What is the main purpose of the R-free value in crystallographic model validation, and how does it prevent overfitting?",
       options: [
-        "PDB",
-        "mmCIF",
-        "SDF",
-        "XYZ"
+        "It measures the discrepancy between observed and calculated amplitudes for all diffraction data, including the training set.",
+        "It quantifies the correlation between the model and electron density in real space, highlighting local fit.",
+        "It assesses model bias by using a small subset of diffraction data that was *not* included in the refinement process.",
+        "It represents the completeness of the diffraction data collected during the experiment."
       ],
-      correctAnswer: 1,
-      explanation: "mmCIF (macromolecular Crystallographic Information File) is the modern, robust successor to PDB format. It was designed to overcome PDB's limitations and has been the official archival standard for the Worldwide Protein Data Bank since 2014."
+      correctAnswer: 2,
+      explanation: "R-free is calculated using a small, independent subset (5-10%) of the diffraction data that was deliberately excluded from the model refinement. If the R-free value is significantly higher than the R-factor (R-work), it indicates that the model has been overfitted to the data it was built with, providing an unbiased check on model accuracy."
     },
     {
       id: 5,
-      question: "What is the primary driving force behind the hydrophobic effect?",
+      question: "You are reviewing a PDB file and notice that Arg63 has two alternative conformations, each with an occupancy of 0.50. What does this information convey about the protein structure?",
       options: [
-        "Direct attraction between nonpolar molecules",
-        "Entropy increase when ordered water molecules are liberated",
-        "Hydrogen bonding between water molecules",
-        "Electrostatic interactions"
+        "Arg63 is highly flexible and rapidly switching between these two conformations during the experiment.",
+        "In half of the protein molecules within the crystal, Arg63 adopts one conformation, and in the other half, it adopts the alternative.",
+        "The electron density for Arg63 is so weak that the crystallographer could only model half of its atoms.",
+        "This indicates a strong steric clash, forcing the residue into two improbable positions."
       ],
       correctAnswer: 1,
-      explanation: "The hydrophobic effect is driven by entropy increase when ordered water molecules around nonpolar surfaces are liberated and return to the disordered bulk solvent. It's not a direct attraction between nonpolar molecules."
+      explanation: "An occupancy of 0.50 for two alternative conformations means that in the ensemble of molecules within the crystal, each conformation is present approximately 50% of the time. This reflects either static disorder where different molecules in the crystal adopt different stable conformations, or dynamic motion where the residue equilibrates between two states."
     },
     {
       id: 6,
-      question: "In the Lennard-Jones potential equation, what does the σ parameter represent?",
+      question: "The Ramachandran plot is a critical tool for validating protein structures. Which statement best describes its primary use?",
       options: [
-        "The depth of the potential well",
-        "The distance at which potential energy is zero",
-        "The strength of attraction between particles",
-        "The temperature of the system"
+        "It maps the electron density of individual atoms to identify misplacements.",
+        "It visualizes the allowed and disallowed combinations of the phi (φ) and psi (Ψ) dihedral angles of the protein backbone, checking stereochemical quality.",
+        "It quantifies the agreement between calculated and observed structure factors for heavy atoms.",
+        "It highlights regions of high thermal motion or static disorder within the protein."
       ],
       correctAnswer: 1,
-      explanation: "The σ parameter represents the finite distance at which the potential energy is zero. It can be thought of as the effective 'size' of a particle or the collision diameter in the Lennard-Jones potential."
+      explanation: "The Ramachandran plot specifically assesses the stereochemical quality of a protein's backbone by mapping the phi (φ) and psi (Ψ) dihedral angles for each amino acid. It identifies physically plausible (favorable/allowed) and implausible (disallowed) conformations due to steric hindrance."
+    },
+    {
+      id: 7,
+      question: "According to the article, why are holo protein structures (those already bound to a ligand) generally preferred over apo structures (unbound) for conventional molecular docking simulations?",
+      options: [
+      "Apo structures are less stable, resulting in lower-resolution data.",
+      "Holo structures have a defined, pre-formed binding pocket, which is necessary since rigid docking cannot simulate large conformational changes.",
+      "Holo structures have lower B-factors overall, making them inherently more accurate for all types of simulations.",
+      "Using apo structures often leads to steric clashes because the binding pocket is too small for any new ligand."
+      ],
+      correctAnswer: 1,
+      explanation: "The article explains that conventional docking usually assumes a rigid protein. Since it can't simulate the significant conformational changes that occur when a ligand binds to an apo protein, using a holo structure provides a pre-formed, relevant binding pocket, increasing the chances of finding a correct binding pose."
+    },
+    {
+      id: 8,
+      question: "In the most common form of molecular docking (flexible ligand-rigid receptor), what assumption is made about the flexibility of the molecules?",
+      options: [
+        "Both the protein and the ligand are assumed to be fully flexible, allowing for significant conformational changes during binding.",
+        "The protein is treated as rigid, while the ligand's conformational flexibility is explored.",
+        "Both the protein and the ligand are modeled as rigid bodies, neglecting any conformational adjustments upon binding.",
+        "The ligand is rigid ('key'), and the protein is flexible ('lock') to accommodate the ligand."
+      ],
+      correctAnswer: 1,
+      explanation: "To balance computational cost and accuracy, standard docking protocols typically model the large protein receptor as a static, rigid structure while allowing the smaller ligand to be flexible. The program then samples many different conformations of the ligand to find the most favorable binding pose within the rigid pocket. More advanced (and computationally expensive) methods can incorporate protein flexibility."
+    },
+    {
+      id: 9,
+      question: "Isothermal Titration Calorimetry (ITC) is considered the 'gold standard' for measuring molecular binding experimentally. What unique and comprehensive information does ITC provide about a binding event?",
+      options: [
+        "Only the association and dissociation rate constants (kon, koff).",
+        "The complete thermodynamic profile, including binding affinity (KA/Kd), enthalpy (ΔH), and stoichiometry (n).",
+        "Real-time changes in mass on a sensor chip due to binding.",
+        "The 2D structure of the ligand in complex with the protein."
+      ],
+      correctAnswer: 1,
+      explanation: "ITC directly measures the heat changes associated with molecular binding, allowing for the direct determination of binding affinity (KA or Kd), enthalpy (ΔH), and binding stoichiometry (n) in a single experiment, from which Gibbs free energy and entropy can also be calculated."
+    },
+    {
+      id: 10,
+      question: "The article explains that the hydrophobic effect is a primary driver of binding. What is the fundamental source of this effect?",
+      options: [
+      "A strong, direct attractive force between the nonpolar parts of the ligand and the protein pocket.",
+      "The tendency of nonpolar molecules to repel polar water molecules, pushing them away from the binding site.",
+      "An increase in the overall entropy of the system, caused by the release of ordered water molecules from nonpolar surfaces.",
+      "The decrease in the system's enthalpy when nonpolar groups aggregate and release heat."
+      ],
+      correctAnswer: 2,
+      explanation: "The hydrophobic effect is not driven by an attraction between nonpolar molecules but by the favorable increase in the entropy of water. Water molecules form ordered, low-entropy 'cages' around nonpolar surfaces. When these surfaces aggregate, the caged water is liberated, increasing the overall disorder (entropy) of the system, which is thermodynamically favorable."
+    },
+    {
+      id: 11,
+      question: "When calculating the electrostatic interaction energy between two charged particles using Coulomb's law in a biological system, why is it crucial to include the relative dielectric constant of the solvent?",
+      options: [
+        "To account for the van der Waals forces between the particles.",
+        "Because the solvent (e.g., water) screens electrostatic interactions, significantly weakening them compared to a vacuum.",
+        "To adjust for the temperature of the system.",
+        "It is only necessary for nonpolar solvents, not water."
+      ],
+      correctAnswer: 1,
+      explanation: "The dielectric constant (εr) of the solvent is essential because polar solvents like water effectively screen electrostatic interactions between charged particles. Water molecules orient themselves to surround ions, reducing the effective charge and thereby significantly weakening the electrostatic force, making the interaction energy much more realistic than in a vacuum."
+    },
+    {
+      id: 12,
+      question: "The phenomenon of 'enthalpy-entropy compensation' suggests that:",
+      options: [
+        "Favorable enthalpic gains from strong interactions always lead to significantly stronger binding affinity.",
+        "An increase in system entropy is always balanced by an equal decrease in system enthalpy.",
+        "Gains in binding enthalpy can often be offset by unfavorable losses in binding entropy, leading to a relatively constant overall binding affinity.",
+        "Molecular binding is solely driven by enthalpic factors, with entropy playing a negligible role."
+      ],
+      correctAnswer: 2,
+      explanation: "Enthalpy-entropy compensation describes a situation where a favorable change in enthalpy (ΔH, e.g., forming strong bonds) is often accompanied by an unfavorable change in entropy (-TΔS, e.g., loss of molecular freedom or solvent entropy). These opposing effects can partially or completely cancel each other out, resulting in a binding affinity that may not improve as much as expected from enthalpic gains alone."
     }
   ]}
-/> */}
+/>
 
 <div className="academic-footnotes">
 
@@ -906,7 +985,7 @@ Here's a fun quiz to test your understanding, have fun.
 
 **GENERAL REFERENCES**
 
-<span id="footnote-ref-1"><strong>[1]</strong></span> Rupp, B. (2009). *Biomolecular Crystallography: Principles, Practice, and Application to Structural Biology*. Garland Science.
+<span id="footnote-ref-1"><strong>[1]</strong></span> Rupp, B. (2009). Biomolecular Crystallography: Principles, Practice, and Application to Structural Biology. Garland Science.
 <a href="#footnote-1" className="footnote-backref" aria-label="Back to content"> ↩</a>
 
 <span id="footnote-ref-2"><strong>[2]</strong></span> Rhodes, G. (2006). Crystallography made crystal clear: A Guide for Users of Macromolecular Models. Academic Press.
