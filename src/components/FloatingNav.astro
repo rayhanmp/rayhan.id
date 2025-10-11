@@ -24,7 +24,7 @@ function isActive(href: string, currentPage?: string) {
 ---
 
 <!-- Floating Navigation Menu -->
-<nav class={`floating-nav ${isHomePage ? 'scrolled' : ''}`}>
+<nav class="floating-nav">
   <div class="mobile-nav-toggle" id="mobileNavToggle">
     <span class="hamburger-line"></span>
     <span class="hamburger-line"></span>
@@ -334,10 +334,11 @@ function isActive(href: string, currentPage?: string) {
     // Handle scroll behavior for desktop navigation
     const floatingNav = document.querySelector('.floating-nav');
     const isHomePage = window.location.pathname === '/';
-    let isScrolled = isHomePage; // Start as scrolled on home page
+    let isScrolled = false;
 
     function handleScroll() {
       if (window.innerWidth > 1024) {
+        // Desktop behavior
         const scrollY = window.scrollY;
         
         if (isHomePage) {
@@ -358,6 +359,12 @@ function isActive(href: string, currentPage?: string) {
             isScrolled = false;
           }
         }
+      } else {
+        // Mobile: never use scrolled class
+        if (isScrolled) {
+          floatingNav?.classList.remove('scrolled');
+          isScrolled = false;
+        }
       }
     }
 
@@ -365,8 +372,10 @@ function isActive(href: string, currentPage?: string) {
     window.removeEventListener('scroll', handleScroll);
     // Listen for scroll events
     window.addEventListener('scroll', handleScroll);
+    // Listen for resize events to handle desktop/mobile transitions
+    window.addEventListener('resize', handleScroll);
     
-    // Check initial scroll position
+    // Check initial state
     handleScroll();
   }
 
