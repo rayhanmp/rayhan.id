@@ -1,6 +1,64 @@
 ---
-// Redirect /blog to /blog/1
-return Astro.redirect('/blog/1', 301);
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getReadingTime } from '../../utils/readingTime';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('posts');
+  const posts = allPosts
+    .filter((post) => post.data.isPublished)
+    .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+
+  const POSTS_PER_PAGE = 9;
+  const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE);
+
+  return Array.from({ length: totalPages }, (_, i) => {
+    const pageNum = i + 1;
+    const start = i * POSTS_PER_PAGE;
+    const end = start + POSTS_PER_PAGE;
+
+    return {
+      params: { page: String(pageNum) },
+      props: {
+        posts: posts.slice(start, end),
+        currentPage: pageNum,
+        totalPages: totalPages,
+        allPosts: posts
+      }
+    };
+  });
+}
+
+const { posts, currentPage, totalPages, allPosts } = Astro.props;
+
+const allTags = Array.from(
+  new Set(allPosts.flatMap(post => post.data.tags || []))
+).sort((a, b) => {
+  const countA = allPosts.filter(post => post.data.tags?.includes(a)).length;
+  const countB = allPosts.filter(post => post.data.tags?.includes(b)).length;
+  return countB - countA;
+});
+
+// Featured post - docking article (Part 1)
+const featuredPost = currentPage === 1 ? allPosts.find(post => post.slug === 'a-primer-on-molecular-docking-part-1-structure-binding') : null;
+
+// Generate pagination buttons
+const paginationButtons = [];
+for (let i = 1; i <= totalPages; i++) {
+  const showPage =
+    i === 1 ||
+    i === totalPages ||
+    (i >= currentPage - 1 && i <= currentPage + 1);
+
+  const showEllipsisBefore = i === currentPage - 2 && currentPage > 3;
+  const showEllipsisAfter = i === currentPage + 2 && currentPage < totalPages - 2;
+
+  if (showEllipsisBefore || showEllipsisAfter) {
+    paginationButtons.push({ type: 'ellipsis' });
+  } else if (showPage) {
+    paginationButtons.push({ type: 'page', pageNum: i, isActive: i === currentPage });
+  }
+}
 ---
 
 <BaseLayout title="Blog – Rayhan M" currentPage="/blog">
@@ -27,13 +85,10 @@ return Astro.redirect('/blog/1', 301);
       letter-spacing: -0.065rem;
     }
 
-
-
     .blog-header {
       text-align: left;
       margin: 10rem 0 4rem 0;
     }
-
 
     @media (max-width: 1024px) {
       .blog-header {
@@ -90,7 +145,7 @@ return Astro.redirect('/blog/1', 301);
       gap: 2rem 2rem;
       margin-top: 2rem;
       justify-items: center;
-      margin-bottom: 16rem;
+      margin-bottom: 4rem;
     }
 
     .blog-card {
@@ -369,7 +424,7 @@ return Astro.redirect('/blog/1', 301);
       .search-filter-container {
         gap: 1rem;
       }
-      
+
       .filter-dropdown-content {
         right: 0;
         left: auto;
@@ -577,6 +632,66 @@ return Astro.redirect('/blog/1', 301);
         max-width: 100%;
       }
       }
+
+    /* Pagination Styles */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 4rem 0 8rem 0;
+      flex-wrap: wrap;
+    }
+
+    .pagination-button {
+      padding: 0.8rem 1.2rem;
+      font-size: 1.4rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      background: #fff;
+      color: #333;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 500;
+    }
+
+    .pagination-button:hover:not(.disabled) {
+      border-color: #333;
+      background: #f8f8f8;
+      transform: translateY(-1px);
+    }
+
+    .pagination-button.active {
+      background: #000;
+      color: #fff;
+      border-color: #000;
+    }
+
+    .pagination-button.disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .pagination-ellipsis {
+      padding: 0.8rem 0.5rem;
+      color: #999;
+      font-size: 1.4rem;
+    }
+
+    @media (max-width: 550px) {
+      .pagination {
+        gap: 0.3rem;
+      }
+
+      .pagination-button {
+        padding: 0.6rem 1rem;
+        font-size: 1.3rem;
+      }
+    }
   </style>
 
   <div class="container">
@@ -586,7 +701,7 @@ return Astro.redirect('/blog/1', 301);
       <div class="blog-divider"></div>
     </div>
 
-    <!-- Featured Post Section -->
+    <!-- Featured Post Section (only on page 1) -->
     {featuredPost && (
       <div class="featured-section">
         <a href={`/blog/${featuredPost.slug}`} class="featured-post">
@@ -594,13 +709,13 @@ return Astro.redirect('/blog/1', 301);
             <div class="featured-text">
               <h3 class="featured-title">{featuredPost.data.title}</h3>
               <p class="featured-description">{featuredPost.data.description}</p>
-              
+
               <div class="featured-meta">
                 <span>{new Date(featuredPost.data.date).toLocaleDateString()}</span>
                 <span>{getReadingTime(featuredPost.body)} min read</span>
               </div>
             </div>
-            
+
             <div class="featured-image">
               {featuredPost.data.heroImage ? (
                 <img src={featuredPost.data.heroImage} alt={featuredPost.data.title} loading="lazy" />
@@ -618,7 +733,7 @@ return Astro.redirect('/blog/1', 301);
         <i class="fas fa-search search-icon"></i>
         <input id="search" type="text" placeholder="Search posts..." />
       </div>
-      
+
       <div class="filter-dropdown">
         <button class="filter-button" id="filterButton" title="Filter by tags" data-umami-event="Filter by tags">
           <i class="fas fa-filter"></i>
@@ -627,10 +742,10 @@ return Astro.redirect('/blog/1', 301);
           <div class="filter-option">
             <input type="checkbox" id="all-tags" checked />
             <label for="all-tags">All posts</label>
-            <span class="filter-count">{posts.length}</span>
+            <span class="filter-count">{allPosts.length}</span>
           </div>
           {allTags.map(tag => {
-            const tagCount = posts.filter(post => post.data.tags?.includes(tag)).length;
+            const tagCount = allPosts.filter(post => post.data.tags?.includes(tag)).length;
             return (
               <div class="filter-option">
                 <input type="checkbox" id={`tag-${tag}`} data-tag={tag} />
@@ -644,10 +759,10 @@ return Astro.redirect('/blog/1', 301);
     </div>
 
     <div class="blog-grid">
-      {regularPosts.map(({ slug, data, body }) => (
-        <a 
+      {posts.map(({ slug, data, body }) => (
+        <a
           href={`/blog/${slug}`}
-          class="blog-card" 
+          class="blog-card"
           data-tags={data.tags ? data.tags.join(',') : ''}
         >
           <div class="blog-hero-image">
@@ -680,6 +795,47 @@ return Astro.redirect('/blog/1', 301);
           </div>
         </a>
       ))}
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      {currentPage > 1 ? (
+        <a href={`/blog/${currentPage - 1}`} class="pagination-button">
+          <i class="fas fa-chevron-left"></i>
+          Previous
+        </a>
+      ) : (
+        <span class="pagination-button disabled">
+          <i class="fas fa-chevron-left"></i>
+          Previous
+        </span>
+      )}
+
+      {paginationButtons.map(button => {
+        if (button.type === 'ellipsis') {
+          return <span class="pagination-ellipsis">...</span>;
+        }
+        return (
+          <a
+            href={`/blog/${button.pageNum}`}
+            class={`pagination-button ${button.isActive ? 'active' : ''}`}
+          >
+            {button.pageNum}
+          </a>
+        );
+      })}
+
+      {currentPage < totalPages ? (
+        <a href={`/blog/${currentPage + 1}`} class="pagination-button">
+          Next
+          <i class="fas fa-chevron-right"></i>
+        </a>
+      ) : (
+        <span class="pagination-button disabled">
+          Next
+          <i class="fas fa-chevron-right"></i>
+        </span>
+      )}
     </div>
   </div>
 
@@ -724,12 +880,12 @@ return Astro.redirect('/blog/1', 301);
     let searchData = [];
     let fuse = null;
     let selectedTags = new Set();
-    
+
     async function setupSearch() {
       try {
         const response = await fetch('/search-index.json');
         searchData = await response.json();
-        
+
         const FuseModule = await import('https://esm.sh/fuse.js@7.1.0');
         fuse = new FuseModule.default(searchData, {
           keys: ['title', 'description', 'tags'],
@@ -740,64 +896,64 @@ return Astro.redirect('/blog/1', 301);
         console.error('Search failed to load:', error);
       }
     }
-    
+
     function filterPosts() {
       const query = document.getElementById('search')?.value || '';
       const cards = document.querySelectorAll('.blog-card');
-      
+
       cards.forEach(card => {
         const href = card.getAttribute('href');
         const slug = href ? href.split('/').pop() : '';
         const cardTags = card.getAttribute('data-tags');
         const postTags = cardTags ? cardTags.split(',').filter(tag => tag.trim()) : [];
-        
+
         let showCard = true;
-        
+
         // Filter by search query
         if (query.trim() && fuse) {
           const results = fuse.search(query);
           const matchedSlugs = results.map(result => result.item.slug);
           showCard = showCard && matchedSlugs.includes(slug);
         }
-        
+
         // Filter by selected tags
         if (selectedTags.size > 0) {
           const hasSelectedTag = postTags.some(tag => selectedTags.has(tag.trim()));
           showCard = showCard && hasSelectedTag;
         }
-        
+
         card.style.display = showCard ? '' : 'none';
       });
     }
-    
+
     function connectSearchBox() {
       const searchBox = document.getElementById('search');
       if (!searchBox) return;
-      
+
       searchBox.addEventListener('input', () => filterPosts());
       searchBox.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') filterPosts();
       });
     }
-    
+
     function setupFilter() {
       const filterButton = document.getElementById('filterButton');
       const filterDropdown = document.getElementById('filterDropdown');
       const allTagsCheckbox = document.getElementById('all-tags');
-      
+
       if (!filterButton || !filterDropdown) return;
-      
+
       // Remove any existing event listeners by cloning and replacing the button
       const newFilterButton = filterButton.cloneNode(true);
       filterButton.parentNode.replaceChild(newFilterButton, filterButton);
-      
+
       // Toggle dropdown - attach to the new button
       newFilterButton.addEventListener('click', (e) => {
         e.stopPropagation();
         filterDropdown.classList.toggle('show');
         newFilterButton.classList.toggle('active');
       });
-      
+
       // Close dropdown when clicking outside
       document.addEventListener('click', (e) => {
         if (!filterDropdown.contains(e.target) && !newFilterButton.contains(e.target)) {
@@ -805,12 +961,12 @@ return Astro.redirect('/blog/1', 301);
           newFilterButton.classList.remove('active');
         }
       });
-      
+
       // Prevent dropdown from closing when clicking inside
       filterDropdown.addEventListener('click', (e) => {
         e.stopPropagation();
       });
-      
+
       // Handle "All posts" checkbox
       if (allTagsCheckbox) {
         allTagsCheckbox.addEventListener('change', (e) => {
@@ -824,12 +980,12 @@ return Astro.redirect('/blog/1', 301);
           filterPosts();
         });
       }
-      
+
       // Handle individual tag checkboxes
       document.querySelectorAll('[data-tag]').forEach(checkbox => {
         checkbox.addEventListener('change', (e) => {
           const tag = e.target.dataset.tag;
-          
+
           if (e.target.checked) {
             selectedTags.add(tag);
             // Uncheck "All posts"
@@ -841,12 +997,12 @@ return Astro.redirect('/blog/1', 301);
               allTagsCheckbox.checked = true;
             }
           }
-          
+
           filterPosts();
         });
       });
     }
-    
+
     function animateCards() {
       if (typeof anime !== 'undefined') {
         anime({
@@ -859,50 +1015,30 @@ return Astro.redirect('/blog/1', 301);
         });
       }
     }
-    
+
+    // Search initialization state
+    let searchInitialized = false;
+
     // Initialize everything when DOM and external scripts are ready
     async function initializeBlogPage() {
       try {
-        await new Promise((resolve) => {
-          const checkFontAwesome = () => {
-            // Check if FontAwesome has loaded by looking for the search icon specifically
-            const searchIcon = document.querySelector('.search-icon');
-            if (searchIcon) {
-              const computedStyle = window.getComputedStyle(searchIcon, ':before');
-              const content = computedStyle.getPropertyValue('content');
-              // FontAwesome icons have specific content values when loaded
-              if (content && content !== 'none' && content !== '""') {
-                resolve();
-                return true;
-              }
-            }
-            return false;
-          };
+        // Manually trigger FontAwesome to replace icons
+        if (typeof FontAwesome !== 'undefined' && FontAwesome.dom) {
+          FontAwesome.dom.i2svg();
+        }
 
-          if (checkFontAwesome()) {
-            return;
-          }
+        // Initialize search functionality (only once)
+        if (!searchInitialized) {
+          await setupSearch();
+          searchInitialized = true;
+        }
 
-          const intervalId = setInterval(() => {
-            if (checkFontAwesome()) {
-              clearInterval(intervalId);
-            }
-          }, 100);
-          
-          // Fallback timeout after 2 seconds
-          setTimeout(() => {
-            clearInterval(intervalId);
-            resolve();
-          }, 1000);
-        });
-
-        // Initialize search functionality
-        await setupSearch();
+        // Reconnect UI elements
         connectSearchBox();
         setupFilter();
-        
+
         setTimeout(animateCards, 100);
-        
+
       } catch (error) {
         console.error('Failed to initialize blog page:', error);
         connectSearchBox();
@@ -916,6 +1052,7 @@ return Astro.redirect('/blog/1', 301);
       initializeBlogPage();
     }
 
-    document.addEventListener('astro:page-load', initializeBlogPage);
+    // Re-initialize after View Transitions
+    document.addEventListener('astro:after-swap', initializeBlogPage);
   </script>
 </BaseLayout>
