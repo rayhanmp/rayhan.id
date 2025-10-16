@@ -15,6 +15,9 @@ const options = {
 export default defineConfig({
   integrations: [react(), mdx(), sitemap()],
   site: 'https://rayhan.id',
+  redirects: {
+    '/blog': '/blog/1'
+  },
   alias: {
     '@': fileURLToPath(new URL('./src', import.meta.url))
   },
