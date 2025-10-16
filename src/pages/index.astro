@@ -1,6 +1,7 @@
 ---
 import profile from '../assets/rayv2.webp';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import BackToTop from '../components/BackToTop.astro';
 import { getCollection } from 'astro:content';
 
 const allPosts = await getCollection('posts');
@@ -10,7 +11,42 @@ const latestPosts = allPosts
   .slice(0, 3);
 ---
 
-<BaseLayout title="Rayhan M" currentPage="/">
+<BaseLayout
+  title="Rayhan Maheswara Pramanda - Machine Learning & Backend Developer"
+  description="Fresh graduate in Information System and Technology from ITB. Interested in Machine Learning, Data Science, and Backend Development. Explore my projects, blog posts, and skills."
+  currentPage="/">
+
+  <!-- Structured Data (JSON-LD) -->
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Rayhan Maheswara Pramanda",
+      "url": "https://rayhan.id",
+      "image": "https://rayhan.id/images/rayv2.webp",
+      "jobTitle": "Fresh Graduate",
+      "alumniOf": {
+        "@type": "EducationalOrganization",
+        "name": "Institut Teknologi Bandung"
+      },
+      "sameAs": [
+        "https://linkedin.com/in/rayhanmp",
+        "https://github.com/rayhanmp",
+        "https://instagram.com/rayhanmhw",
+        "https://medium.com/@rayhanmpramanda"
+      ],
+      "knowsAbout": [
+        "Machine Learning",
+        "Data Science",
+        "Backend Development",
+        "Web Development",
+        "DevOps",
+        "Molecular Biology",
+        "Bioinformatics"
+      ]
+    }
+  </script>
+
   <!-- Add typed.js script specifically for this page -->
   <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
   
@@ -332,7 +368,7 @@ const latestPosts = allPosts
       <header id="intro">
           <h3>Hi there,</h3>
           <h1 class="main-title">I'm Rayhan Maheswara Pramanda</h1>
-          <div class="main-desc">Final year information system and technology student at ITB</div>
+          <div class="main-desc">Fresh graduate in information system and technology from ITB</div>
           <div class="row" style="align-items: center; margin-top: 10px;">
           <div class="eight columns">
              <div class="interest-wrapper">
@@ -489,7 +525,7 @@ const latestPosts = allPosts
       </footer>
     </div>
   </div>
-  <button id="jumpToTop" style="padding-bottom:1rem;background-color: #222; position: fixed; z-index: 100; right: 3rem; bottom: 3rem; opacity: 0; transition: opacity 0.3s ease-in-out;"><a href="#"><i class ="fa-solid fa-caret-up fa-2xl" style="color: #fff;"></i></a></button>
+  <BackToTop />
   <script is:inline>
     function initializeTyped() {
       const element = document.getElementById('interest-item');      
@@ -523,32 +559,6 @@ const latestPosts = allPosts
       document.addEventListener('DOMContentLoaded', loadTypedJS);
     } else {
       loadTypedJS();
-    }
-  </script>
-
-  <script is:inline>
-    const jumpToTopButton = document.getElementById('jumpToTop');
-    
-    function handleScroll() {
-      if (!jumpToTopButton) return;
-      
-      if (window.scrollY > 300) {
-        jumpToTopButton.style.opacity = '1';
-      } else {
-        jumpToTopButton.style.opacity = '0';
-      }
-    }
-
-    window.addEventListener('scroll', handleScroll);
-
-    if (jumpToTopButton) {
-      jumpToTopButton.addEventListener('click', function(e) {
-        e.preventDefault();
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        });
-      });
     }
   </script>
 </BaseLayout>

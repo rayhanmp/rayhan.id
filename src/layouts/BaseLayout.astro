@@ -16,24 +16,61 @@ const isHomePage = currentPage === '/' || Astro.url.pathname === '/';
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>{title}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content={description || 'Personal website of Rayhan Maheswara Pramanda'} />
+
+    <!-- Primary Meta Tags -->
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description || 'Personal website of Rayhan Maheswara Pramanda - Fresh graduate in Information System and Technology from ITB, interested in Machine Learning, Data Science, and Backend Development.'} />
+    <meta name="author" content="Rayhan Maheswara Pramanda" />
+    <meta name="keywords" content="Rayhan Maheswara Pramanda, Machine Learning, Data Science, Backend Development, Web Development, ITB, Portfolio, Blog" />
+    <meta name="robots" content="index, follow" />
+    <meta name="language" content="English" />
+    <meta name="revisit-after" content="7 days" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href={`https://rayhan.id${Astro.url.pathname}`} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={`https://rayhan.id${Astro.url.pathname}`} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description || 'Personal website of Rayhan Maheswara Pramanda - Fresh graduate in Information System and Technology from ITB, interested in Machine Learning, Data Science, and Backend Development.'} />
+    <meta property="og:site_name" content="Rayhan Maheswara Pramanda" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:url" content={`https://rayhan.id${Astro.url.pathname}`} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description || 'Personal website of Rayhan Maheswara Pramanda - Fresh graduate in Information System and Technology from ITB, interested in Machine Learning, Data Science, and Backend Development.'} />
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#3A5D44" />
+    <meta name="msapplication-TileColor" content="#3A5D44" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png" />
+
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="/css/normalize.css" />
     <link rel="stylesheet" href="/css/skeleton.css" />
     <link rel="stylesheet" href="/css/custom.css" />
-    <link rel="icon" type="image/png" href="/images/favicon.png" />
     <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet" />
-    
+
     <!-- Load scripts -->
     <script src="https://kit.fontawesome.com/8c35c08da0.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" defer></script>
     <script defer src="https://analytics.rayhan.id/script.js" data-website-id="15cef188-26a6-45a0-bcf4-36042eaa60cb"></script>
-    
-    <!-- Add resource hints -->
+
+    <!-- Resource hints -->
     <link rel="dns-prefetch" href="https://kit.fontawesome.com" />
     <link rel="dns-prefetch" href="https://unpkg.com" />
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
     <!-- View Transitions - disabled for home page -->
     {!isHomePage && <ViewTransitions />}

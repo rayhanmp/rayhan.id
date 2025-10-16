@@ -1,6 +1,8 @@
 ---
 import FloatingNav from '../components/FloatingNav.astro';
 import TableOfContents from '../components/TableOfContents.astro';
+import Footer from '../components/Footer.astro';
+import BackToTop from '../components/BackToTop.astro';
 import '../styles/about.css';
 
 export interface Props {
@@ -25,8 +27,34 @@ const author = "Rayhan M";
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Primary Meta Tags -->
     <title>{title} | Rayhan's Blog</title>
+    <meta name="title" content={`${title} | Rayhan's Blog`} />
     <meta name="description" content={description} />
+    <meta name="author" content="Rayhan Maheswara Pramanda" />
+    {tags && <meta name="keywords" content={tags.join(', ')} />}
+    <meta name="robots" content="index, follow" />
+    <meta name="language" content="English" />
+    <meta name="article:published_time" content={date.toISOString()} />
+    <meta name="article:author" content="Rayhan Maheswara Pramanda" />
+    {tags && tags.map(tag => <meta name="article:tag" content={tag} />)}
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href={`https://rayhan.id${Astro.url.pathname}`} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={`https://rayhan.id${heroImage ?? '/images/posts/pexels-bertellifotografia-16094040.jpg'}`} />
+    <meta property="og:url" content={`https://rayhan.id${Astro.url.pathname}`} />
+    <meta property="og:site_name" content="Rayhan's Blog" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="article:published_time" content={date.toISOString()} />
+    <meta property="article:author" content="Rayhan Maheswara Pramanda" />
+    {tags && tags.map(tag => <meta property="article:tag" content={tag} />)}
+    {readingTime && <meta property="article:reading_time" content={`${readingTime} minutes`} />}
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -34,19 +62,22 @@ const author = "Rayhan M";
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={`https://rayhan.id${heroImage ?? '/images/posts/pexels-bertellifotografia-16094040.jpg'}`} />
 
-    <!-- Open Graph -->
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:image" content={`https://rayhan.id${heroImage ?? '/images/posts/pexels-bertellifotografia-16094040.jpg'}`} />
-    <meta property="og:url" content={`https://rayhan.id${Astro.url.pathname}`} />
-    <meta property="og:site_name" content="Rayhan's Blog" />
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#3A5D44" />
+    <meta name="msapplication-TileColor" content="#3A5D44" />
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png" />
+
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="/css/normalize.css" />
     <link rel="stylesheet" href="/css/skeleton.css" />
     <link rel="stylesheet" href="/css/custom.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css">
-    <link rel="icon" type="image/png" href="/images/favicon.png" />
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
@@ -54,10 +85,39 @@ const author = "Rayhan M";
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+    <!-- Scripts -->
     <script src="https://kit.fontawesome.com/8c35c08da0.js" crossorigin="anonymous" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" defer></script>
     <script defer src="https://analytics.rayhan.id/script.js" data-website-id="15cef188-26a6-45a0-bcf4-36042eaa60cb"></script>
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json" is:inline set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": title,
+      "description": description,
+      "image": `https://rayhan.id${heroImage ?? '/images/posts/pexels-bertellifotografia-16094040.jpg'}`,
+      "datePublished": date.toISOString(),
+      "author": {
+        "@type": "Person",
+        "name": "Rayhan Maheswara Pramanda",
+        "url": "https://rayhan.id"
+      },
+      "publisher": {
+        "@type": "Person",
+        "name": "Rayhan Maheswara Pramanda",
+        "url": "https://rayhan.id"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": `https://rayhan.id${Astro.url.pathname}`
+      },
+      ...(tags && { keywords: tags.join(', ') }),
+      ...(readingTime && { timeRequired: `PT${readingTime}M` })
+    })} />
+
     <style>
       #reading-progress {
         position: fixed;
@@ -621,49 +681,14 @@ const author = "Rayhan M";
           document.body.appendChild(script);
         }
       </script>
-      
-      
-      <footer>
-        <div class="blog-divider"></div>
 
-        <div style="display: flex; flex-direction: column; align-items: center; gap: 0.8rem; margin-top: 4rem;">
-    <nav style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; font-size: 1.4rem;">
-      <a href="/" style="text-decoration: none; color: inherit;">Home</a>
-      <a href="/about-me" style="text-decoration: none; color: inherit;">About</a>
-      <a href="/blog/1" style="text-decoration: none; color: inherit;">Blog</a>
-      <a href="/gallery" style="text-decoration: none; color: inherit;">Gallery</a>
-      <a href="/contact" style="text-decoration: none; color: inherit;">Contact</a>
-    </nav>
-
-          <div style="font-size: 1.4rem; color: #777;">
-            © {new Date().getFullYear()} Rayhan Maheswara Pramanda
-          </div>
-
-          <div style="display: flex; gap: 1rem; justify-content: center; font-size: 1.6rem;">
-            <a href="https://github.com/rayhanmp" target="_blank" rel="noopener" aria-label="GitHub">
-              <i class="fab fa-github"></i>
-            </a>
-            <a href="https://linkedin.com/in/rayhanmp" target="_blank" rel="noopener" aria-label="LinkedIn">
-              <i class="fab fa-linkedin"></i>
-            </a>
-            <a href="mailto:mail@rayhan.id" aria-label="Email">
-              <i class="fas fa-envelope"></i>
-            </a>
-          </div>
-
-          <div style="margin-top: 1rem;">
-            <a href="#" style="font-size: 1.2rem; color: #aaa; text-decoration: underline;">Back to top ↑</a>
-          </div>
-        </div>
-      </footer>
+      <Footer />
 
     </div>
-    
+
     <TableOfContents />
-    
-    <!-- Back to Top Button -->
-    <button id="jumpToTop" style="padding-bottom:1rem;background-color: #222; position: fixed; z-index: 100; right: 3rem; bottom: 3rem; opacity: 0; transition: opacity 0.3s ease-in-out;"><a href="#"><i class ="fa-solid fa-caret-up fa-2xl" style="color: #fff;"></i></a></button>
-    
+    <BackToTop />
+
     <script is:inline>
       window.addEventListener('scroll', () => {
         const scrollTop = window.scrollY;
@@ -674,32 +699,6 @@ const author = "Rayhan M";
           progressBar.style.width = `${scrollPercent}%`;
         }
       });
-    </script>
-
-    <script is:inline>
-      const jumpToTopButton = document.getElementById('jumpToTop');
-      
-      function handleScroll() {
-        if (!jumpToTopButton) return;
-        
-        if (window.scrollY > 300) {
-          jumpToTopButton.style.opacity = '1';
-        } else {
-          jumpToTopButton.style.opacity = '0';
-        }
-      }
-
-      window.addEventListener('scroll', handleScroll);
-
-      if (jumpToTopButton) {
-        jumpToTopButton.addEventListener('click', function(e) {
-          e.preventDefault();
-          window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-          });
-        });
-      }
     </script>
   </body>
 </html>

@@ -1,0 +1,122 @@
+---
+interface Props {
+  showDivider?: boolean;
+}
+
+const { showDivider = true } = Astro.props;
+const currentYear = new Date().getFullYear();
+---
+
+<footer>
+  {showDivider && (
+    <div class="blog-divider"></div>
+  )}
+
+  <div class="footer-content">
+    <nav class="footer-nav">
+      <a href="/" class="footer-link">Home</a>
+      <a href="/about-me" class="footer-link">About</a>
+      <a href="/blog/1" class="footer-link">Blog</a>
+      <a href="/gallery" class="footer-link">Gallery</a>
+      <a href="/contact" class="footer-link">Contact</a>
+    </nav>
+
+    <div class="footer-copyright">
+      © {currentYear} Rayhan Maheswara Pramanda
+    </div>
+
+    <div class="footer-socials">
+      <a href="https://github.com/rayhanmp" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+        <i class="fab fa-github"></i>
+      </a>
+      <a href="https://linkedin.com/in/rayhanmp" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+        <i class="fab fa-linkedin"></i>
+      </a>
+      <a href="mailto:mail@rayhan.id" aria-label="Email">
+        <i class="fas fa-envelope"></i>
+      </a>
+    </div>
+
+    <div class="footer-back-to-top">
+      <a href="#" class="back-to-top-link">Back to top ↑</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  footer {
+    margin-top: 4rem;
+    text-align: center;
+    font-size: 1.4rem;
+    color: #999;
+  }
+
+  .footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    margin-top: 4rem;
+  }
+
+  .footer-nav {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-size: 1.4rem;
+  }
+
+  .footer-link {
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.2s ease;
+  }
+
+  .footer-link:hover {
+    color: #333;
+  }
+
+  .footer-copyright {
+    font-size: 1.4rem;
+    color: #777;
+  }
+
+  .footer-socials {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    font-size: 1.6rem;
+  }
+
+  .footer-socials a {
+    color: inherit;
+    transition: color 0.2s ease;
+  }
+
+  .footer-socials a:hover {
+    color: #333;
+  }
+
+  .footer-back-to-top {
+    margin-top: 1rem;
+  }
+
+  .back-to-top-link {
+    font-size: 1.2rem;
+    color: #aaa;
+    text-decoration: underline;
+  }
+
+  .back-to-top-link:hover {
+    color: #666;
+  }
+
+  .blog-divider {
+    height: 1px;
+    background: linear-gradient(to right, #ddd, #ccc, #ddd);
+    margin: 2.5rem 0;
+    border-radius: 1px;
+    opacity: 0.9;
+  }
+</style>
