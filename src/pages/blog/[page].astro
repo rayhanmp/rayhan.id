@@ -347,7 +347,7 @@ for (let i = 1; i <= totalPages; i++) {
     }
 
     .filter-button {
-      padding: 1.2rem;
+      padding: 0.8rem;
       font-size: 1.3rem;
       border: 2px solid #e5e5e5;
       border-radius: 8px;
@@ -658,7 +658,7 @@ for (let i = 1; i <= totalPages; i++) {
       transition: all 0.2s ease;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.2rem;
       font-weight: 500;
     }
 
@@ -734,13 +734,17 @@ for (let i = 1; i <= totalPages; i++) {
 
     <div class="search-filter-container">
       <div class="search-box">
-        <i class="fas fa-search search-icon"></i>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="search-icon" width="16" height="16" fill="currentColor">
+          <path d="M480 272C480 317.9 465.1 360.3 440 394.7L566.6 521.4C579.1 533.9 579.1 554.2 566.6 566.7C554.1 579.2 533.8 579.2 521.3 566.7L394.7 440C360.3 465.1 317.9 480 272 480C157.1 480 64 386.9 64 272C64 157.1 157.1 64 272 64C386.9 64 480 157.1 480 272zM272 416C351.5 416 416 351.5 416 272C416 192.5 351.5 128 272 128C192.5 128 128 192.5 128 272C128 351.5 192.5 416 272 416z"/>
+        </svg>
         <input id="search" type="text" placeholder="Search posts..." />
       </div>
 
       <div class="filter-dropdown">
         <button class="filter-button" id="filterButton" title="Filter by tags" data-umami-event="Filter by tags">
-          <i class="fas fa-filter"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="28" height="28" fill="currentColor">
+            <path d="M96 128C83.1 128 71.4 135.8 66.4 147.8C61.4 159.8 64.2 173.5 73.4 182.6L256 365.3L256 480C256 488.5 259.4 496.6 265.4 502.6L329.4 566.6C338.6 575.8 352.3 578.5 364.3 573.5C376.3 568.5 384 556.9 384 544L384 365.3L566.6 182.7C575.8 173.5 578.5 159.8 573.5 147.8C568.5 135.8 556.9 128 544 128L96 128z"/>
+          </svg>
         </button>
         <div class="filter-dropdown-content" id="filterDropdown">
           <div class="filter-option">
@@ -805,12 +809,16 @@ for (let i = 1; i <= totalPages; i++) {
     <div class="pagination">
       {currentPage > 1 ? (
         <a href={`/blog/${currentPage - 1}`} class="pagination-button">
-          <i class="fas fa-chevron-left"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="16" height="16" fill="currentColor">
+            <path d="M169.4 297.4C156.9 309.9 156.9 330.2 169.4 342.7L361.4 534.7C373.9 547.2 394.2 547.2 406.7 534.7C419.2 522.2 419.2 501.9 406.7 489.4L237.3 320L406.6 150.6C419.1 138.1 419.1 117.8 406.6 105.3C394.1 92.8 373.8 92.8 361.3 105.3L169.3 297.3z"/>
+          </svg>
           Previous
         </a>
       ) : (
         <span class="pagination-button disabled">
-          <i class="fas fa-chevron-left"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="16" height="16" fill="currentColor">
+            <path d="M169.4 297.4C156.9 309.9 156.9 330.2 169.4 342.7L361.4 534.7C373.9 547.2 394.2 547.2 406.7 534.7C419.2 522.2 419.2 501.9 406.7 489.4L237.3 320L406.6 150.6C419.1 138.1 419.1 117.8 406.6 105.3C394.1 92.8 373.8 92.8 361.3 105.3L169.3 297.3z"/>
+          </svg>
           Previous
         </span>
       )}
@@ -832,12 +840,16 @@ for (let i = 1; i <= totalPages; i++) {
       {currentPage < totalPages ? (
         <a href={`/blog/${currentPage + 1}`} class="pagination-button">
           Next
-          <i class="fas fa-chevron-right"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="16" height="16" fill="currentColor">
+            <path d="M471.1 297.4C483.6 309.9 483.6 330.2 471.1 342.7L279.1 534.7C266.6 547.2 246.3 547.2 233.8 534.7C221.3 522.2 221.3 501.9 233.8 489.4L403.2 320L233.9 150.6C221.4 138.1 221.4 117.8 233.9 105.3C246.4 92.8 266.7 92.8 279.2 105.3L471.2 297.3z"/>
+          </svg>
         </a>
       ) : (
         <span class="pagination-button disabled">
           Next
-          <i class="fas fa-chevron-right"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="16" height="16" fill="currentColor">
+            <path d="M471.1 297.4C483.6 309.9 483.6 330.2 471.1 342.7L279.1 534.7C266.6 547.2 246.3 547.2 233.8 534.7C221.3 522.2 221.3 501.9 233.8 489.4L403.2 320L233.9 150.6C221.4 138.1 221.4 117.8 233.9 105.3C246.4 92.8 266.7 92.8 279.2 105.3L471.2 297.3z"/>
+          </svg>
         </span>
       )}
     </div>
@@ -992,11 +1004,6 @@ for (let i = 1; i <= totalPages; i++) {
     // Initialize everything when DOM and external scripts are ready
     async function initializeBlogPage() {
       try {
-        // Manually trigger FontAwesome to replace icons
-        if (typeof FontAwesome !== 'undefined' && FontAwesome.dom) {
-          FontAwesome.dom.i2svg();
-        }
-
         // Initialize search functionality (only once)
         if (!searchInitialized) {
           await setupSearch();
