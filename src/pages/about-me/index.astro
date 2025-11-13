@@ -72,15 +72,51 @@ const s3_URL = 'https://assets.rayhan.id/';
   }
 
   .story-content {
-    max-width: 800px;
+    max-width: 750px;
     margin: 0 auto;
-    font-size: 1.7rem;
-    line-height: 1.7;
+    font-size: 1.9rem;
+    line-height: 1.65;
     color: #444;
   }
 
   .story-content p {
     margin-bottom: 2rem;
+  }
+
+  .education-block {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #ddd;
+  }
+
+  .education-block strong {
+    color: #000;
+    font-weight: 600;
+    font-size: 1.8rem;
+    display: block;
+    margin-bottom: 1rem;
+  }
+
+  .education-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .education-degree {
+    font-size: 1.6rem;
+    color: #000;
+    font-weight: 500;
+  }
+
+  .education-minor {
+    font-size: 1.5rem;
+    color: #555;
+  }
+
+  .education-school {
+    font-size: 1.4rem;
+    color: #666;
   }
 
   .pull-quote {
@@ -102,7 +138,6 @@ const s3_URL = 'https://assets.rayhan.id/';
 
   .experience-section .container {
     display: flex;
-    gap: 4rem;
     align-items: flex-start;
   }
 
@@ -124,14 +159,13 @@ const s3_URL = 'https://assets.rayhan.id/';
   }
 
   .experience-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 3rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
   }
 
   .experience-item {
-    margin-bottom: 3rem;
-    padding: 3rem;
+    padding: 2rem;
     border-left: 4px solid #000;
     background: #fff;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -139,47 +173,43 @@ const s3_URL = 'https://assets.rayhan.id/';
   }
 
   .experience-header {
-    display: flex;
-    align-items: center;
     margin-bottom: 1rem;
   }
 
   .experience-logo {
-    width: 60px;
-    height: 60px;
-    background: #000;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: bold;
-    font-size: 1.8rem;
-    margin-right: 2rem;
+    display: none;
   }
 
   .experience-details h4 {
     margin: 0;
-    font-size: 2rem;
+    font-size: 1.8rem;
     color: #333;
   }
 
   .experience-details .role {
     color: #000;
     font-weight: 600;
-    margin: 0.5rem 0;
+    margin: 0.3rem 0;
+    font-size: 1.4rem;
   }
 
   .experience-details .period {
     color: #666;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
   }
 
   .experience-description {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     line-height: 1.6;
     color: #555;
-    margin-top: 1.5rem;
+    margin-top: 1.2rem;
+  }
+
+  @media (max-width: 1024px) {
+    .experience-grid {
+      grid-template-columns: 1fr !important;
+      gap: 1.5rem;
+    }
   }
 
   @media (max-width: 768px) {
@@ -213,17 +243,8 @@ const s3_URL = 'https://assets.rayhan.id/';
       width: 100% !important;
     }
     
-    .experience-grid {
-      gap: 2rem;
-    }
-    
     .experience-header {
-      flex-direction: column;
       text-align: center;
-    }
-    
-    .experience-logo {
-      margin: 0 0 1rem 0;
     }
     
     .events-table {
@@ -322,7 +343,7 @@ const s3_URL = 'https://assets.rayhan.id/';
   <section class="hero-section">
     <div class="container">
       <h1 class="hero-title">
-        I'm an Indonesian <span class="highlight">Developer</span> and <span class="highlight">Creative</span> living in <span class="highlight">Bandung, Indonesia</span>.
+        An <span class="highlight">engineer</span> working in <span class="highlight">biology</span> and <span class="highlight">machine learning</span>, based in <span class="highlight">Jakarta</span>.
       </h1>
       <div class="hero-divider"></div>
       <div class="hero-images">
@@ -340,20 +361,31 @@ const s3_URL = 'https://assets.rayhan.id/';
     <div class="container">
       <div class="story-content">
         <p>
-          As a kid, I was always fascinated by how things worked. I loved taking apart electronics, 
-          experimenting with different software, and trying to understand the magic behind the 
-          screen. That curiosity eventually led me to pursue Information Systems and Technology 
-          at Institut Teknologi Bandung.
+          Hi, I am <strong>Ray/Rayhan</strong>.
         </p>
 
         <p>
-          My involvement in organizations like HMIF ITB and 8EH Radio has given 
-          me invaluable experience in leadership, collaboration, and creative problem-solving. 
-          I believe in the power of interdisciplinary collaboration. My experience spans across 
-          technical development, creative design, and strategic planning. This diverse background 
-          allows me to bridge different perspectives and create solutions that are both technically 
-          sound and user-centered.
+          I'm a <strong>bioinformatician</strong> at NalaGenetics, building genomic pipelines for disease risk prediction. I mostly deal with WGS data, variant calling, as well as PRS model analysis. 
         </p>
+
+        <p>
+          Aside from bioinformatics, <strong>I love diving deep into machine learning</strong>, especially ML for science, NLP, and language models. Lately exploring <strong>knowledge graphs, distillation, and inference optimisation</strong>. I also love working with <strong>structural biology data</strong>, especially protein structures (perhaps thanks to my undergrad thesis).
+        </p>
+
+        <p>
+          Away from the terminals, <strong>I love wet lab work</strong>, especially related to cell culture and molecular stuff. I have always found tactile work enjoyable. In my free time, I do photography, filmmaking, and writing.
+        </p>
+
+        <p><strong>Feel free to reach out</strong> to me if you want to chat or collaborate about these topics!</p>
+
+        <div class="education-block">
+          <strong>Education</strong>
+          <div class="education-content">
+            <div class="education-degree">B.Sc. in Information Systems and Technology</div>
+            <div class="education-minor">Minor: Cell & Molecular Biology</div>
+            <div class="education-school">Institut Teknologi Bandung (ITB) • 2021-2025 • GPA: 3.70/4.00</div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -361,22 +393,20 @@ const s3_URL = 'https://assets.rayhan.id/';
   <!-- Experience Highlights -->
   <section class="experience-section">
     <div class="container">
-      <div class="experience-title">Key Experiences</div>
+      <div class="experience-title">Recent Work/Org. Experiences</div>
       <div class="experience-content">
         <div class="experience-grid">
           <div class="experience-item">
             <div class="experience-header">
-              <div class="experience-logo">ITB</div>
+              <div class="experience-logo">N</div>
               <div class="experience-details">
-                <h4>Institut Teknologi Bandung</h4>
-                <div class="role">Information Systems and Technology Student</div>
-                <div class="period">2021 - Present</div>
+                <h4>Nalagenetics</h4>
+                <div class="role">Bioinformatics Intern</div>
+                <div class="period">Present</div>
               </div>
             </div>
             <div class="experience-description">
-              Currently pursuing my degree in Information Systems and Technology, focusing on 
-              software engineering, data science, and system design. Maintaining strong academic 
-              performance while actively participating in various organizations and projects.
+              Currently working on WGS and variant data, using Python and Nextflow to validate PRS models and implement clinical risk models.
             </div>
           </div>
           
@@ -390,8 +420,7 @@ const s3_URL = 'https://assets.rayhan.id/';
               </div>
             </div>
             <div class="experience-description">
-              Having worked as an intern in an finance company, I've learned how to handle large amount of data and tackle problems within a sensitive environment.
-              During my time there, I worked on projects related to data synchronization and observability platforms.
+              Developed data change capture systems with Java and Kafka, and implemented logging and observability solutions using the Elastic Stack (ELK) to improve services monitoring.
             </div>
           </div>
 
@@ -399,15 +428,13 @@ const s3_URL = 'https://assets.rayhan.id/';
             <div class="experience-header">
               <div class="experience-logo">H</div>
               <div class="experience-details">
-                <h4>Himpunan Mahasiswa Informatika ITB</h4>
+                <h4>HMIF ITB</h4>
                 <div class="role">Senator</div>
                 <div class="period">May 2024 - May 2025</div>
               </div>
             </div>
             <div class="experience-description">
-              Serving as a senator in the student association, representing student interests and 
-              contributing to policy decisions that affect the academic and social environment of 
-              our department.
+              Represented the 800+ members of Informatics Student Association (HMIF ITB) in the ITB Student Body Congress (Kongres KM ITB); contributed to policy drafting, student body election oversight, key information dissemination, and advocacy for HMIF ITB's interests.
             </div>
           </div>
 
@@ -421,9 +448,7 @@ const s3_URL = 'https://assets.rayhan.id/';
               </div>
             </div>
             <div class="experience-description">
-              Led marketing strategies and campaigns for ITB's student radio station, developing 
-              creative content and managing digital presence to increase audience engagement and 
-              brand awareness across campus and beyond.
+              Led a team of 10+ people handling design and marketing for ITB's student radio station. Coordinated with other divisions, set up clearer workflows with trackers and SOPs, and led the move from scattered tools to Figma, including training and organising shared design files.
             </div>
           </div>
         </div>

@@ -63,8 +63,8 @@ const author = "Rayhan M";
     <meta name="twitter:image" content={`https://rayhan.id${heroImage ?? '/images/posts/pexels-bertellifotografia-16094040.jpg'}`} />
 
     <!-- Theme Color -->
-    <meta name="theme-color" content="#3A5D44" />
-    <meta name="msapplication-TileColor" content="#3A5D44" />
+    <meta name="theme-color" content="var(--color-primary)" />
+    <meta name="msapplication-TileColor" content="var(--color-primary)" />
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png" />
@@ -74,6 +74,7 @@ const author = "Rayhan M";
     <!-- Stylesheets -->
     <link rel="stylesheet" href="/css/normalize.css" />
     <link rel="stylesheet" href="/css/skeleton.css" />
+    <link rel="stylesheet" href="/css/theme.css" />
     <link rel="stylesheet" href="/css/custom.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css">
 
@@ -123,10 +124,10 @@ const author = "Rayhan M";
         top: 0;
         left: 0;
         height: 5px;
-        background: var(--accent, #3A5D44); /* use your theme color */
+        background: var(--color-accent);
         width: 0%;
-        z-index: 1000;
-        transition: width 0.3s ease-out;
+        z-index: var(--z-nav);
+        transition: width var(--transition-normal);
       }
       .blog-container {
         max-width: 720px;
@@ -308,23 +309,23 @@ const author = "Rayhan M";
       }
 
       :global(main.blog-post a:not([class*="footnote"])) {
-        color: #3A5D44 !important;
+        color: var(--color-primary) !important;
         text-decoration: none;
       }
 
       :global(main.blog-post a:hover:not([class*="footnote"])) {
-        color: #238a33 !important;
+        color: var(--color-primary-dark) !important;
         text-decoration: underline;
       }
-      
+
       /* Also target footnote links */
       :global(main.blog-post a[class*="footnote"]) {
-        color: #3A5D44 !important;
+        color: var(--color-primary) !important;
         text-decoration: none;
       }
 
       :global(main.blog-post a[class*="footnote"]:hover) {
-        color: #238a33 !important;
+        color: var(--color-primary-dark) !important;
         text-decoration: underline;
       }
 
@@ -403,7 +404,7 @@ const author = "Rayhan M";
       }
 
       .tag-badge:hover {
-        background-color: var(--accent, #3A5D44);
+        background-color: var(--color-accent);
         color: white;
       }
       .hero-image {

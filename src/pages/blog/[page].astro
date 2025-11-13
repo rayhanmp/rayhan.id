@@ -265,7 +265,7 @@ for (let i = 1; i <= totalPages; i++) {
     }
 
     .tag-badge:hover {
-      background-color: var(--accent, #3A5D44);
+      background-color: var(--color-accent);
       color: white;
     }
 
@@ -404,7 +404,7 @@ for (let i = 1; i <= totalPages; i++) {
     .filter-option input[type="checkbox"] {
       margin: 0;
       cursor: pointer;
-      accent-color: #6b8e6b;
+      accent-color: var(--color-primary-light);
       transform: scale(1.1);
     }
 
@@ -466,10 +466,10 @@ for (let i = 1; i <= totalPages; i++) {
     .featured-post {
       width: 100%;
       background: #fff;
-      border: 2px solid #3A5D44;
-      border-radius: 12px;
+      border: 2px solid var(--color-primary);
+      border-radius: var(--radius-lg);
       overflow: hidden;
-      transition: all 0.3s ease;
+      transition: all var(--transition-normal);
       text-decoration: none;
       display: block;
       position: relative;
@@ -481,10 +481,10 @@ for (let i = 1; i <= totalPages; i++) {
       position: absolute;
       top: 0;
       right: 0;
-      background: linear-gradient(135deg, #238a33, #3A5D44);
+      background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary));
       color: white;
       padding: 0.75rem 1.5rem;
-      border-bottom-left-radius: 12px;
+      border-bottom-left-radius: var(--radius-lg);
       font-size: 0.9rem;
       font-weight: 700;
       letter-spacing: 0.1em;
@@ -494,7 +494,7 @@ for (let i = 1; i <= totalPages; i++) {
     }
 
     .featured-post:hover {
-      border-color: #238a33;
+      border-color: var(--color-primary-dark);
       transform: translateY(-4px);
     }
 
@@ -561,10 +561,10 @@ for (let i = 1; i <= totalPages; i++) {
 
     .featured-tag {
       background: #f0f7f0;
-      color: #3A5D44;
+      color: var(--color-primary);
       border: 1px solid #d4e8d4;
       padding: 0.4rem 0.8rem;
-      border-radius: 4px;
+      border-radius: var(--radius-sm);
       font-size: 0.9rem;
       font-weight: 600;
       letter-spacing: 0.01em;
