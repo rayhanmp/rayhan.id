@@ -39,7 +39,8 @@
 
 <style>
   .toc-container {
-    position: absolute;
+    position: fixed;
+    top: 24px;
     width: 260px;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px);
@@ -48,6 +49,7 @@
     transition: box-shadow 0.2s ease;
     overflow: hidden;
     font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    max-height: calc(100vh - 48px);
   }
  
 
@@ -65,7 +67,7 @@
 
   .toc-kebab-icon {
     display: none;
-    color: #3A5D44;
+    color: var(--color-primary);
   }
 
   .toc-container.collapsed .toc-header {
@@ -142,8 +144,8 @@
   }
 
   .toc-toggle-icon {
-    color: #3A5D44;
-    transition: transform 0.3s ease;
+    color: var(--color-primary);
+    transition: transform var(--transition-normal);
   }
 
   .toc-toggle-text {
@@ -151,7 +153,7 @@
     font-weight: 600;
     color: #2c3e50;
     letter-spacing: 0.3px;
-    transition: all 0.3s ease;
+    transition: all var(--transition-normal);
   }
 
   .toc-toggle-arrow {
@@ -164,7 +166,7 @@
   }
 
   .toc-toggle:hover .toc-toggle-text {
-    color: #3A5D44;
+    color: var(--color-primary);
   }
 
   .toc-nav {
@@ -205,13 +207,13 @@
     top: 0;
     bottom: 0;
     width: 3px;
-    background: linear-gradient(180deg, #3A5D44 0%, #4a7c59 100%);
+    background: linear-gradient(180deg, var(--color-primary) 0%, #4a7c59 100%);
     transform: scaleY(0);
-    transition: transform 0.3s ease;
+    transition: transform var(--transition-normal);
   }
 
   .toc-link:hover {
-    color: #3A5D44;
+    color: var(--color-primary);
     background: linear-gradient(90deg, rgba(58, 93, 68, 0.05) 0%, transparent 100%);
     padding-left: 24px;
   }
@@ -221,7 +223,7 @@
   }
 
   .toc-link.active {
-    color: #3A5D44;
+    color: var(--color-primary);
     background: linear-gradient(90deg, rgba(58, 93, 68, 0.08) 0%, rgba(58, 93, 68, 0.02) 100%);
     font-weight: 500;
     padding-left: 24px;
@@ -444,14 +446,22 @@
     positionDesktopTOC() {
       if (!this.container || this.isMobile()) return;
       const containerRect = this.blogContainer?.getBoundingClientRect();
-      const heroRect = this.heroContainer?.getBoundingClientRect();
       if (!containerRect) return;
+
       const gap = 24; // space between ToC and article
       const tocWidth = this.container.offsetWidth || 260;
       const left = Math.max(16, containerRect.left + window.scrollX - tocWidth - gap);
-      const topTarget = (heroRect ? heroRect.top : containerRect.top) + window.scrollY;
+
+      const contentTop = containerRect.top + window.scrollY;
+      const scrollTop = window.scrollY;
+      
+      if (scrollTop >= contentTop - 24) {
+        this.container.style.top = '24px';
+      } else {
+        this.container.style.top = `${contentTop - scrollTop}px`;
+      }
+
       this.container.style.left = `${left}px`;
-      this.container.style.top = `${Math.max(0, Math.floor(topTarget))}px`;
     }
 
     init() {
@@ -467,6 +477,7 @@
       this.setupMobileOverlay();
       this.positionDesktopTOC();
       window.addEventListener('resize', () => this.positionDesktopTOC(), { passive: true });
+      window.addEventListener('scroll', () => this.positionDesktopTOC(), { passive: true });
       window.addEventListener('load', () => this.positionDesktopTOC());
     }
 
