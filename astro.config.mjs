@@ -13,7 +13,14 @@ const options = {
 }
 
 export default defineConfig({
-  integrations: [react(), mdx(), sitemap()],
+  integrations: [
+    react(), 
+    mdx({
+      // Use custom components for MDX
+      extendMarkdownConfig: true,
+    }), 
+    sitemap()
+  ],
   site: 'https://rayhan.id',
   redirects: {
     '/blog': '/blog/1'

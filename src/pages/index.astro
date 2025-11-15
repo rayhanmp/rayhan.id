@@ -2,6 +2,7 @@
 import profile from '../assets/rayv2.webp';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import BackToTop from '../components/BackToTop.astro';
+import MDXLink from '../components/MDXLink.astro';
 import { getCollection } from 'astro:content';
 
 const allPosts = await getCollection('posts');
@@ -432,12 +433,12 @@ const latestPosts = allPosts
       <h3>Projects</h3>
       <div class="row">
           <div class="six columns">
-              <h5 style="font-weight: 700;"><a href="https://github.com/rayhanmp/rayhan.id">Personal Site (rayhan.id)</a></h5>
+              <h5 style="font-weight: 700;"><MDXLink href="https://github.com/rayhanmp/rayhan.id">Personal Site (rayhan.id)</MDXLink></h5>
               <p class="project-detail">Initially made as an excuse to learn MPA with Astro, but end up becoming my personal site. I try new stuff once in a while, ranging from animations, frontend optimisation, CI/CD.</p>
               <div class="tech-stack"><b>Tech Stack:</b> Astro, React, GSAP, GitHub Actions, Nginx, and more.</div>
           </div>
           <div class="six columns">
-            <h5 style="font-weight: 700;"><a href="https://github.com/rayhanmp/unwind-app">Unwind</a></h5>
+            <h5 style="font-weight: 700;"><MDXLink href="https://github.com/rayhanmp/unwind-app">Unwind</MDXLink></h5>
             <p class="project-detail">A mobile application to help people track their productivity while maintaining their mental wellbeing. I was responsible for the system architecture, model the database, developed the login and register page, and fixed various UI-related bugs and issues.
             </p>
             <div class="tech-stack"><b>Tech Stack:</b> React Native, Expo, and Firebase.</div>
@@ -445,13 +446,13 @@ const latestPosts = allPosts
       </div>
       <div class="row">
         <div class="six columns">
-            <h5 style="font-weight: 700;"><a href="https://github.com/rayhanmp/data-lakehouse-exploration">Modern Data Lake Architecture Exploration</a></h5>
+            <h5 style="font-weight: 700;"><MDXLink href="https://github.com/rayhanmp/data-lakehouse-exploration">Modern Data Lake Architecture Exploration</MDXLink></h5>
             <p class="project-detail">I explored the modern data lake architecture. Generating TPC-H data, storing data in S3, querying data with an query engine, and using dbt to transform the data. I learned a lot about the configs and tinkering needed to make them work together.
     </p>
             <div class="tech-stack"><b>Tech Stack:</b> Iceberg,DuckDB, R2, Snowflake, dbt.</div>
         </div>
         <div class="six columns">
-          <h5 style="font-weight: 700;"><a href="https://github.com/rayhanmp/lynkr">Lynkr - URL Shortener</a></h5>
+          <h5 style="font-weight: 700;"><MDXLink href="https://github.com/rayhanmp/lynkr">Lynkr - URL Shortener</MDXLink></h5>
           <p class="project-detail">Designed for small-to-medium organisations who need to self-host their own URL shortener. Intended to be feature-rich while still being fast, lightweight, and easy to deploy. Learned a lot about authN by following the OWASP guide for security, ranging from password storage, email verification, stateful session, CSRF, and more. Currently still in development.</p>
           </p>
           <div class="tech-stack"><b>Tech Stack:</b> Fastify, React, PostgreSQL, Redis, and more.</div>
