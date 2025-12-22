@@ -369,6 +369,173 @@ for (let i = 1; i <= totalPages; i++) {
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
+    /* View Toggle Styles */
+    .view-toggle {
+      display: flex;
+      gap: 0;
+      border: 2px solid #e5e5e5;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fafafa;
+    }
+
+    .view-toggle-btn {
+      width: 3.6rem;
+      height: 3.6rem;
+      padding: 0;
+      margin-bottom: 0;
+      border: none;
+      background: transparent;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .view-toggle-btn svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .view-toggle-btn:first-child {
+      border-right: 1px solid #e5e5e5;
+    }
+
+    .view-toggle-btn:hover {
+      background: #fff;
+      color: #333;
+    }
+
+    .view-toggle-btn.active {
+      background: #333;
+      color: #fff;
+    }
+
+    /* List View Styles */
+    .blog-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-top: 2rem;
+      margin-bottom: 4rem;
+    }
+
+    .blog-list-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      padding: 1.4rem 0;
+      border-bottom: 1px solid #eee;
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.15s ease;
+      gap: 1.5rem;
+    }
+
+    .blog-list-item:first-child {
+      border-top: 1px solid #eee;
+    }
+
+    .blog-list-item:hover {
+      background: #fafafa;
+      margin: 0 -1rem;
+      padding: 1.4rem 1rem;
+    }
+
+    .blog-list-content {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      min-width: 0;
+    }
+
+    .blog-list-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #222;
+      margin: 0;
+      letter-spacing: -0.02rem;
+      line-height: 1.3;
+    }
+
+    .blog-list-item:hover .blog-list-title {
+      color: var(--color-primary);
+    }
+
+    .blog-list-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.25rem;
+      color: #888;
+      flex-wrap: wrap;
+    }
+
+    .blog-list-date {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .blog-list-reading {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .blog-list-reading::before {
+      content: '•';
+      color: #ccc;
+      margin-right: 0.45rem;
+    }
+
+    .blog-list-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      justify-content: flex-end;
+      flex-shrink: 0;
+    }
+
+    .blog-list-tag {
+      font-size: 1.05rem;
+      padding: 0.2rem 0.7rem;
+      background-color: #f5f5f5;
+      color: #666;
+      border-radius: 12px;
+      white-space: nowrap;
+    }
+
+    .blog-list-item:hover .blog-list-tag {
+      background-color: #eee;
+    }
+
+    @media (max-width: 768px) {
+      .blog-list-item {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+      }
+
+      .blog-list-tags {
+        justify-content: flex-start;
+      }
+
+      .blog-list-title {
+        font-size: 1.4rem;
+      }
+
+      .blog-list-meta {
+        font-size: 1.2rem;
+      }
+    }
+
+    @media (max-width: 550px) {
+      .view-toggle {
+        display: flex;
+      }
+    }
+
     .filter-dropdown-content {
       position: absolute;
       top: 100%;
@@ -764,9 +931,22 @@ for (let i = 1; i <= totalPages; i++) {
           })}
         </div>
       </div>
+
+      <div class="view-toggle">
+        <button class="view-toggle-btn active" id="gridViewBtn" title="Grid view" data-view="grid">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3 3h7v7H3V3zm0 11h7v7H3v-7zm11-11h7v7h-7V3zm0 11h7v7h-7v-7z"/>
+          </svg>
+        </button>
+        <button class="view-toggle-btn" id="listViewBtn" title="List view" data-view="list">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3 4h18v2H3V4zm0 7h18v2H3v-2zm0 7h18v2H3v-2z"/>
+          </svg>
+        </button>
+      </div>
     </div>
 
-    <div class="blog-grid">
+    <div class="blog-grid" id="blogGrid">
       {posts.map(({ slug, data, body }) => (
         <a
           href={`/blog/${slug}`}
@@ -800,6 +980,35 @@ for (let i = 1; i <= totalPages; i++) {
                 ))
               ) : null}
             </div>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    <div class="blog-list" id="blogList" style="display: none;">
+      {posts.map(({ slug, data, body }) => (
+        <a
+          href={`/blog/${slug}`}
+          class="blog-list-item"
+          data-tags={data.tags ? data.tags.join(',') : ''}
+        >
+          <div class="blog-list-content">
+            <h3 class="blog-list-title">{data.title}</h3>
+            <div class="blog-list-meta">
+              <span class="blog-list-date">
+                {new Date(data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+              </span>
+              <span class="blog-list-reading">
+                {getReadingTime(body)} min read
+              </span>
+            </div>
+          </div>
+          <div class="blog-list-tags">
+            {data.tags && data.tags.length > 0 ? (
+              data.tags.sort().slice(0, 3).map(tag => (
+                <span class="blog-list-tag">#{tag}</span>
+              ))
+            ) : null}
           </div>
         </a>
       ))}
@@ -862,6 +1071,7 @@ for (let i = 1; i <= totalPages; i++) {
     let searchData = [];
     let fuse = null;
     let selectedTags = new Set();
+    let currentView = localStorage.getItem('blogView') || 'grid';
 
     async function setupSearch() {
       try {
@@ -881,31 +1091,68 @@ for (let i = 1; i <= totalPages; i++) {
 
     function filterPosts() {
       const query = document.getElementById('search')?.value || '';
+      // Filter both cards and list items
       const cards = document.querySelectorAll('.blog-card');
+      const listItems = document.querySelectorAll('.blog-list-item');
 
-      cards.forEach(card => {
-        const href = card.getAttribute('href');
+      const filterItem = (item) => {
+        const href = item.getAttribute('href');
         const slug = href ? href.split('/').pop() : '';
-        const cardTags = card.getAttribute('data-tags');
-        const postTags = cardTags ? cardTags.split(',').filter(tag => tag.trim()) : [];
+        const itemTags = item.getAttribute('data-tags');
+        const postTags = itemTags ? itemTags.split(',').filter(tag => tag.trim()) : [];
 
-        let showCard = true;
+        let showItem = true;
 
         // Filter by search query
         if (query.trim() && fuse) {
           const results = fuse.search(query);
           const matchedSlugs = results.map(result => result.item.slug);
-          showCard = showCard && matchedSlugs.includes(slug);
+          showItem = showItem && matchedSlugs.includes(slug);
         }
 
         // Filter by selected tags
         if (selectedTags.size > 0) {
           const hasSelectedTag = postTags.some(tag => selectedTags.has(tag.trim()));
-          showCard = showCard && hasSelectedTag;
+          showItem = showItem && hasSelectedTag;
         }
 
-        card.style.display = showCard ? '' : 'none';
-      });
+        item.style.display = showItem ? '' : 'none';
+      };
+
+      cards.forEach(filterItem);
+      listItems.forEach(filterItem);
+    }
+
+    function setupViewToggle() {
+      const gridBtn = document.getElementById('gridViewBtn');
+      const listBtn = document.getElementById('listViewBtn');
+      const blogGrid = document.getElementById('blogGrid');
+      const blogList = document.getElementById('blogList');
+
+      if (!gridBtn || !listBtn || !blogGrid || !blogList) return;
+
+      function setView(view) {
+        currentView = view;
+        localStorage.setItem('blogView', view);
+
+        if (view === 'grid') {
+          blogGrid.style.display = '';
+          blogList.style.display = 'none';
+          gridBtn.classList.add('active');
+          listBtn.classList.remove('active');
+        } else {
+          blogGrid.style.display = 'none';
+          blogList.style.display = '';
+          gridBtn.classList.remove('active');
+          listBtn.classList.add('active');
+        }
+      }
+
+      // Set initial view from localStorage
+      setView(currentView);
+
+      gridBtn.addEventListener('click', () => setView('grid'));
+      listBtn.addEventListener('click', () => setView('list'));
     }
 
     function connectSearchBox() {
@@ -1013,6 +1260,7 @@ for (let i = 1; i <= totalPages; i++) {
         // Reconnect UI elements
         connectSearchBox();
         setupFilter();
+        setupViewToggle();
 
         setTimeout(animateCards, 100);
 
@@ -1020,6 +1268,7 @@ for (let i = 1; i <= totalPages; i++) {
         console.error('Failed to initialize blog page:', error);
         connectSearchBox();
         setupFilter();
+        setupViewToggle();
       }
     }
 
