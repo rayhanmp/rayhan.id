@@ -909,15 +909,21 @@ const categories = [
     function setupFilters() {
       const filterBtns = document.querySelectorAll('.filter-btn');
       const galleryItems = document.querySelectorAll('.gallery-item');
+      let pendingTimeouts = [];
 
       filterBtns.forEach(btn => {
         btn.addEventListener('click', function() {
+          pendingTimeouts.forEach(id => clearTimeout(id));
+          pendingTimeouts = [];
+
           const filter = this.dataset.filter;
           
           filterBtns.forEach(b => b.classList.remove('active'));
           this.classList.add('active');
 
-          galleryItems.forEach((item, index) => {
+          let visibleCount = 0;
+          galleryItems.forEach((item) => {
+            const currentlyVisible = item.style.display !== 'none';
             const category = item.dataset.category;
             const isVideo = item.classList.contains('video-item');
             
@@ -930,26 +936,29 @@ const categories = [
               shouldShow = category === filter;
             }
             
-            if (shouldShow) {
+            if (shouldShow && !currentlyVisible) {
+              item.style.transition = 'none';
               item.style.display = '';
               item.style.transform = 'translateY(20px)';
               item.style.opacity = '0';
-              setTimeout(() => {
+              item.offsetHeight;
+              item.style.transition = '';
+              const delay = visibleCount * 50 + 100;
+              pendingTimeouts.push(setTimeout(() => {
                 item.style.transform = 'translateY(0)';
                 item.style.opacity = '1';
-              }, index * 50 + 100);
-            } else {
+              }, delay));
+              visibleCount++;
+            } else if (!shouldShow && currentlyVisible) {
+              item.style.transition = 'none';
               item.style.opacity = '0';
               item.style.transform = 'translateY(-20px)';
-              setTimeout(() => {
+              item.style.transition = '';
+              pendingTimeouts.push(setTimeout(() => {
                 item.style.display = 'none';
-              }, 300);
+              }, 300));
             }
           });
-
-          if (lightGalleryInstance) {
-            lightGalleryInstance.refresh();
-          }
         });
       });
     }
