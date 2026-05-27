@@ -3,6 +3,14 @@ details[open] summary .arrow {
     transform: rotate(180deg);
 }
 
+/* Global blockquote styling */
+blockquote {
+    margin: 1.5rem 0;
+    border-left: 4px solid #3A5D44 !important;
+    font-style: italic;
+    padding-left: 2.5rem;
+}
+
 .loader {
     position: fixed;
     width: 100vw;
@@ -47,13 +55,14 @@ header {
 
 .main-title {
     margin-top: -20px;
+    margin-bottom: -8px;
 }
 
 .main-desc {
     margin-top: 0%;
-    margin-bottom: 2%;
+    margin-bottom: 1.5rem;
     font-weight: 500;
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-style: italic;
 }
 
