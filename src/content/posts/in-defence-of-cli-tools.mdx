@@ -1,0 +1,198 @@
+---
+title: You Don't Need to Be a Programmer to Love the Command Line
+description: When dealing with tons of files, more often than not, GUI tools become a bottleneck.
+date: 2025-11-19
+isPublished: true
+tags:
+  - CS
+  - Reflection
+heroImage: https://assets.rayhan.id/cli.jpg
+heroImageCaption: Image by Pexel
+---
+#blog 
+
+![[Pasted image 20251226100513.png]]
+
+Most of us had the same first reaction to the terminal: a black screen, a blinking cursor, and absolutely zero indication of what to do next.
+
+However, if you're in any computational field (bioinformatics, computational chemistry, data science, or plain old CS), you'll eventually have to use it. But most people learn just enough to survive. You learn `cd` and `ls`, maybe basic Git for the CS people, and then you retreat back to your GUI as fast as possible. I get it. I was the same way.
+
+For a long time, the terminal was something I tolerated. I did develop a few preferences over time for certain task. During my internship, I used `psql` to check databases directly instead of DBeaver, which genuinely confused my co-worker since DBeaver was the standard tool there. My reasoning wasn't deep: I just didn't want to re-learn a new GUI every time a tool updated or I switched to something else. CLI commands tend to stay the same (with some caveats, of course).
+
+But that was about it. I could see why _some_ people liked the terminal. I just didn't feel it myself. It was fine. It was... okay.
+
+**Then I started working on my thesis, and everything clicked.**
+
+---
+
+For context, my thesis involved working with a physics-informed graph neural network. That meant working with 3D structural data: PDB files, mmCIF, SDF, MOL2. Thousands of them. Suddenly "just opening files" became a real bottleneck, and the terminal went from "tolerable" to "how did I ever live without this."
+
+Here are some of the things I used.
+# Peeking at Files Without Opening Them
+PDB files for large protein complexes can be enormous. If you just want to check whether a file has the right header, or confirm what resolution the structure was solved at, you don't want to wait for PyMOL or even a text editor to load the whole thing.
+
+```shell
+# Check the first 10 lines of a protein structure file
+head -n 10 1a2b.pdb
+```
+
+```shell
+# Did my docking run actually finish? Check the last few lines of the log.
+tail -n 5 docking_log.txt
+```
+
+This sounds trivial, but when you're iterating through hundreds of files trying to figure out which ones are malformed, the difference matters a lot. Double-clicking each file in a file explorer and waiting for it to render is just plain stupid. You will die old waiting for that.
+
+**Bonus tip:** `tail -f` will _follow_ a file in real time. If you have a long simulation running and it's writing to a log, you can watch the output live.
+
+# Quick File Stats
+Sometimes you don't even need to see the contents of a file, you just need to know how big it is. In that case, `wc` is here to help you, whether you want to check the number of lines, words, or even characters, they got you covered.
+
+```shell
+# Compare line counts before and after processing
+wc -l raw_data.csv processed_data.csv
+```
+# Finding Files Buried in Nested Folders
+File explorers are great for browsing, but terrible for searching deep directory structures. My thesis data wasn't in one flat folder, it was nested in folders like `Experiment_1/Run_A/Docking/`. If I needed to locate every .pdbqt file across 50 subfolders, clicking through them in a file explorer would take forever.
+
+```shell
+# Find all .pdbqt files anywhere below the current directory
+find . -name "*.pdbqt"
+```
+
+You can layer conditions on top of each other. Want to find only the simulation logs that changed in the last 24 hours, so you can see which runs just finished?
+
+```shell
+find . -name "*.log" -mtime -1
+```
+
+# Mass Renaming and Moving Files
+This is one of those things that sounds simple until you have to do it 500 times. Renaming and reorganizing files is easy when you have 5 of them. When you have 500, scattered across nested directories, with inconsistent naming conventions from different tools and databases, it becomes a real hassle. It's not hard to do, but oh boy it is tedious.
+## Renaming
+When I downloaded protein structures from the PDB, the files often came with names like 1a2b.pdb, which is fine. But, in some cases, I want to give it a clear prefix so I can reorganise them later or even just count them.
+
+The simplest approach is a for loop with mv:
+```shell
+# Add a prefix to all .pdb files in the current directory
+for f in *.pdb; do
+    mv "$f" "protein_${f}"
+done
+```
+
+That turns `1a2b.pdb` into `protein_1a2b.pdb`, `3xyz.pdb` into `protein_3xyz.pdb`, and so on.
+
+Need to replace part of a filename? Say your docking tool appended _out to every output file and you want to change it to _docked:
+
+```shell
+for f in *_out.pdbqt; do
+    mv "$f" "${f/_out/_docked}"
+done
+```
+
+That `${f/_out/_docked}` syntax is bash string substitution. It takes the variable f and replaces the first occurrence of _out with _docked. It might look confusing now, but you will get used to it. Google is your buddy (or perhaps your favourite LLM).
+
+**Tip:** With both `mv` in a loop and rename, you can do a dry run first. For the loop approach, just replace `mv` with `echo` temporarily to see what _would_ happen:
+```shell
+for f in *.pdb; do
+    echo "mv $f protein_${f}"
+done
+```
+# Surgical Text Replacement
+Imagine this scenario: I downloaded 100 protein structures, but the docking software requires the protein Chain ID to be "A". Unfortunately, the raw data I downloaded labeled them all as Chain "X".
+
+Opening 100 files in a text editor and doing "Find & Replace" is a recipe for madness. `sed` (Stream Editor) allows you to edit streams of text programmatically.
+```shell
+# Example: Replace "CHAIN X" with "CHAIN A" inside a PDB file
+sed -i 's/CHAIN X/CHAIN A/g' protein.pdb
+```
+
+Combine that with a loop, and you've fixed your entire dataset in 3 seconds.
+# Intelligent Filtering
+This is where the CLI truly shines. PDB files and docking logs are essentially just massive text files. Opening a 100MB log file in Notepad just to check for a convergence error will likely crash your computer.
+
+The `grep` command allows you to search through files using Regular Expressions (RegEx). It is incredibly fast. For my thesis, I often needed to find which PDB files contained a specific atom, like Zinc (ZN), without opening them one by one in a 3D viewer.
+```shell
+# Example: Find PDB files containing Zinc atoms (-l list filenames only)
+grep -l "ZN" *.pdb
+```
+# Data Extraction and Math
+Sometimes you don't want the whole line; you just want one specific column. For example, a `.csv` summary of my results. I only cared about the **Ligand Name** (Column 1) and the **Score** (Column 3).
+
+Using `cut`:
+```shell
+# Example: Extract columns 1 and 3 from a comma-separated file
+cut -d ',' -f 1,3 results.csv
+```
+
+But what if you need logic? This is where `awk` enters the chat. It is a full programming language for text. Let's say I want to filter a PDB file to show only the atoms that have an X-coordinate greater than 10.0 (columns in PDBs are fixed width, but for simplicity, let's assume space-separated).
+
+```shell
+# Example: Print the whole line IF the 6th column (X-coord) is > 10.0
+awk '$6 > 10.0 {print $0}' structure.pdb
+```
+# Piping & Redirection
+This is the "Killer Feature" of the CLI. In a GUI, tools are usually isolated islands. You can't easily take the output of PyMOL and feed it directly into Excel without a lot of clicking, copying, and pasting.
+
+In the terminal, we use operators to move data around like plumbing.
+- **The Pipe (`|`):** Passes the output of one *command* as input to the next *command*.
+- **The Redirect (`>`):** Saves the output of a command into a *file*.
+
+Let's say I finished docking 1,000 ligands using `smina` or `vina`. I want to find the **top 5 candidates** with the lowest binding energy and save them to a generic CSV file to show my supervisor.
+
+Instead of opening 1,000 files, I can build a pipeline:
+1.  `grep` the result lines from all files.
+2.  `awk` to extract just the filename and the energy score.
+3.  `sort` them numerically by the energy score.
+4.  `head` to show only the top 5.
+5.  `>` to save the final result to a file.
+
+```shell
+# Example: The Ultimate Pipeline
+grep "REMARK VINA RESULT" *.pdbqt | awk '{print $1, $4}' | sort -nk 2 | head -n 5 > top_candidates.csv
+```
+
+Now, you have a file named `top_candidates.csv` ready to open in Excel. This modularity is what makes the CLI so addictive. You aren't limited by the export buttons the software developer decided to put on the interface.
+
+---
+# Automation Scripts
+Everything I listed above involves typing commands one by one. But the real superpower of the CLI is **Bash Scripting**. You can save a sequence of commands into a file and run it.
+
+For my thesis, I used **Smina** (a fork of AutoDock Vina) because it offers better control over minimization. The problem? I had 500 distinct ligands to dock against my protein receptor. In a GUI, I would have to load the receptor, load the ligand, set the box, run, save, and repeat 500 times.
+
+Instead, I wrote a simple script named `dock_all.sh`.
+```bash
+#!/bin/bash
+# Define our receptor
+
+RECEPTOR="my_protein.pdbqt"
+
+# Create a directory for results if it doesn't exist
+
+mkdir -p results
+echo "Starting High-Throughput Docking..."
+
+# Loop through every ligand file in the 'ligands' folder
+for ligand in ligands/*.pdbqt
+do
+    # Get the filename without the extension (e.g., "ligand_01")
+    base_name=$(basename "$ligand" .pdbqt)
+    echo "Now docking: $base_name"
+    
+    # Run Smina
+    # We set the search box coordinates manually here (or use a conf file)
+    smina -r $RECEPTOR \
+          -l $ligand \
+          --center_x 15.0 --center_y 22.5 --center_z 30.0 \
+          --size_x 20 --size_y 20 --size_z 20 \
+          --cpu 4 \
+          --out results/${base_name}_docked.pdbqt \
+          --log results/${base_name}.log
+done
+
+echo "All jobs finished!"
+```
+
+  I typed this once, hit Enter, and went to get coffee. Or, more accurately, I went to sleep. The
+  computer worked all night, processing 500 files, and when I woke up, my `results` folder was full.
+  
+That is the difference between a computer being a tool you use, and a computer being an employee that works for you. 
