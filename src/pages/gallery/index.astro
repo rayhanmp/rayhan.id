@@ -6,12 +6,13 @@ const s3_URL = 'https://assets.rayhan.id/';
 
 const photos = [
   {
+    
     id: 28,
     src: `${s3_URL}HCL_8.jpg`,
     thumb: `${s3_URL}HCL_8.webp`,
     title: 'University of Indonesia',
     description: 'Taken during a visit to the University of Indonesia, around April 2025',
-    date: '2024',
+    date: '2025',
     location: 'Depok',
     category: 'analog',
     exif: {
@@ -25,6 +26,16 @@ const photos = [
     }
   },
   {
+    id: 1,
+    src: `${s3_URL}pasar_seni_3.jpg`,
+    thumb: `${s3_URL}pasar_seni_3.webp`,
+    title: 'Pasar Seni ITB 2025',
+    description: 'Taken with Minolta SRT101 - Kodak Supergold 400',
+    date: '2025',
+    location: 'Bandung',
+    category: 'analog'
+  },
+  {
     id: 8,
     src: `${s3_URL}HCL_13 (1).jpg`,
     thumb: `${s3_URL}HCL_13 (1).webp`,
@@ -32,7 +43,16 @@ const photos = [
     description: 'Memory of my beloved cat in Bandung.',
     date: '2025',
     location: 'Bandung',
-    category: 'analog'
+    category: 'analog',
+    exif: {
+      camera: 'Kodak Ultra F9',
+      lens: 'N/A',
+      aperture: 'f/9',
+      shutter: '1/100s',
+      iso: 'ISO 200',
+      focal: '35mm',
+      Film: 'Kodak ColorPlus 200',
+    }
   },
   {
     id: 9,
@@ -128,7 +148,7 @@ const photos = [
     duration: '5:47'
   },
   {
-    id: 23,
+    id: 31,
     src: `${s3_URL}leaf.jpg`,
     thumb: `${s3_URL}leaf.webp`,
     title: 'Random Leaf',
@@ -188,7 +208,7 @@ const photos = [
     category: 'digital'
   },
   {
-    id: 28,
+    id: 32,
     src: `${s3_URL}pasar_seni_1.jpg`,
     thumb: `${s3_URL}pasar_seni_1.webp`,
     title: 'Pasar Seni ITB 2025',
@@ -207,16 +227,6 @@ const photos = [
     location: 'Bandung',
     category: 'analog'
   },
-  {
-    id: 30,
-    src: `${s3_URL}pasar_seni_3.jpg`,
-    thumb: `${s3_URL}pasar_seni_3.webp`,
-    title: 'Pasar Seni ITB 2025',
-    description: 'Taken with Minolta SRT101 - Kodak Supergold 400',
-    date: '2025',
-    location: 'Bandung',
-    category: 'analog'
-  },
 ];
 
 const categories = [
@@ -228,7 +238,6 @@ const categories = [
 ---
 
 <BaseLayout title="Gallery – Rayhan M" currentPage="/gallery">
-  <!-- lightGallery CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.7.2/css/lightgallery.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.7.2/css/lg-zoom.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.7.2/css/lg-thumbnail.css" />
@@ -419,11 +428,13 @@ const categories = [
 
     .gallery-item img {
       opacity: 0;
-      transition: opacity 0.4s ease;
+      transition: opacity 0.6s ease, filter 0.6s ease;
+      filter: blur(20px);
     }
 
     .gallery-item img.loaded {
       opacity: 1;
+      filter: blur(0);
     }
 
     .gallery-item::before {
@@ -439,9 +450,9 @@ const categories = [
       z-index: 1;
     }
 
-    .gallery-item img.loaded + .gallery-item::before,
     .gallery-item.image-loaded::before {
-      display: none;
+      opacity: 0;
+      transition: opacity 0.4s ease;
     }
 
     @keyframes shimmer {
@@ -472,7 +483,7 @@ const categories = [
     .gallery-item:nth-child(10) { animation-delay: 1.0s; }
 
     .overlay-title {
-      font-size: 1.3rem;
+      font-size: clamp(1.2rem, 2.2vw, 1.8rem);
       font-weight: bold;
       margin-bottom: 0.2rem;
     }
@@ -488,7 +499,7 @@ const categories = [
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 1rem;
+      font-size: clamp(0.85rem, 1.2vw, 1.1rem);
       opacity: 0.8;
     }
 
@@ -593,7 +604,7 @@ const categories = [
     }
 
     .lg-backdrop {
-      background-color: rgba(0, 0, 0, 0.95);
+      background-color: rgba(0, 0, 0, 0.97);
     }
 
     .lg-toolbar {
@@ -604,10 +615,10 @@ const categories = [
       background-color: rgba(0, 0, 0, 0.8);
     }
 
-    /* EXIF Data Styling */
     .lg-sub-html {
-      max-width: 600px;
-      margin: 0 auto;
+      max-width: 100%;
+      background: rgba(0, 0, 0, 0.92);
+      padding: 1.5rem 2rem 2.5rem;
     }
 
     .lg-sub-html h4 {
@@ -629,6 +640,10 @@ const categories = [
       display: flex;
       align-items: center;
       gap: 0.5rem;
+    }
+
+    .lg-sub-html .lg-meta {
+      font-size: clamp(1rem, 1.5vw, 1.2rem) !important;
     }
 
     .exif-toggle {
@@ -697,7 +712,7 @@ const categories = [
 
   <div class="gallery-container">
     <div class="gallery-header" style="text-align: center;">
-      <h1>Discover my 📁<span class="highlight">visual archive</span> featuring <span class="highlight" id="photo-counter">{photos.length}</span> photos & </br> videos blending life's journey & artistic endeavors.</h1>
+      <h1>Discover my 📁<span class="highlight">visual archive</span> featuring <span class="highlight" id="photo-counter">{photos.length}</span> photos & <br /> videos blending life's journey & artistic endeavors.</h1>
     </div>
     
     <div class="gallery-divider"></div>
@@ -714,27 +729,26 @@ const categories = [
       ))}
     </div>
 
-    <!-- lightGallery container -->
     <div class="gallery-grid" id="lightgallery">
       {photos.map((photo) => (
          <div 
-           class={`gallery-item ${photo.type === 'video' ? 'video-item' : ''}`}
-           data-src={photo.src}
-           data-lg-size="1200-800"
-           data-category={photo.category}
-           data-sub-html={`
-             <div class="lg-sub-html">
-               <h4>${photo.title}</h4>
-               <p>${photo.description}</p>
-               <div style="display: flex; justify-content: space-between; margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
-                 <span><i class="fas fa-calendar"></i> ${photo.date}</span>
-                 <span><i class="fas fa-map-marker-alt"></i> ${photo.location}</span>
-                 ${photo.duration ? `<span><i class="fas fa-clock"></i> ${photo.duration}</span>` : ''}
-               </div>
-               ${photo.exif ? `
+            class={`gallery-item ${photo.type === 'video' ? 'video-item' : ''}`}
+            data-src={photo.src}
+            data-lg-size="1200-800"
+            data-category={photo.category}
+            data-id={photo.id}
+            data-sub-html={`
+              <div class="lg-sub-html-inner" style="max-width: 600px; margin: 0 auto;">
+                <h4>${photo.title}</h4>
+               ${photo.description ? `<p>${photo.description}</p>` : ''}
+               <div class="lg-meta" style="display: flex; justify-content: center; gap: 1.5rem; margin-top: 0.3rem; opacity: 0.8;">
+                  <span>${photo.location}, ${photo.date}</span>
+                  ${photo.duration ? `<span>${photo.duration}</span>` : ''}
+                </div>
+                ${photo.exif ? `
                  <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.2);">
                    <button class="exif-toggle" style="background: none; border: none; color: white; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0; opacity: 0.9; transition: opacity 0.3s ease;">
-                     📷 <span>Camera Details</span> <span class="exif-arrow" style="transition: transform 0.3s ease;">▼</span>
+                     📷 <span>Metadata Details</span> <span class="exif-arrow" style="transition: transform 0.3s ease;">▼</span>
                    </button>
                    <div class="exif-content" style="display: none; margin-top: 0.8rem;">
                      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1.2rem; font-size: 1.1rem; line-height: 1.5;">
@@ -744,6 +758,7 @@ const categories = [
                        <div><strong>Shutter:</strong><br/>${photo.exif.shutter}</div>
                        <div><strong>ISO:</strong><br/>${photo.exif.iso}</div>
                        <div><strong>Focal:</strong><br/>${photo.exif.focal}</div>
+                       ${photo.exif.Film ? `<div><strong>Film:</strong><br/>${photo.exif.Film}</div>` : ''}
                      </div>
                    </div>
                  </div>
@@ -753,7 +768,7 @@ const categories = [
          >
           {photo.type === 'video' && photo.duration && (
             <div class="video-overlay-indicator">
-              <i class="fas fa-play"></i> {photo.duration}
+              ▶ {photo.duration}
             </div>
           )}
           <img 
@@ -765,12 +780,10 @@ const categories = [
             <div class="overlay-title">{photo.title}</div>
                           <div class="overlay-meta">
                 <div class="overlay-date">
-                  <i class="fas fa-calendar"></i>
-                  {photo.date}
+                  📅 {photo.date}
                 </div>
               <div class="overlay-location">
-                <i class="fas fa-map-marker-alt"></i>
-                {photo.location}
+                📍 {photo.location}
               </div>
             </div>
           </div>
@@ -781,7 +794,6 @@ const categories = [
 
   <Footer showDivider={true} />
 
-  <!-- lightGallery JavaScript -->
   <script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.2/lightgallery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.2/plugins/zoom/lg-zoom.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.2/plugins/thumbnail/lg-thumbnail.min.js"></script>
@@ -792,15 +804,20 @@ const categories = [
 
   <script is:inline>
     let lightGalleryInstance = null;
+    let exifToggleSetup = false;
+
+    function injectLightboxStyles() {
+      const style = document.createElement('style');
+      style.textContent = '.lg-sub-html h4 { font-size: clamp(1.4rem, 2.5vw, 2rem) !important; } .lg-sub-html p { font-size: clamp(1.1rem, 1.8vw, 1.4rem) !important; }';
+      document.head.appendChild(style);
+    }
 
     function initializeGallery() {
-      // Clean up existing instance
       if (lightGalleryInstance) {
         lightGalleryInstance.destroy();
         lightGalleryInstance = null;
       }
 
-      // Wait for lightGallery to be available
       if (typeof window.lightGallery === 'undefined') {
         setTimeout(initializeGallery, 100);
         return;
@@ -812,7 +829,6 @@ const categories = [
         return;
       }
 
-      // Initialize lightGallery
       lightGalleryInstance = window.lightGallery(galleryElement, {
         plugins: [lgZoom, lgThumbnail, lgAutoplay, lgFullscreen, lgShare, lgVideo],
         speed: 500,
@@ -834,7 +850,7 @@ const categories = [
         autoplay: false,
         pause: 3000,
         progressBar: true,
-        fourceAutoplay: false,
+        forceAutoplay: false,
         autoplayControls: true,
         share: false,
         fullScreen: true,
@@ -843,6 +859,19 @@ const categories = [
           showCloseIcon: true,
           download: false,
           rotate: false
+        },
+        onAfterOpen: () => {
+          const slide = lightGalleryInstance?.getSlide(lightGalleryInstance.getCurrentSlideIndex());
+          const id = slide?.querySelector('[data-id]')?.dataset.id;
+          if (id) history.pushState(null, '', `#photo-${id}`);
+        },
+        onAfterSlide: (detail) => {
+          const slide = lightGalleryInstance?.getSlide(detail.index);
+          const id = slide?.querySelector('[data-id]')?.dataset.id;
+          if (id) history.pushState(null, '', `#photo-${id}`);
+        },
+        onCloseAfter: () => {
+          history.pushState(null, '', window.location.pathname);
         }
       });
 
@@ -852,28 +881,33 @@ const categories = [
     }
 
     function setupExifToggle() {
-      document.addEventListener('click', function(e) {
-        if (e.target.closest('.exif-toggle')) {
-          e.preventDefault();
-          e.stopPropagation();
-          
-          const toggle = e.target.closest('.exif-toggle');
-          const content = toggle.nextElementSibling;
-          const arrow = toggle.querySelector('.exif-arrow');
-          
-          if (content && arrow) {
-            if (content.style.display === 'none' || content.style.display === '') {
-              content.style.display = 'block';
-              arrow.style.transform = 'rotate(180deg)';
-              toggle.style.opacity = '1';
-            } else {
-              content.style.display = 'none';
-              arrow.style.transform = 'rotate(0deg)';
-              toggle.style.opacity = '0.9';
-            }
-          }
+      if (exifToggleSetup) return;
+      document.addEventListener('click', handleExifToggle);
+      exifToggleSetup = true;
+    }
+    
+    function handleExifToggle(e) {
+      const toggle = e.target.closest('.exif-toggle');
+      if (!toggle) return;
+      
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const content = toggle.nextElementSibling;
+      const arrow = toggle.querySelector('.exif-arrow');
+      
+      if (content && arrow) {
+        const isHidden = content.style.display === 'none' || content.style.display === '';
+        if (isHidden) {
+          content.style.display = 'block';
+          arrow.style.transform = 'rotate(180deg)';
+          toggle.style.opacity = '1';
+        } else {
+          content.style.display = 'none';
+          arrow.style.transform = 'rotate(0deg)';
+          toggle.style.opacity = '0.9';
         }
-      });
+      }
     }
 
     function setupFilters() {
@@ -940,10 +974,8 @@ const categories = [
     }
 
     function setupAnimations() {
-      // Wait a bit to ensure anime.js is loaded and elements are ready
       setTimeout(() => {
         if (typeof anime !== 'undefined') {
-          // Animate photo counter
           const photoCounter = document.getElementById('photo-counter');
           if (photoCounter && !photoCounter.dataset.animated) {
             const finalCount = parseInt(photoCounter.textContent);
@@ -960,7 +992,6 @@ const categories = [
             });
           }
 
-          // Reset gallery items for animation
           const galleryItems = document.querySelectorAll('.gallery-item');
           galleryItems.forEach(item => {
             item.style.opacity = '0';
@@ -976,15 +1007,11 @@ const categories = [
             easing: 'easeOutQuad'
           });
         } else {
-          // Fallback if anime.js isn't loaded
           const photoCounter = document.getElementById('photo-counter');
           if (photoCounter && !photoCounter.dataset.animated) {
             photoCounter.dataset.animated = 'true';
-            // Simple counter without animation
-            // Counter is already set in HTML, so just mark as animated
           }
           
-          // Show gallery items without animation
           const galleryItems = document.querySelectorAll('.gallery-item');
           galleryItems.forEach(item => {
             item.style.opacity = '1';
@@ -994,30 +1021,61 @@ const categories = [
       }, 100);
     }
 
-    // Initialize on both DOMContentLoaded and astro:page-load
-    function init() {
-      initializeGallery();
-      setupExifToggle();
+    function navigateToHash() {
+      if (!lightGalleryInstance) return;
+      const match = window.location.hash.match(/^#photo-(\d+)$/);
+      if (!match) return;
+      const targetId = match[1];
+      const items = document.querySelectorAll('.gallery-item');
+      let targetIndex = -1;
+      items.forEach((item, i) => {
+        if (item.dataset.id === targetId) targetIndex = i;
+      });
+      if (targetIndex >= 0) {
+        lightGalleryInstance.openGallery(targetIndex);
+      }
     }
 
-    // Support both regular page loads and ViewTransitions
+    window.addEventListener('hashchange', navigateToHash);
+    window.addEventListener('popstate', () => {
+      if (!window.location.hash) {
+        lightGalleryInstance?.closeGallery();
+      }
+    });
+
+    let galleryInit = false;
+    function init() {
+      if (galleryInit) return;
+      galleryInit = true;
+      injectLightboxStyles();
+      initializeGallery();
+      setupExifToggle();
+      if (window.location.hash) {
+        const waitForGallery = setInterval(() => {
+          if (lightGalleryInstance) {
+            navigateToHash();
+            clearInterval(waitForGallery);
+          }
+        }, 200);
+        setTimeout(() => clearInterval(waitForGallery), 5000);
+      }
+    }
+
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', init);
     } else {
       init();
     }
 
-    // Support ViewTransitions
     document.addEventListener('astro:page-load', init);
 
-    // Cleanup when leaving the page
     document.addEventListener('astro:before-preparation', () => {
+      galleryInit = false;
       if (lightGalleryInstance) {
         lightGalleryInstance.destroy();
         lightGalleryInstance = null;
       }
       
-      // Reset counter animation state for next visit
       const photoCounter = document.getElementById('photo-counter');
       if (photoCounter) {
         photoCounter.removeAttribute('data-animated');
