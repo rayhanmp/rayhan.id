@@ -147,21 +147,6 @@ const isHomePage = currentPage === '/' || Astro.url.pathname === '/';
         });
       }
 
-      // Handle navigation state
-      document.addEventListener('astro:page-load', () => {
-        // Ensure FloatingNav stays active
-        const currentPath = window.location.pathname;
-        const navLinks = document.querySelectorAll('.floating-nav a');
-        
-        navLinks.forEach(link => {
-          link.classList.remove('active');
-          if (link.getAttribute('href') === currentPath || 
-              (currentPath === '/' && link.getAttribute('href') === '/')) {
-            link.classList.add('active');
-          }
-        });
-      });
-
       // Disable transitions when navigating TO home page
       document.addEventListener('astro:before-preparation', (event) => {
         const targetUrl = new URL(event.to);

@@ -14,12 +14,11 @@ const navItems = [
   { href: '/contact', label: 'CONTACT', number: '05' }
 ];
 
-// Function to check if current page matches the nav item
 function isActive(href: string, currentPage?: string) {
   if (!currentPage) return false;
-  if (href === '/' && currentPage === '/') return true;
-  if (href !== '/' && currentPage.startsWith(href)) return true;
-  return false;
+  var root = '/' + currentPage.split('/')[1];
+  var hrefRoot = '/' + href.split('/')[1];
+  return root === hrefRoot;
 }
 ---
 
@@ -379,9 +378,29 @@ function isActive(href: string, currentPage?: string) {
     handleScroll();
   }
 
+  function updateActiveNav() {
+    var navLinks = document.querySelectorAll('.floating-nav a');
+    var currentPath = window.location.pathname;
+    var currentRoot = '/' + currentPath.split('/')[1];
+
+    navLinks.forEach(function(link) {
+      link.classList.remove('active');
+      var href = link.getAttribute('href');
+      if (!href) return;
+      var hrefRoot = '/' + href.split('/')[1];
+      if (hrefRoot === currentRoot) {
+        link.classList.add('active');
+      }
+    });
+  }
+
   // Initialize on page load
   initFloatingNav();
+  updateActiveNav();
 
   // Re-initialize on Astro page transitions
-  document.addEventListener('astro:page-load', initFloatingNav);
+  document.addEventListener('astro:page-load', function() {
+    initFloatingNav();
+    updateActiveNav();
+  });
 </script> 
