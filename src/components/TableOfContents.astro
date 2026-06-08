@@ -25,6 +25,15 @@
   </nav>
 </div>
 
+<script is:inline>
+  (function() {
+    var el = document.getElementById('toc-container');
+    if (el && window.matchMedia('(max-width: 1200px)').matches) {
+      el.classList.add('collapsed');
+    }
+  })();
+</script>
+
 <div id="toc-mobile-overlay" class="toc-mobile-overlay" aria-hidden="true">
   <div class="toc-mobile-header">
     <span class="toc-mobile-title">Contents</span>
