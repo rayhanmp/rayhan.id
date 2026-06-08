@@ -1014,6 +1014,22 @@ for (let i = 1; i <= totalPages; i++) {
       ))}
     </div>
 
+    <script is:inline>
+      (function() {
+        var view = localStorage.getItem('blogView');
+        if (view === 'list') {
+          var grid = document.getElementById('blogGrid');
+          var list = document.getElementById('blogList');
+          var gridBtn = document.getElementById('gridViewBtn');
+          var listBtn = document.getElementById('listViewBtn');
+          if (grid) grid.style.display = 'none';
+          if (list) list.style.display = '';
+          if (gridBtn) gridBtn.classList.remove('active');
+          if (listBtn) listBtn.classList.add('active');
+        }
+      })();
+    </script>
+
     <!-- Pagination -->
     <div class="pagination">
       {currentPage > 1 ? (
