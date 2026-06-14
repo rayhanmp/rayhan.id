@@ -134,7 +134,7 @@ const author = "Rayhan M";
         margin: 0 auto;
         padding: 0 1rem;
         line-height: 1.7;
-        font-size: 1.85rem;
+        font-size: var(--blog-size, 1.85rem);
       }
 
       @media (max-width: 549px) {
@@ -367,7 +367,7 @@ const author = "Rayhan M";
         margin: 1.5rem 0;
         padding: 1rem 1.5rem;
         background: #f9f9f9;
-        border-left: 4px solid #ccc;
+        border-left: 4px solid var(--color-accent);
         color: #555;
       }
 
@@ -701,6 +701,17 @@ const author = "Rayhan M";
           progressBar.style.width = `${scrollPercent}%`;
         }
       });
+
+      (function() {
+        var container = document.querySelector('.blog-container');
+        if (!container) return;
+        var key = 'blog-font-size';
+        var stored;
+        try { stored = localStorage.getItem(key); } catch(e) {}
+        var size = parseFloat(stored) || 1.85;
+        size = Math.max(1.2, Math.min(3.2, size));
+        container.style.setProperty('--blog-size', size + 'rem');
+      })();
     </script>
   </body>
 </html>
