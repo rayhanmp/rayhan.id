@@ -47,7 +47,7 @@ const author = "Rayhan M";
     <meta property="og:type" content="article" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={`https://rayhan.id${heroImage ?? '/images/posts/pexels-bertellifotografia-16094040.jpg'}`} />
+    <meta property="og:image" content={heroImage?.startsWith('http') ? heroImage : `https://rayhan.id${heroImage ?? '/images/posts/pexels-bertellifotografia-16094040.jpg'}`} />
     <meta property="og:url" content={`https://rayhan.id${Astro.url.pathname}`} />
     <meta property="og:site_name" content="Rayhan's Blog" />
     <meta property="og:locale" content="en_US" />
@@ -60,7 +60,7 @@ const author = "Rayhan M";
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={`https://rayhan.id${heroImage ?? '/images/posts/pexels-bertellifotografia-16094040.jpg'}`} />
+    <meta name="twitter:image" content={heroImage?.startsWith('http') ? heroImage : `https://rayhan.id${heroImage ?? '/images/posts/pexels-bertellifotografia-16094040.jpg'}`} />
 
     <!-- Theme Color -->
     <meta name="theme-color" content="var(--color-primary)" />
