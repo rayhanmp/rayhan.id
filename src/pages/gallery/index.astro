@@ -798,30 +798,40 @@ const categories = [
   <script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.2/plugins/share/lg-share.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.2/plugins/video/lg-video.min.js"></script>
 
-  <script is:inline>
+  <script is:inline data-astro-rerun>
+    (() => {
     let lightGalleryInstance = null;
     let exifToggleSetup = false;
+    let galleryRetryTimeout = null;
+    let hashWaitInterval = null;
+    let hashWaitTimeout = null;
 
     function injectLightboxStyles() {
+      if (document.getElementById('gallery-lightbox-overrides')) return;
+
       const style = document.createElement('style');
+      style.id = 'gallery-lightbox-overrides';
       style.textContent = '.lg-sub-html h4 { font-size: clamp(1.4rem, 2.5vw, 2rem) !important; } .lg-sub-html p { font-size: clamp(1.1rem, 1.8vw, 1.4rem) !important; }';
       document.head.appendChild(style);
     }
 
-    function initializeGallery() {
-      if (lightGalleryInstance) {
-        lightGalleryInstance.destroy();
-        lightGalleryInstance = null;
-      }
+    function scheduleGalleryRetry() {
+      if (galleryRetryTimeout || !document.getElementById('lightgallery')) return;
 
-      if (typeof window.lightGallery === 'undefined') {
-        setTimeout(initializeGallery, 100);
-        return;
-      }
+      galleryRetryTimeout = window.setTimeout(() => {
+        galleryRetryTimeout = null;
+        initializeGallery();
+      }, 100);
+    }
+
+    function initializeGallery() {
+      if (lightGalleryInstance) return;
 
       const galleryElement = document.getElementById('lightgallery');
-      if (!galleryElement) {
-        setTimeout(initializeGallery, 100);
+      if (!galleryElement) return;
+
+      if (typeof window.lightGallery === 'undefined') {
+        scheduleGalleryRetry();
         return;
       }
 
@@ -1041,29 +1051,65 @@ const categories = [
       }
     }
 
-    window.addEventListener('hashchange', navigateToHash);
-    window.addEventListener('popstate', () => {
+    function handlePopState() {
       if (!window.location.hash) {
         lightGalleryInstance?.closeGallery();
       }
-    });
+    }
+
+    window.addEventListener('hashchange', navigateToHash);
+    window.addEventListener('popstate', handlePopState);
 
     let galleryInit = false;
     function init() {
-      if (galleryInit) return;
+      if (galleryInit || !document.getElementById('lightgallery')) return;
       galleryInit = true;
       injectLightboxStyles();
       initializeGallery();
       setupExifToggle();
       if (window.location.hash) {
-        const waitForGallery = setInterval(() => {
+        hashWaitInterval = window.setInterval(() => {
           if (lightGalleryInstance) {
             navigateToHash();
-            clearInterval(waitForGallery);
+            clearInterval(hashWaitInterval);
+            hashWaitInterval = null;
           }
         }, 200);
-        setTimeout(() => clearInterval(waitForGallery), 5000);
+        hashWaitTimeout = window.setTimeout(() => {
+          if (hashWaitInterval) clearInterval(hashWaitInterval);
+          hashWaitInterval = null;
+          hashWaitTimeout = null;
+        }, 5000);
       }
+    }
+
+    function cleanupGallery() {
+      if (galleryRetryTimeout) clearTimeout(galleryRetryTimeout);
+      if (hashWaitInterval) clearInterval(hashWaitInterval);
+      if (hashWaitTimeout) clearTimeout(hashWaitTimeout);
+      galleryRetryTimeout = null;
+      hashWaitInterval = null;
+      hashWaitTimeout = null;
+
+      if (lightGalleryInstance) {
+        lightGalleryInstance.destroy();
+        lightGalleryInstance = null;
+      }
+
+      if (exifToggleSetup) {
+        document.removeEventListener('click', handleExifToggle);
+        exifToggleSetup = false;
+      }
+
+      window.removeEventListener('hashchange', navigateToHash);
+      window.removeEventListener('popstate', handlePopState);
+      document.removeEventListener('DOMContentLoaded', init);
+      document.removeEventListener('astro:page-load', init);
+      document.removeEventListener('astro:before-preparation', cleanupGallery);
+      galleryInit = false;
+
+      const photoCounter = document.getElementById('photo-counter');
+      if (photoCounter) photoCounter.removeAttribute('data-animated');
     }
 
     if (document.readyState === 'loading') {
@@ -1073,18 +1119,7 @@ const categories = [
     }
 
     document.addEventListener('astro:page-load', init);
-
-    document.addEventListener('astro:before-preparation', () => {
-      galleryInit = false;
-      if (lightGalleryInstance) {
-        lightGalleryInstance.destroy();
-        lightGalleryInstance = null;
-      }
-      
-      const photoCounter = document.getElementById('photo-counter');
-      if (photoCounter) {
-        photoCounter.removeAttribute('data-animated');
-      }
-    });
+    document.addEventListener('astro:before-preparation', cleanupGallery);
+    })();
   </script>
 </BaseLayout>
