@@ -1,0 +1,129 @@
+.station-field select:focus-visible {
+  outline: none;
+}
+
+.map-footer span:last-child {
+  margin-left: 0;
+}
+
+.period-explanation {
+  min-height: 0;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 760px) {
+  .lrt-page-footer .disclaimer {
+    text-align: left;
+  }
+
+  .station-name {
+    font-size: 17px;
+    font-weight: 500;
+  }
+
+  .touch-map .station-code {
+    font-size: 13px;
+  }
+
+  .touch-map .selection-letter {
+    font-size: 15px;
+  }
+
+  .map-toolbar {
+    flex-wrap: wrap;
+    padding: 12px 14px;
+    gap: 8px;
+  }
+
+  .map-toolbar .reset-button {
+    margin-left: auto;
+    min-height: 32px;
+    padding: 0 4px;
+  }
+
+  .map-instruction {
+    margin-left: auto;
+  }
+
+  .lrt-brand {
+    font-size: 17px;
+    gap: 10px;
+    line-height: 1.4;
+  }
+
+  .brand-icon {
+    flex-shrink: 0;
+  }
+}
+
+.map-canvas > svg {
+  aspect-ratio: 660 / 865;
+}
+
+.map-canvas.mobile-layout > svg {
+  aspect-ratio: 660 / 1100;
+}
+
+.touch-map > svg {
+  touch-action: none;
+}
+
+.touch-map.is-zoomed > svg {
+  cursor: grab;
+}
+
+.map-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid #edf0f3;
+  color: #70808a;
+  font-size: 11px;
+}
+
+.map-navigation > div {
+  display: flex;
+  flex-shrink: 0;
+  gap: 2px;
+}
+
+.map-navigation button {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: #f1f5f7;
+  color: #192c3c;
+  font-size: 22px;
+  touch-action: manipulation;
+}
+
+.map-navigation button:disabled {
+  color: #a9b5bd;
+  background: transparent;
+  cursor: default;
+}
+
+.schedule-method {
+  margin-top: 12px;
+  color: #637884;
+  font-size: 13px;
+}
+
+.schedule-method summary {
+  cursor: pointer;
+  color: #536c7c;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.schedule-method p {
+  margin: 8px 0 0;
+  line-height: 1.6;
+}

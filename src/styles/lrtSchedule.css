@@ -1,0 +1,95 @@
+.departure-row {
+  grid-template-columns: 58px 1fr;
+}
+
+.departure-row:has(.arrival-time) {
+  grid-template-columns: 58px 1fr auto;
+}
+
+.schedule-heading h3 {
+  font-size: 16px;
+}
+
+.schedule-heading p {
+  font-size: 13px;
+}
+
+.schedule-clock {
+  display: grid;
+  gap: 2px;
+  text-align: right;
+}
+
+.schedule-clock b {
+  color: #536c7c;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+}
+
+.schedule-clock strong {
+  color: #536c7c;
+  font-size: 15px;
+}
+
+.departure-time {
+  font-size: 18px;
+}
+
+.departure-label {
+  font-size: 13px;
+}
+
+.arrival-time {
+  color: #536c7c;
+  font-size: 12px;
+  line-height: 1.35;
+  text-align: right;
+  white-space: normal;
+}
+
+.schedule-footnote {
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.schedule-empty {
+  margin: 13px 0 0;
+  padding: 11px 12px;
+  border: 1px solid #e5ebef;
+  border-radius: 10px;
+  color: #81909a;
+  font-size: 12px;
+}
+
+@media (max-width: 760px) {
+  .departure-row {
+    grid-template-columns: 56px 1fr;
+    padding: 10px;
+  }
+
+  .departure-row:has(.arrival-time) {
+    grid-template-columns: 56px 1fr auto;
+  }
+
+  .schedule-heading h3 {
+    font-size: 16px;
+  }
+
+  .schedule-heading p {
+    font-size: 12px;
+  }
+
+  .schedule-clock strong {
+    font-size: 14px;
+  }
+
+  .departure-time {
+    font-size: 17px;
+  }
+
+  .departure-label,
+  .arrival-time,
+  .schedule-footnote {
+    font-size: 12px;
+  }
+}
