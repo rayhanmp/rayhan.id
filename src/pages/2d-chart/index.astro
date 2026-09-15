@@ -1,0 +1,23 @@
+---
+import TwoDChart from '../../components/TwoDChart';
+import '../../styles/2d-chart.css';
+
+const pageTitle = '2D Chart';
+const pageDescription = 'A playful interactive 2D chart. Choose your axes, add names, drag dots, and edit the legend.';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <meta name="theme-color" content="#f4f1e8" />
+  </head>
+  <body>
+    <main class="two-d-chart-page">
+      <TwoDChart client:load />
+    </main>
+  </body>
+</html>
